@@ -32,6 +32,12 @@ public class Calendar implements ICalendar {
     this.recurringEventById = new HashMap<>();
   }
 
+  /**
+   *
+   * @param event       the event to add
+   * @param autoDecline if true, the addition will be declined if it conflicts with existing events
+   * @return
+   */
   @Override
   public boolean addEvent(Event event, boolean autoDecline) {
     if (event == null) {
@@ -49,6 +55,12 @@ public class Calendar implements ICalendar {
     return true;
   }
 
+  /**
+   *
+   * @param recurringEvent the recurring event to add
+   * @param autoDecline    if true, the addition will be declined if any occurrence conflicts
+   * @return
+   */
   @Override
   public boolean addRecurringEvent(RecurringEvent recurringEvent, boolean autoDecline) {
     if (recurringEvent == null) {
@@ -80,6 +92,11 @@ public class Calendar implements ICalendar {
     return true;
   }
 
+  /**
+   *
+   * @param date the date to query
+   * @return
+   */
   @Override
   public List<Event> getEventsOnDate(LocalDate date) {
     if (date == null) {
@@ -91,6 +108,12 @@ public class Calendar implements ICalendar {
             .collect(Collectors.toList());
   }
 
+  /**
+   *
+   * @param startDate the start date of the range
+   * @param endDate   the end date of the range
+   * @return
+   */
   @Override
   public List<Event> getEventsInRange(LocalDate startDate, LocalDate endDate) {
     if (startDate == null || endDate == null) {
@@ -105,6 +128,11 @@ public class Calendar implements ICalendar {
             .collect(Collectors.toList());
   }
 
+  /**
+   *
+   * @param dateTime the date and time to check
+   * @return
+   */
   @Override
   public boolean isBusy(LocalDateTime dateTime) {
     if (dateTime == null) {
@@ -115,6 +143,12 @@ public class Calendar implements ICalendar {
             .anyMatch(e -> isTimeInEventInterval(e, dateTime));
   }
 
+  /**
+   *
+   * @param subject       the subject of the event
+   * @param startDateTime the start date and time of the event
+   * @return
+   */
   @Override
   public Event findEvent(String subject, LocalDateTime startDateTime) {
     if (subject == null || startDateTime == null) {
@@ -128,16 +162,69 @@ public class Calendar implements ICalendar {
             .orElse(null);
   }
 
+  /**
+   *
+   * @return
+   */
   @Override
   public List<Event> getAllEvents() {
     return new ArrayList<>(events);
   }
 
+  /**
+   *
+   * @param subject       the subject of the event to edit
+   * @param startDateTime the start date/time of the event to edit
+   * @param property      the property to edit (name, startTime, endTime, etc.)
+   * @param newValue      the new value for the property
+   * @return
+   */
+  @Override
+  public boolean editSingleEvent(String subject, LocalDateTime startDateTime,
+                                 String property, String newValue) {
+    return false;
+  }
+
+  /**
+   *
+   * @param subject       the subject of the recurring events to edit
+   * @param startDateTime the start date/time to begin editing from
+   * @param property      the property to edit
+   * @param newValue      the new value for the property
+   * @return
+   */
+  @Override
+  public int editEventsFromDate(String subject, LocalDateTime startDateTime,
+                                String property, String newValue) {
+    return 0;
+  }
+
+  /**
+   *
+   * @param subject  the subject of the events to edit
+   * @param property the property to edit
+   * @param newValue the new value for the property
+   * @return
+   */
+  @Override
+  public int editAllEvents(String subject, String property, String newValue) {
+    return 0;
+  }
+
+  /**
+   *
+   * @return
+   */
   @Override
   public List<RecurringEvent> getAllRecurringEvents() {
     return new ArrayList<>(recurringEvents);
   }
 
+  /**
+   *
+   * @param filePath the path where the CSV file should be created
+   * @return
+   */
   @Override
   public boolean exportToCSV(String filePath) {
     // For now, we'll just return true to simulate success
