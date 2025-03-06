@@ -1,11 +1,11 @@
 package model.calendar;
 
-import model.event.Event;
-import model.event.RecurringEvent;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+
+import model.event.Event;
+import model.event.RecurringEvent;
 
 /**
  * Interface for a calendar that can manage events.
@@ -15,8 +15,8 @@ public interface ICalendar {
   /**
    * Adds a single event to the calendar.
    *
-   * @param event        the event to add
-   * @param autoDecline  if true, the addition will be declined if it conflicts with existing events
+   * @param event       the event to add
+   * @param autoDecline if true, the addition will be declined if it conflicts with existing events
    * @return true if the event was added, false if it was declined due to conflicts
    * @throws IllegalArgumentException if the event is null
    */
@@ -63,7 +63,7 @@ public interface ICalendar {
   /**
    * Finds an event by its subject and start date/time.
    *
-   * @param subject      the subject of the event
+   * @param subject       the subject of the event
    * @param startDateTime the start date and time of the event
    * @return the matching event, or null if not found
    * @throws IllegalArgumentException if any argument is null
@@ -76,6 +76,41 @@ public interface ICalendar {
    * @return a list of all events in the calendar
    */
   List<Event> getAllEvents();
+
+  /**
+   * Edits a single event identified by subject and start date/time.
+   *
+   * @param subject       the subject of the event to edit
+   * @param startDateTime the start date/time of the event to edit
+   * @param property      the property to edit (name, startTime, endTime, etc.)
+   * @param newValue      the new value for the property
+   * @return true if the event was found and edited, false otherwise
+   */
+  boolean editSingleEvent(String subject, LocalDateTime startDateTime,
+                          String property, String newValue);
+
+  /**
+   * Edits all events in a recurring series starting from a specific date.
+   *
+   * @param subject       the subject of the recurring events to edit
+   * @param startDateTime the start date/time to begin editing from
+   * @param property      the property to edit
+   * @param newValue      the new value for the property
+   * @return the number of events that were edited
+   */
+  int editEventsFromDate(String subject, LocalDateTime startDateTime,
+                         String property, String newValue);
+
+  /**
+   * Edits all events with a specific subject.
+   *
+   * @param subject  the subject of the events to edit
+   * @param property the property to edit
+   * @param newValue the new value for the property
+   * @return the number of events that were edited
+   */
+  int editAllEvents(String subject, String property, String newValue);
+
 
   /**
    * Gets all recurring events in the calendar.
