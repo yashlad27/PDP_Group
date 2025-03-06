@@ -1,13 +1,16 @@
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import controller.command.CreateEventCommand;
 import model.calendar.Calendar;
 import model.calendar.ICalendar;
 import model.event.Event;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests for the CreateEventCommand class without using Mockito.
@@ -34,8 +37,6 @@ public class CreateEventCommandTest {
     new CreateEventCommand(null);
   }
 
-  // SINGLE EVENT TESTS
-
   @Test
   public void testCreateEventSuccess() {
     // Execute - Create a single event, no auto-decline
@@ -45,13 +46,11 @@ public class CreateEventCommandTest {
             LocalDateTime.of(2023, 5, 15, 11, 0),
             false);
 
-    // Verify
     assertTrue(result.contains("created successfully"));
 
     // Check that the event was added to the calendar
     assertEquals(1, calendar.getAllEvents().size());
 
-    // Verify event details
     Event addedEvent = calendar.getAllEvents().get(0);
     assertEquals("Meeting", addedEvent.getSubject());
     assertEquals(LocalDateTime.of(2023, 5, 15, 10, 0), addedEvent.getStartDateTime());
@@ -67,7 +66,6 @@ public class CreateEventCommandTest {
             LocalDateTime.of(2023, 5, 15, 11, 0),
             true);
 
-    // Verify
     assertTrue(result.contains("created successfully"));
     assertEquals(1, calendar.getAllEvents().size());
   }
@@ -88,7 +86,6 @@ public class CreateEventCommandTest {
             LocalDateTime.of(2023, 5, 15, 11, 30),
             true);
 
-    // Verify that the creation failed
     assertTrue(result.contains("Failed to create event due to conflicts"));
     assertEquals(1, calendar.getAllEvents().size()); // Still only one event
   }
@@ -102,7 +99,6 @@ public class CreateEventCommandTest {
             LocalDateTime.of(2023, 5, 15, 11, 0),
             false);
 
-    // Verify
     assertTrue(result.contains("Error: Event name cannot be empty"));
     assertEquals(0, calendar.getAllEvents().size()); // No event added
   }
@@ -116,7 +112,6 @@ public class CreateEventCommandTest {
             LocalDateTime.of(2023, 5, 15, 11, 0),
             false);
 
-    // Verify
     assertTrue(result.contains("Error: Event name cannot be empty"));
     assertEquals(0, calendar.getAllEvents().size()); // No event added
   }
@@ -130,7 +125,6 @@ public class CreateEventCommandTest {
             LocalDateTime.of(2023, 5, 15, 11, 0),
             false);
 
-    // Verify
     assertTrue(result.contains("Error: Start date/time cannot be null"));
     assertEquals(0, calendar.getAllEvents().size()); // No event added
   }
@@ -145,12 +139,10 @@ public class CreateEventCommandTest {
             LocalDate.of(2023, 5, 15),
             false);
 
-    // Verify
     assertTrue(result.contains("All-day event"));
     assertTrue(result.contains("created successfully"));
     assertEquals(1, calendar.getAllEvents().size());
 
-    // Verify event details
     Event addedEvent = calendar.getAllEvents().get(0);
     assertEquals("Holiday", addedEvent.getSubject());
     assertTrue(addedEvent.isAllDay());
@@ -164,7 +156,6 @@ public class CreateEventCommandTest {
             LocalDate.of(2023, 5, 15),
             false);
 
-    // Verify
     assertTrue(result.contains("Error: Event name cannot be empty"));
     assertEquals(0, calendar.getAllEvents().size()); // No event added
   }
@@ -177,12 +168,9 @@ public class CreateEventCommandTest {
             null,
             false);
 
-    // Verify
     assertTrue(result.contains("Error: Date cannot be null"));
     assertEquals(0, calendar.getAllEvents().size()); // No event added
   }
-
-  // EXECUTE METHOD TESTS
 
   @Test
   public void testExecuteSingleEvent() {
@@ -196,7 +184,6 @@ public class CreateEventCommandTest {
     };
     String result = createCommand.execute(args);
 
-    // Verify
     assertTrue(result.contains("created successfully"));
     assertEquals(1, calendar.getAllEvents().size());
   }
@@ -212,7 +199,6 @@ public class CreateEventCommandTest {
     };
     String result = createCommand.execute(args);
 
-    // Verify
     assertTrue(result.contains("created successfully"));
     assertEquals(1, calendar.getAllEvents().size());
   }
@@ -223,7 +209,6 @@ public class CreateEventCommandTest {
     String[] args = {};
     String result = createCommand.execute(args);
 
-    // Verify
     assertTrue(result.contains("Error: Insufficient arguments"));
     assertEquals(0, calendar.getAllEvents().size()); // No event added
   }
@@ -234,7 +219,6 @@ public class CreateEventCommandTest {
     String[] args = {"unknown", "Meeting"};
     String result = createCommand.execute(args);
 
-    // Verify
     assertTrue(result.contains("Error: Unknown create event type"));
     assertEquals(0, calendar.getAllEvents().size()); // No event added
   }
@@ -245,12 +229,9 @@ public class CreateEventCommandTest {
     String[] args = {"single", "Meeting"};
     String result = createCommand.execute(args);
 
-    // Verify
     assertTrue(result.contains("Error: Insufficient arguments"));
     assertEquals(0, calendar.getAllEvents().size()); // No event added
   }
-
-  // Error handling tests for parsing issues
 
   @Test
   public void testExecuteWithInvalidDateFormat() {
@@ -264,7 +245,6 @@ public class CreateEventCommandTest {
     };
     String result = createCommand.execute(args);
 
-    // Verify
     assertTrue(result.contains("Error parsing arguments"));
     assertEquals(0, calendar.getAllEvents().size()); // No event added
   }
