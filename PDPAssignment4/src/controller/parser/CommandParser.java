@@ -1,10 +1,15 @@
 package controller.parser;
 
-import controller.command.ICommand;
-import controller.command.CommandFactory;
-
+import java.time.LocalDateTime;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import controller.command.CommandFactory;
+import controller.command.CreateEventCommand;
+import controller.command.EditEventCommand;
+import controller.command.ICommand;
+import model.calendar.ICalendar;
+import utilities.DateTimeUtil;
 
 /**
  * Improved parser for command-line input that uses a CommandFactory.
@@ -15,7 +20,9 @@ public class CommandParser {
 
   // Command patterns
   private static final Pattern CREATE_EVENT_PATTERN =
-          Pattern.compile("create event (--autoDecline )?(.+?) from (\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}) to (\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2})");
+          Pattern.compile(
+                  "create event (--autoDecline )?(.+?) from (\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}) to (\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2})"
+          );
 
   private static final Pattern CREATE_RECURRING_EVENT_PATTERN =
           Pattern.compile("create event (--autoDecline )?(.+?) from (\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}) to (\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}) repeats ([MTWRFSU]+) for (\\d+) times");
@@ -61,6 +68,17 @@ public class CommandParser {
    * @throws IllegalArgumentException if the command is invalid or unsupported
    */
   public CommandWithArgs parseCommand(String commandString) {
+
+    // Parse create event commands
+    if (commandString.startsWith("create event")) {
+      return parseCreateEventCommand(commandString);
+    }
+
+    // Add this block to handle edit commands
+    if (commandString.startsWith("edit event") || commandString.startsWith("edit events")) {
+      return parseEditEventCommand(commandString);
+    }
+
     if (commandString == null || commandString.trim().isEmpty()) {
       throw new IllegalArgumentException("Command string cannot be null or empty");
     }
@@ -243,5 +261,131 @@ public class CommandParser {
     public String execute() {
       return command.execute(args);
     }
+  }
+
+  public ICommand parseEditEventCommand(String commandString, ICalendar calendar) {
+    // Pattern for edit single event
+    Pattern singlePattern = Pattern.compile(
+            "edit event (\\w+) (.+) from (\\S+T\\S+) to (\\S+T\\S+) with (.+)");
+
+    // Pattern for edit events from date
+    Pattern seriesFromDatePattern = Pattern.compile(
+            "edit events (\\w+) (.+) from (\\S+T\\S+) with (.+)");
+
+    // Pattern for edit all events
+    Pattern allEventsPattern = Pattern.compile(
+            "edit events (\\w+) (.+) (.+)");
+
+    // Try to match single event edit pattern
+    Matcher singleMatcher = singlePattern.matcher(commandString);
+    if (singleMatcher.matches()) {
+      String property = singleMatcher.group(1);
+      String subject = singleMatcher.group(2);
+      LocalDateTime startDateTime = DateTimeUtil.parseDateTime(singleMatcher.group(3));
+      LocalDateTime endDateTime = DateTimeUtil.parseDateTime(singleMatcher.group(4));
+      String newValue = singleMatcher.group(5);
+
+      return new EditEventCommand(calendar, "single", property, subject,
+              startDateTime, newValue);
+    }
+
+    // Try to match series from date pattern
+    Matcher seriesFromDateMatcher = seriesFromDatePattern.matcher(commandString);
+    if (seriesFromDateMatcher.matches()) {
+      String property = seriesFromDateMatcher.group(1);
+      String subject = seriesFromDateMatcher.group(2);
+      LocalDateTime startDateTime = DateTimeUtil.parseDateTime(seriesFromDateMatcher.group(3));
+      String newValue = seriesFromDateMatcher.group(4);
+
+      return new EditEventCommand(calendar, "series_from_date", property, subject,
+              startDateTime, newValue);
+    }
+
+    // Try to match all events pattern
+    Matcher allEventsMatcher = allEventsPattern.matcher(commandString);
+    if (allEventsMatcher.matches()) {
+      String property = allEventsMatcher.group(1);
+      String subject = allEventsMatcher.group(2);
+      String newValue = allEventsMatcher.group(3);
+
+      return new EditEventCommand(calendar, "all", property, subject, newValue);
+    }
+
+    throw new IllegalArgumentException("Invalid edit command format: " + commandString);
+  }
+
+  /**
+   * Parses a command string and returns the appropriate Command object.
+   */
+  public ICommand parseCommand(String commandString, ICalendar calendar) {
+    if (commandString.startsWith("create event")) {
+      // Create an instance of CreateEventCommand with the calendar
+      CreateEventCommand createCommand = new CreateEventCommand(calendar);
+      // The execution with arguments will happen when execute() is called
+      return createCommand;
+    } else if (commandString.startsWith("edit event") ||
+            commandString.startsWith("edit events")) {
+      return parseEditEventCommand(commandString, calendar);
+    }
+    // Add other command types as needed
+
+    throw new IllegalArgumentException("Unknown command: " + commandString);
+  }
+
+  private CommandWithArgs parseEditEventCommand(String commandString) {
+    ICommand editCommand = commandFactory.getCommand("edit");
+    Matcher matcher;
+
+    // Pattern for edit single event
+    Pattern singlePattern = Pattern.compile(
+            "edit event (\\w+) (.+) from (\\S+T\\S+) to (\\S+T\\S+) with (.+)");
+
+    // Pattern for edit events from date
+    Pattern seriesFromDatePattern = Pattern.compile(
+            "edit events (\\w+) (.+) from (\\S+T\\S+) with (.+)");
+
+    // Pattern for edit all events
+    Pattern allEventsPattern = Pattern.compile(
+            "edit events (\\w+) (.+) (.+)");
+
+    // Try to match single event edit pattern
+    matcher = singlePattern.matcher(commandString);
+    if (matcher.matches()) {
+      String[] args = {
+              "single",
+              matcher.group(1),  // property
+              matcher.group(2),  // subject
+              matcher.group(3),  // startDateTime
+              matcher.group(5)   // newValue
+      };
+      return new CommandWithArgs(editCommand, args);
+    }
+
+    // Try to match series from date pattern
+    matcher = seriesFromDatePattern.matcher(commandString);
+    if (matcher.matches()) {
+      String[] args = {
+              "series_from_date",
+              matcher.group(1),  // property
+              matcher.group(2),  // subject
+              matcher.group(3),  // startDateTime
+              matcher.group(4)   // newValue
+      };
+      return new CommandWithArgs(editCommand, args);
+    }
+
+    // Try to match all events pattern
+    matcher = allEventsPattern.matcher(commandString);
+    if (matcher.matches()) {
+      String[] args = {
+              "all",
+              matcher.group(1),  // property
+              matcher.group(2),  // subject
+              matcher.group(3)   // newValue
+      };
+      return new CommandWithArgs(editCommand, args);
+    }
+
+    throw new IllegalArgumentException("Invalid edit command format: " + commandString);
   }
 }
