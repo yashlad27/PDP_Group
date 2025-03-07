@@ -1,12 +1,13 @@
 package controller.command;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Set;
+
 import model.calendar.ICalendar;
 import model.event.Event;
 import model.event.RecurringEvent;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import utilities.DateTimeUtil;
-import java.util.Set;
 
 /**
  * Command for creating calendar events (both single and recurring events).
@@ -204,6 +205,16 @@ public class CreateEventCommand implements ICommand {
     }
   }
 
+  /**
+   * Executes the create event command with the provided arguments.
+   * Handles different types of event creation including single events, recurring events,
+   * all-day events, and their variants.
+   *
+   * @param args an array of arguments for the command:
+   *             - args[0]: the type of event to create (single, recurring, allday, etc.)
+   *             - remaining args: parameters specific to each event type
+   * @return a string message indicating the result of the command execution
+   */
   @Override
   public String execute(String[] args) {
     // This method would parse command line arguments and call the appropriate creation method
@@ -261,13 +272,82 @@ public class CreateEventCommand implements ICommand {
           return "Error parsing arguments: " + e.getMessage();
         }
 
+      case "recurring-until":
+        if (args.length < 7) {
+          return "Error: Insufficient arguments for recurring event until date";
+        }
+        try {
+          String name = args[1];
+          LocalDateTime start = DateTimeUtil.parseDateTime(args[2]);
+          LocalDateTime end = DateTimeUtil.parseDateTime(args[3]);
+          String weekdays = args[4];
+          LocalDate untilDate = DateTimeUtil.parseDate(args[5]);
+          boolean autoDecline = Boolean.parseBoolean(args[6]);
+
+          boolean success = calendar.createRecurringEventUntil(name, start, end, weekdays, untilDate, autoDecline);
+
+          if (success) {
+            return "Recurring event '" + name + "' created successfully until " + untilDate + ".";
+          } else {
+            return "Failed to create recurring event due to conflicts.";
+          }
+        } catch (Exception e) {
+          return "Error creating recurring event: " + e.getMessage();
+        }
+
+      case "allday-recurring":
+        if (args.length < 6) {
+          return "Error: Insufficient arguments for all-day recurring event";
+        }
+        try {
+          String name = args[1];
+          LocalDate date = DateTimeUtil.parseDate(args[2]);
+          String weekdays = args[3];
+          int occurrences = Integer.parseInt(args[4]);
+          boolean autoDecline = Boolean.parseBoolean(args[5]);
+
+          boolean success = calendar.createAllDayRecurringEvent(name, date, weekdays, occurrences, autoDecline);
+
+          if (success) {
+            return "All-day recurring event '" + name + "' created successfully with " + occurrences + " occurrences.";
+          } else {
+            return "Failed to create all-day recurring event due to conflicts.";
+          }
+        } catch (Exception e) {
+          return "Error creating all-day recurring event: " + e.getMessage();
+        }
+
+      case "allday-recurring-until":
+        if (args.length < 6) {
+          return "Error: Insufficient arguments for all-day recurring event until date";
+        }
+        try {
+          String name = args[1];
+          LocalDate date = DateTimeUtil.parseDate(args[2]);
+          String weekdays = args[3];
+          LocalDate untilDate = DateTimeUtil.parseDate(args[4]);
+          boolean autoDecline = Boolean.parseBoolean(args[5]);
+
+          boolean success = calendar.createAllDayRecurringEventUntil(name, date, weekdays, untilDate, autoDecline);
+
+          if (success) {
+            return "All-day recurring event '" + name + "' created successfully until " + untilDate + ".";
+          } else {
+            return "Failed to create all-day recurring event due to conflicts.";
+          }
+        } catch (Exception e) {
+          return "Error creating all-day recurring event: " + e.getMessage();
+        }
+
       default:
         return "Error: Unknown create event type: " + args[0];
     }
   }
 
   /**
-   * @return
+   * Returns the name of this command.
+   *
+   * @return the string "create" which identifies this command to the command factory
    */
   @Override
   public String getName() {
