@@ -51,6 +51,12 @@ public class CommandParser {
   private static final Pattern EXPORT_CALENDAR_PATTERN =
           Pattern.compile("export cal (.+)");
 
+  private static final Pattern PRINT_EVENTS_ON_DATE_PATTERN =
+          Pattern.compile("print events on (\\d{4}-\\d{2}-\\d{2})");
+
+  private static final Pattern PRINT_EVENTS_IN_RANGE_PATTERN =
+          Pattern.compile("print events from (\\d{4}-\\d{2}-\\d{2}) to (\\d{4}-\\d{2}-\\d{2})");
+
   /**
    * Constructs a new CommandParser.
    *
@@ -98,7 +104,7 @@ public class CommandParser {
     matcher = PRINT_EVENTS_PATTERN.matcher(commandString);
     if (matcher.matches()) {
       ICommand printCommand = commandFactory.getCommand("print");
-      String[] args = {"on", matcher.group(1)};
+      String[] args = {"on_date", matcher.group(1)};
       return new CommandWithArgs(printCommand, args);
     }
 
@@ -106,7 +112,7 @@ public class CommandParser {
     matcher = PRINT_EVENTS_RANGE_PATTERN.matcher(commandString);
     if (matcher.matches()) {
       ICommand printCommand = commandFactory.getCommand("print");
-      String[] args = {"from", matcher.group(1), "to", matcher.group(2)};
+      String[] args = {"from_range", matcher.group(1), "to", matcher.group(2)};
       return new CommandWithArgs(printCommand, args);
     }
 
@@ -387,5 +393,61 @@ public class CommandParser {
     }
 
     throw new IllegalArgumentException("Invalid edit command format: " + commandString);
+  }
+
+  private CommandWithArgs parsePrintEventsCommand(String commandString) {
+    ICommand printCommand = commandFactory.getCommand("print");
+    Matcher matcher;
+
+    // Try to match "print events on" pattern
+    matcher = PRINT_EVENTS_ON_DATE_PATTERN.matcher(commandString);
+    if (matcher.matches()) {
+      String[] args = {
+              "on_date",
+              matcher.group(1)  // date
+      };
+      return new CommandWithArgs(printCommand, args);
+    }
+
+    // Try to match "print events from...to" pattern
+    matcher = PRINT_EVENTS_IN_RANGE_PATTERN.matcher(commandString);
+    if (matcher.matches()) {
+      String[] args = {
+              "date_range",
+              matcher.group(1),  // startDate
+              matcher.group(2)   // endDate
+      };
+      return new CommandWithArgs(printCommand, args);
+    }
+
+    throw new IllegalArgumentException("Invalid print command format: " + commandString);
+  }
+
+  private CommandWithArgs parseShowStatusCommand(String commandString) {
+    ICommand statusCommand = commandFactory.getCommand("show");
+    Matcher matcher = SHOW_STATUS_PATTERN.matcher(commandString);
+
+    if (matcher.matches()) {
+      String[] args = {
+              matcher.group(1)  // dateTime
+      };
+      return new CommandWithArgs(statusCommand, args);
+    }
+
+    throw new IllegalArgumentException("Invalid status command format: " + commandString);
+  }
+
+  private CommandWithArgs parseExportCommand(String commandString) {
+    ICommand exportCommand = commandFactory.getCommand("export");
+    Matcher matcher = EXPORT_CALENDAR_PATTERN.matcher(commandString);
+
+    if (matcher.matches()) {
+      String[] args = {
+              matcher.group(1)  // filename
+      };
+      return new CommandWithArgs(exportCommand, args);
+    }
+
+    throw new IllegalArgumentException("Invalid export command format: " + commandString);
   }
 }
