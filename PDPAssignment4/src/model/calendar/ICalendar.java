@@ -34,6 +34,46 @@ public interface ICalendar {
   boolean addRecurringEvent(RecurringEvent recurringEvent, boolean autoDecline);
 
   /**
+   * Creates a recurring event that repeats until a specific date.
+   *
+   * @param name the name of the event
+   * @param start the start date and time
+   * @param end the end date and time
+   * @param weekdays the days of the week to repeat on (e.g., "MWF")
+   * @param untilDate the date until which to repeat (inclusive)
+   * @param autoDecline whether to automatically decline if there's a conflict
+   * @return true if the event was created successfully, false otherwise
+   */
+  boolean createRecurringEventUntil(String name, LocalDateTime start, LocalDateTime end,
+                                    String weekdays, LocalDate untilDate, boolean autoDecline);
+
+  /**
+   * Creates an all-day recurring event.
+   *
+   * @param name the name of the event
+   * @param date the date of the event
+   * @param weekdays the days of the week to repeat on (e.g., "MWF")
+   * @param occurrences the number of occurrences
+   * @param autoDecline whether to automatically decline if there's a conflict
+   * @return true if the event was created successfully, false otherwise
+   */
+  boolean createAllDayRecurringEvent(String name, LocalDate date, String weekdays,
+                                     int occurrences, boolean autoDecline);
+
+  /**
+   * Creates an all-day recurring event that repeats until a specific date.
+   *
+   * @param name the name of the event
+   * @param date the date of the event
+   * @param weekdays the days of the week to repeat on (e.g., "MWF")
+   * @param untilDate the date until which to repeat (inclusive)
+   * @param autoDecline whether to automatically decline if there's a conflict
+   * @return true if the event was created successfully, false otherwise
+   */
+  boolean createAllDayRecurringEventUntil(String name, LocalDate date, String weekdays,
+                                          LocalDate untilDate, boolean autoDecline);
+
+  /**
    * Gets all events occurring on a specific date.
    *
    * @param date the date to query
