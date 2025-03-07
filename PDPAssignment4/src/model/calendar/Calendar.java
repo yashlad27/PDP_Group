@@ -1,12 +1,14 @@
 package model.calendar;
 
 import java.io.IOException;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -91,6 +93,89 @@ public class Calendar implements ICalendar {
     }
 
     return true;
+  }
+
+  @Override
+  public boolean createRecurringEventUntil(String name, LocalDateTime start, LocalDateTime end,
+                                           String weekdays, LocalDate untilDate, boolean autoDecline) {
+    try {
+      Set<DayOfWeek> repeatDays = DateTimeUtil.parseWeekdays(weekdays);
+
+      RecurringEvent recurringEvent = new RecurringEvent(
+              name,
+              start,
+              end,
+              null,  // Default description
+              null,  // Default location
+              true,  // Default to public
+              repeatDays,
+              untilDate
+      );
+
+      return addRecurringEvent(recurringEvent, autoDecline);
+    } catch (IllegalArgumentException e) {
+      return false;
+    }
+  }
+
+  @Override
+  public boolean createAllDayRecurringEvent(String name, LocalDate date, String weekdays,
+                                            int occurrences, boolean autoDecline) {
+    try {
+      Set<DayOfWeek> repeatDays = DateTimeUtil.parseWeekdays(weekdays);
+
+      // Create an all-day recurring event
+      LocalDateTime startOfDay = date.atStartOfDay();
+      LocalDateTime endOfDay = date.atTime(23, 59, 59);
+
+      RecurringEvent recurringEvent = new RecurringEvent(
+              name,
+              startOfDay,
+              endOfDay,
+              null,  // Default description
+              null,  // Default location
+              true,  // Default to public
+              repeatDays,
+              occurrences
+      );
+
+      // Mark it as an all-day event
+      recurringEvent.setAllDay(true);
+
+      return addRecurringEvent(recurringEvent, autoDecline);
+    } catch (IllegalArgumentException e) {
+      return false;
+    }
+  }
+
+  @Override
+  public boolean createAllDayRecurringEventUntil(String name, LocalDate date, String weekdays,
+                                                 LocalDate untilDate, boolean autoDecline) {
+    try {
+      Set<DayOfWeek> repeatDays = DateTimeUtil.parseWeekdays(weekdays);
+
+      // Create an all-day recurring event
+      LocalDateTime startOfDay = date.atStartOfDay();
+      LocalDateTime endOfDay = date.atTime(23, 59, 59);
+
+      RecurringEvent recurringEvent = new RecurringEvent(
+              name,
+              startOfDay,
+              endOfDay,
+              null,  // Default description
+              null,  // Default location
+              true,  // Default to public
+              repeatDays,
+              untilDate
+      );
+
+      // Mark it as an all-day event
+      recurringEvent.setAllDay(true);
+
+      return addRecurringEvent(recurringEvent, autoDecline);
+    } catch (IllegalArgumentException e) {
+      return false;
+    }
   }
 
   /**
