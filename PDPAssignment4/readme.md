@@ -19,7 +19,7 @@ The application can run in two modes: interactive and headless.
 In interactive mode, you can type commands and see results immediately:
 
 ```bash
-java -cp target/classes application.CalendarApp --mode interactive
+java -cp target/classes CalendarApp --mode interactive
 ```
 
 #### Headless Mode
@@ -27,7 +27,7 @@ java -cp target/classes application.CalendarApp --mode interactive
 In headless mode, the application reads commands from a file:
 
 ```bash
-java -cp target/classes application.CalendarApp --mode headless commands.txt
+java -cp target/classes CalendarApp --mode headless commands.txt
 ```
 
 Where `commands.txt` is a file containing commands, one per line, with an `exit` command at the end.
