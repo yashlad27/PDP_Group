@@ -150,22 +150,6 @@ public class Event {
   }
 
   /**
-   * Sets the start date and time of this event.
-   *
-   * @param startDateTime the new start date and time
-   * @throws IllegalArgumentException if startDateTime is null or after endDateTime
-   */
-  public void setStartDateTime(LocalDateTime startDateTime) {
-    if (startDateTime == null) {
-      throw new IllegalArgumentException("Start date/time cannot be null");
-    }
-    if (endDateTime != null && startDateTime.isAfter(endDateTime)) {
-      throw new IllegalArgumentException("Start date/time cannot be after end date/time");
-    }
-    this.startDateTime = startDateTime;
-  }
-
-  /**
    * Gets the end date and time of this event.
    *
    * @return the end date and time
@@ -207,15 +191,6 @@ public class Event {
   }
 
   /**
-   * Sets the description of this event.
-   *
-   * @param description the new description
-   */
-  public void setDescription(String description) {
-    this.description = description;
-  }
-
-  /**
    * Gets the location of this event.
    *
    * @return the location
@@ -225,30 +200,12 @@ public class Event {
   }
 
   /**
-   * Sets the location of this event.
-   *
-   * @param location the new location
-   */
-  public void setLocation(String location) {
-    this.location = location;
-  }
-
-  /**
    * Checks if this event is public.
    *
    * @return true if the event is public, false otherwise
    */
   public boolean isPublic() {
     return isPublic;
-  }
-
-  /**
-   * Sets whether this event is public.
-   *
-   * @param isPublic true if the event should be public, false otherwise
-   */
-  public void setPublic(boolean isPublic) {
-    this.isPublic = isPublic;
   }
 
   /**
@@ -275,6 +232,48 @@ public class Event {
               LocalTime.of(23, 59, 59)
       );
     }
+  }
+
+  /**
+   * Sets the description of this event.
+   *
+   * @param description the new description
+   */
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
+  /**
+   * Sets the location of this event.
+   *
+   * @param location the new location
+   */
+  public void setLocation(String location) {
+    this.location = location;
+  }
+
+  /**
+   * Sets the start date and time of this event.
+   *
+   * @param startDateTime the new start date and time
+   */
+  public void setStartDateTime(LocalDateTime startDateTime) {
+    if (startDateTime == null) {
+      throw new IllegalArgumentException("Start date/time cannot be null");
+    }
+    if (this.endDateTime != null && startDateTime.isAfter(this.endDateTime)) {
+      throw new IllegalArgumentException("Start date/time cannot be after end date/time");
+    }
+    this.startDateTime = startDateTime;
+  }
+
+  /**
+   * Sets whether this event is public.
+   *
+   * @param isPublic true if the event is public, false otherwise
+   */
+  public void setPublic(boolean isPublic) {
+    this.isPublic = isPublic;
   }
 
   @Override
