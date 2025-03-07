@@ -30,7 +30,7 @@ public class CommandFactory {
     registerCommand(new PrintEventsCommand(calendar));
     registerCommand(new ShowStatusCommand(calendar));
     registerCommand(new ExportCalendarCommand(calendar));
-    //registerCommand(new EditEventCommand(calendar));
+    registerCommand(new EditEventCommand(calendar));
     registerCommand(new ExitCommand());
 
     this.calendar = calendar;
