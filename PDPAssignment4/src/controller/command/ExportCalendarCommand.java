@@ -1,5 +1,7 @@
 package controller.command;
 
+import java.io.IOException;
+
 import model.calendar.ICalendar;
 
 /**
@@ -25,12 +27,13 @@ public class ExportCalendarCommand implements ICommand {
     }
 
     String filePath = args[0];
-    boolean success = calendar.exportToCSV(filePath);
 
-    if (success) {
-      return "Calendar exported successfully to: " + filePath;
-    } else {
-      return "Failed to export calendar to: " + filePath;
+    try {
+      // Change based on your ICalendar interface implementation
+      String absolutePath = calendar.exportToCSV(filePath);
+      return "Calendar exported successfully to: " + absolutePath;
+    } catch (IOException e) {
+      return "Failed to export calendar: " + e.getMessage();
     }
   }
 
