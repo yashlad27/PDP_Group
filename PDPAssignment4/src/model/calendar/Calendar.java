@@ -1,8 +1,5 @@
 package model.calendar;
 
-import model.event.Event;
-import model.event.RecurringEvent;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -11,6 +8,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import model.event.Event;
+import model.event.RecurringEvent;
+import utilities.DateTimeUtil;
 
 /**
  * Implementation of the ICalendar interface that manages calendar events.
@@ -33,7 +34,6 @@ public class Calendar implements ICalendar {
   }
 
   /**
-   *
    * @param event       the event to add
    * @param autoDecline if true, the addition will be declined if it conflicts with existing events
    * @return
@@ -56,7 +56,6 @@ public class Calendar implements ICalendar {
   }
 
   /**
-   *
    * @param recurringEvent the recurring event to add
    * @param autoDecline    if true, the addition will be declined if any occurrence conflicts
    * @return
@@ -93,7 +92,6 @@ public class Calendar implements ICalendar {
   }
 
   /**
-   *
    * @param date the date to query
    * @return
    */
@@ -109,7 +107,6 @@ public class Calendar implements ICalendar {
   }
 
   /**
-   *
    * @param startDate the start date of the range
    * @param endDate   the end date of the range
    * @return
@@ -129,7 +126,6 @@ public class Calendar implements ICalendar {
   }
 
   /**
-   *
    * @param dateTime the date and time to check
    * @return
    */
@@ -144,7 +140,6 @@ public class Calendar implements ICalendar {
   }
 
   /**
-   *
    * @param subject       the subject of the event
    * @param startDateTime the start date and time of the event
    * @return
@@ -163,7 +158,6 @@ public class Calendar implements ICalendar {
   }
 
   /**
-   *
    * @return
    */
   @Override
@@ -172,7 +166,6 @@ public class Calendar implements ICalendar {
   }
 
   /**
-   *
    * @param subject       the subject of the event to edit
    * @param startDateTime the start date/time of the event to edit
    * @param property      the property to edit (name, startTime, endTime, etc.)
@@ -182,11 +175,16 @@ public class Calendar implements ICalendar {
   @Override
   public boolean editSingleEvent(String subject, LocalDateTime startDateTime,
                                  String property, String newValue) {
-    return false;
+    Event eventToEdit = findEvent(subject, startDateTime);
+
+    if (eventToEdit == null) {
+      return false;
+    }
+
+    return updateEventProperty(eventToEdit, property, newValue);
   }
 
   /**
-   *
    * @param subject       the subject of the recurring events to edit
    * @param startDateTime the start date/time to begin editing from
    * @param property      the property to edit
@@ -196,11 +194,25 @@ public class Calendar implements ICalendar {
   @Override
   public int editEventsFromDate(String subject, LocalDateTime startDateTime,
                                 String property, String newValue) {
-    return 0;
+    int count = 0;
+
+    // gets all events with the given subject
+    List<Event> matchingEvents = events.stream()
+            .filter(e -> e.getSubject().equals(subject) &&
+                    !e.getStartDateTime().isBefore(startDateTime))
+            .collect(Collectors.toList());
+
+    // update each matching event
+    for (Event event : matchingEvents) {
+      if (updateEventProperty(event, property, newValue)) {
+        count++;
+      }
+    }
+
+    return count;
   }
 
   /**
-   *
    * @param subject  the subject of the events to edit
    * @param property the property to edit
    * @param newValue the new value for the property
@@ -208,11 +220,21 @@ public class Calendar implements ICalendar {
    */
   @Override
   public int editAllEvents(String subject, String property, String newValue) {
-    return 0;
+    int count = 0;
+
+    List<Event> matchingEvents = events.stream()
+            .filter(e -> e.getSubject().equals(subject))
+            .collect(Collectors.toList());
+
+    for (Event event : matchingEvents) {
+      if (updateEventProperty(event, property, newValue)) {
+        count++;
+      }
+    }
+    return count;
   }
 
   /**
-   *
    * @return
    */
   @Override
@@ -221,7 +243,6 @@ public class Calendar implements ICalendar {
   }
 
   /**
-   *
    * @param filePath the path where the CSV file should be created
    * @return
    */
@@ -299,4 +320,49 @@ public class Calendar implements ICalendar {
     return !dateTime.isBefore(event.getStartDateTime()) &&
             !dateTime.isAfter(event.getEndDateTime());
   }
+
+  /**
+   * Updates a specific property of an event.
+   *
+   * @param event    the event to update.
+   * @param property the property to update
+   * @param newValue the new value for the property
+   * @return true if the update was successful, otherwise false.
+   */
+  private boolean updateEventProperty(Event event, String property, String newValue) {
+    switch (property.toLowerCase()) {
+      case "subject":
+      case "name":
+        event.setSubject(newValue);
+        return true;
+      case "description":
+        event.setDescription(newValue);
+        return true;
+      case "location":
+        event.setLocation(newValue);
+        return true;
+      case "startdatetime":
+        try {
+          LocalDateTime newStartTime = DateTimeUtil.parseDateTime(newValue);
+          event.setStartDateTime(newStartTime);
+          return true;
+        } catch (Exception e) {
+          return false;
+        }
+      case "enddatetime":
+        try {
+          LocalDateTime newEndTime = DateTimeUtil.parseDateTime(newValue);
+          event.setEndDateTime(newEndTime);
+          return true;
+        } catch (Exception e) {
+          return false;
+        }
+      case "ispublic":
+        event.setPublic(Boolean.parseBoolean(newValue));
+        return true;
+      default:
+        return false;
+    }
+  }
+
 }
