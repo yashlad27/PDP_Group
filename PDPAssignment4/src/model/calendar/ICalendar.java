@@ -1,5 +1,6 @@
 package model.calendar;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -111,7 +112,6 @@ public interface ICalendar {
    */
   int editAllEvents(String subject, String property, String newValue);
 
-
   /**
    * Gets all recurring events in the calendar.
    *
@@ -126,5 +126,5 @@ public interface ICalendar {
    * @return true if the export was successful, false otherwise
    * @throws IllegalArgumentException if the filePath is null or empty
    */
-  boolean exportToCSV(String filePath);
+  String exportToCSV(String filePath) throws IOException;
 }
