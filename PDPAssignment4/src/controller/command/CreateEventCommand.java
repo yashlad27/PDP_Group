@@ -207,7 +207,6 @@ public class CreateEventCommand implements ICommand {
   @Override
   public String execute(String[] args) {
     // This method would parse command line arguments and call the appropriate creation method
-    // For now, we'll implement a simplified version
 
     if (args.length < 1) {
       return "Error: Insufficient arguments for create command";
@@ -226,6 +225,23 @@ public class CreateEventCommand implements ICommand {
           boolean autoDecline = Boolean.parseBoolean(args[4]);
 
           return createEvent(name, start, end, autoDecline);
+        } catch (Exception e) {
+          return "Error parsing arguments: " + e.getMessage();
+        }
+
+      case "recurring":
+        if (args.length < 7) {
+          return "Error: Insufficient arguments for creating a recurring event";
+        }
+        try {
+          String name = args[1];
+          LocalDateTime start = DateTimeUtil.parseDateTime(args[2]);
+          LocalDateTime end = DateTimeUtil.parseDateTime(args[3]);
+          String weekdays = args[4];
+          int occurrences = Integer.parseInt(args[5]);
+          boolean autoDecline = Boolean.parseBoolean(args[6]);
+
+          return createRecurringEvent(name, start, end, weekdays, occurrences, autoDecline);
         } catch (Exception e) {
           return "Error parsing arguments: " + e.getMessage();
         }
