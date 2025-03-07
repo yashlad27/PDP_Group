@@ -276,6 +276,38 @@ public class Event {
     this.isPublic = isPublic;
   }
 
+  /**
+   * The date of an all-day event.
+   */
+  private LocalDate date;
+
+  /**
+   * Gets the date of this all-day event.
+   *
+   * @return the date of this event, or null if this is not an all-day event
+   */
+  public LocalDate getDate() {
+    return date;
+  }
+
+  /**
+   * Sets the date of this all-day event.
+   *
+   * @param date the date of this all-day event
+   */
+  public void setDate(LocalDate date) {
+    this.date = date;
+  }
+
+  /**
+   * Checks if this event is an all-day event.
+   *
+   * @return true if this is an all-day event, false otherwise
+   */
+  public boolean isAllDayEvent() {
+    return date != null && startDateTime == null && endDateTime == null;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
