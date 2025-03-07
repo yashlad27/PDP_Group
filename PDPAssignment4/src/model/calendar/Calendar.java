@@ -1,5 +1,6 @@
 package model.calendar;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import java.util.stream.Collectors;
 
 import model.event.Event;
 import model.event.RecurringEvent;
+import utilities.CSVExporter;
 import utilities.DateTimeUtil;
 
 /**
@@ -89,54 +91,6 @@ public class Calendar implements ICalendar {
     }
 
     return true;
-  }
-
-  /**
-   * @param date the date to query
-   * @return
-   */
-  @Override
-  public List<Event> getEventsOnDate(LocalDate date) {
-    if (date == null) {
-      throw new IllegalArgumentException("Date cannot be null");
-    }
-
-    return events.stream()
-            .filter(e -> eventOccursOnDate(e, date))
-            .collect(Collectors.toList());
-  }
-
-  /**
-   * @param startDate the start date of the range
-   * @param endDate   the end date of the range
-   * @return
-   */
-  @Override
-  public List<Event> getEventsInRange(LocalDate startDate, LocalDate endDate) {
-    if (startDate == null || endDate == null) {
-      throw new IllegalArgumentException("Start and end dates cannot be null");
-    }
-    if (endDate.isBefore(startDate)) {
-      throw new IllegalArgumentException("End date cannot be before start date");
-    }
-
-    return events.stream()
-            .filter(e -> eventOccursInRange(e, startDate, endDate))
-            .collect(Collectors.toList());
-  }
-
-  /**
-   * @param dateTime the date and time to check
-   * @return
-   */
-  @Override
-  public boolean isBusy(LocalDateTime dateTime) {
-    if (dateTime == null) {
-      throw new IllegalArgumentException("DateTime cannot be null");
-    }
-
-    return events.stream()
-            .anyMatch(e -> isTimeInEventInterval(e, dateTime));
   }
 
   /**
@@ -247,10 +201,8 @@ public class Calendar implements ICalendar {
    * @return
    */
   @Override
-  public boolean exportToCSV(String filePath) {
-    // For now, we'll just return true to simulate success
-    // This will be implemented fully in a separate CSVExporter class
-    return true;
+  public String exportToCSV(String filePath) throws IOException {
+    return CSVExporter.exportToCSV(filePath, events);
   }
 
   /**
@@ -365,4 +317,69 @@ public class Calendar implements ICalendar {
     }
   }
 
+  @Override
+  public List<Event> getEventsOnDate(LocalDate date) {
+    return events.stream()
+            .filter(event -> {
+              // For events with a specific date/time
+              if (event.getStartDateTime() != null) {
+                LocalDate eventStartDate = event.getStartDateTime().toLocalDate();
+
+                // Handle multi-day events - check if the date falls within event duration
+                if (event.getEndDateTime() != null) {
+                  LocalDate eventEndDate = event.getEndDateTime().toLocalDate();
+                  return !date.isBefore(eventStartDate) && !date.isAfter(eventEndDate);
+                } else {
+                  // Single day event
+                  return eventStartDate.equals(date);
+                }
+              } else if (event.getDate() != null) {
+                // For all-day events
+                return event.getDate().equals(date);
+              }
+              return false;
+            })
+            .collect(Collectors.toList());
+  }
+
+  @Override
+  public List<Event> getEventsInRange(LocalDate startDate, LocalDate endDate) {
+    return events.stream()
+            .filter(event -> {
+              // For events with a specific date/time
+              if (event.getStartDateTime() != null) {
+                LocalDate eventStartDate = event.getStartDateTime().toLocalDate();
+                LocalDate eventEndDate = (event.getEndDateTime() != null) ?
+                        event.getEndDateTime().toLocalDate() : eventStartDate;
+
+                // Check if the event overlaps with the date range
+                return !(eventEndDate.isBefore(startDate) || eventStartDate.isAfter(endDate));
+              } else if (event.getDate() != null) {
+                // For all-day events
+                return !event.getDate().isBefore(startDate) && !event.getDate().isAfter(endDate);
+              }
+              return false;
+            })
+            .collect(Collectors.toList());
+  }
+
+  @Override
+  public boolean isBusy(LocalDateTime dateTime) {
+    return events.stream()
+            .anyMatch(event -> {
+              // For events with a specific date/time
+              if (event.getStartDateTime() != null && event.getEndDateTime() != null) {
+                return !dateTime.isBefore(event.getStartDateTime()) &&
+                        !dateTime.isAfter(event.getEndDateTime());
+              }
+
+              // For all-day events
+              if (event.getDate() != null) {
+                LocalDate targetDate = dateTime.toLocalDate();
+                return event.getDate().equals(targetDate);
+              }
+
+              return false;
+            });
+  }
 }
