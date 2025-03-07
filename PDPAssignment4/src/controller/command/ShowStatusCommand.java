@@ -4,18 +4,15 @@ import model.calendar.ICalendar;
 import utilities.DateTimeUtil;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
-/**
- * Command for checking the user's status (busy or available) at a specific time.
- */
 public class ShowStatusCommand implements ICommand {
-
   private final ICalendar calendar;
 
   /**
-   * Constructs a new ShowStatusCommand.
+   * Creates a ShowStatusCommand with the given calendar.
    *
-   * @param calendar the calendar model
+   * @param calendar the calendar to query
    */
   public ShowStatusCommand(ICalendar calendar) {
     this.calendar = calendar;
@@ -23,18 +20,21 @@ public class ShowStatusCommand implements ICommand {
 
   @Override
   public String execute(String[] args) {
-    if (args.length < 3 || !args[0].equals("status") || !args[1].equals("on")) {
-      return "Error: Invalid show status command format";
+    if (args.length < 1) {
+      return "Error: Missing date/time for status command";
     }
 
+    LocalDateTime dateTime;
     try {
-      LocalDateTime dateTime = DateTimeUtil.parseDateTime(args[2]);
-      boolean isBusy = calendar.isBusy(dateTime);
-
-      return isBusy ? "busy" : "available";
-    } catch (IllegalArgumentException e) {
-      return "Error: " + e.getMessage();
+      dateTime = DateTimeUtil.parseDateTime(args[0]);
+    } catch (Exception e) {
+      return "Error parsing date/time: " + e.getMessage();
     }
+
+    boolean isBusy = calendar.isBusy(dateTime);
+
+    return "Status on " + dateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) +
+            ": " + (isBusy ? "Busy" : "Available");
   }
 
   @Override
