@@ -1,0 +1,4 @@
+create event Meeting from 2023-05-15T10:00 to 2023-05-15T11:00
+create event Weekly Meeting from 2023-06-01T09:00 to 2023-06-01T10:00 repeats MWF for 10 times
+edit events name Weekly Meeting from 2023-06-01T09:00 with Team Sync
+exit
