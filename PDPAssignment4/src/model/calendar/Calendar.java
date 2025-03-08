@@ -120,7 +120,9 @@ public class Calendar implements ICalendar {
 
   @Override
   public boolean createAllDayRecurringEvent(String name, LocalDate date, String weekdays,
-                                            int occurrences, boolean autoDecline) {
+                                            int occurrences, boolean autoDecline,
+                                            String description, String location,
+                                            boolean isPublic) {
     try {
       Set<DayOfWeek> repeatDays = DateTimeUtil.parseWeekdays(weekdays);
 
@@ -132,9 +134,9 @@ public class Calendar implements ICalendar {
               name,
               startOfDay,
               endOfDay,
-              null,  // Default description
-              null,  // Default location
-              true,  // Default to public
+              description,
+              location,
+              isPublic,
               repeatDays,
               occurrences
       );
@@ -150,7 +152,9 @@ public class Calendar implements ICalendar {
 
   @Override
   public boolean createAllDayRecurringEventUntil(String name, LocalDate date, String weekdays,
-                                                 LocalDate untilDate, boolean autoDecline) {
+                                                 LocalDate untilDate, boolean autoDecline,
+                                                 String description, String location,
+                                                 boolean isPublic) {
     try {
       Set<DayOfWeek> repeatDays = DateTimeUtil.parseWeekdays(weekdays);
 
@@ -162,9 +166,9 @@ public class Calendar implements ICalendar {
               name,
               startOfDay,
               endOfDay,
-              null,  // Default description
-              null,  // Default location
-              true,  // Default to public
+              description,
+              location,
+              isPublic,
               repeatDays,
               untilDate
       );
