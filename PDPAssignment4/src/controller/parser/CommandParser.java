@@ -21,23 +21,23 @@ public class CommandParser {
   // Command patterns
   private static final Pattern CREATE_EVENT_PATTERN =
           Pattern.compile(
-                  "create event (--autoDecline )?(.+?) from (\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}) to (\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2})"
+                  "create event (--autoDecline )?(.+?) from (\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}) to (\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}) (desc \"(.+?)\") ? ( at \"(.+?)\") ? ( private)?"
           );
 
   private static final Pattern CREATE_RECURRING_EVENT_PATTERN =
-          Pattern.compile("create event (--autoDecline )?(.+?) from (\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}) to (\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}) repeats ([MTWRFSU]+) for (\\d+) times");
+          Pattern.compile("create event (--autoDecline )?(.+?) from (\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}) to (\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}) repeats ([MTWRFSU]+) for (\\d+) times ( desc \"(.+?)\") ? ( at \"(.+?)\") ? ( private)?");
 
   private static final Pattern CREATE_RECURRING_UNTIL_PATTERN =
-          Pattern.compile("create event (--autoDecline )?(.+?) from (\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}) to (\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}) repeats ([MTWRFSU]+) until (\\d{4}-\\d{2}-\\d{2})");
+          Pattern.compile("create event (--autoDecline )?(.+?) from (\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}) to (\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}) repeats ([MTWRFSU]+) until (\\d{4}-\\d{2}-\\d{2}) ( desc \"(.+?)\") ? ( at \"(.+?)\") ? ( private)?");
 
   private static final Pattern CREATE_ALL_DAY_EVENT_PATTERN =
-          Pattern.compile("create event (--autoDecline )?(.+?) on (\\d{4}-\\d{2}-\\d{2})");
+          Pattern.compile("create event (--autoDecline )?(.+?) on (\\d{4}-\\d{2}-\\d{2}) ( desc \"(.+?)\")?( at \"(.+?)\")?( private)?");
 
   private static final Pattern CREATE_ALL_DAY_RECURRING_PATTERN =
-          Pattern.compile("create event (--autoDecline )?(.+?) on (\\d{4}-\\d{2}-\\d{2}) repeats ([MTWRFSU]+) for (\\d+) times");
+          Pattern.compile("create event (--autoDecline )?(.+?) on (\\d{4}-\\d{2}-\\d{2}) repeats ([MTWRFSU]+) for (\\d+) times ( desc \"(.+?)\")?( at \"(.+?)\")?( private)?");
 
   private static final Pattern CREATE_ALL_DAY_RECURRING_UNTIL_PATTERN =
-          Pattern.compile("create event (--autoDecline )?(.+?) on (\\d{4}-\\d{2}-\\d{2}) repeats ([MTWRFSU]+) until (\\d{4}-\\d{2}-\\d{2})");
+          Pattern.compile("create event (--autoDecline )?(.+?) on (\\d{4}-\\d{2}-\\d{2}) repeats ([MTWRFSU]+) until (\\d{4}-\\d{2}-\\d{2}) ( desc \"(.+?)\")?( at \"(.+?)\")?( private)?");
 
   private static final Pattern PRINT_EVENTS_PATTERN =
           Pattern.compile("print events on (\\d{4}-\\d{2}-\\d{2})");
