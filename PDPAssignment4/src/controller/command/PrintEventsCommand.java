@@ -24,6 +24,11 @@ public class PrintEventsCommand implements ICommand {
     this.calendar = calendar;
   }
 
+  /**
+   *
+   * @param args the command arguments
+   * @return
+   */
   @Override
   public String execute(String[] args) {
     if (args.length < 2) {
@@ -46,7 +51,7 @@ public class PrintEventsCommand implements ICommand {
 
       return printEventsOnDate(date);
 
-    } else if (type.equals("date_range")) {
+    } else if (type.equals("date_range") || type.equals("from_range")) {
       if (args.length < 3) {
         return "Error: Missing dates for 'print events from...to' command";
       }
@@ -96,6 +101,10 @@ public class PrintEventsCommand implements ICommand {
     return result.toString();
   }
 
+  /**
+   *
+   * @return
+   */
   @Override
   public String getName() {
     return "print";
