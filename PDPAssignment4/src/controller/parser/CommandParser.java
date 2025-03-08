@@ -20,9 +20,7 @@ public class CommandParser {
 
   // Command patterns
   private static final Pattern CREATE_EVENT_PATTERN =
-          Pattern.compile(
-                  "create event (--autoDecline )?(.+?) from (\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}) to (\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}) (desc \"(.+?)\") ? ( at \"(.+?)\") ? ( private)?"
-          );
+          Pattern.compile("create event (--autoDecline )?(.+?) from (\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}) to (\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}) (desc \"(.+?)\") ? ( at \"(.+?)\") ? ( private)?");
 
   private static final Pattern CREATE_RECURRING_EVENT_PATTERN =
           Pattern.compile("create event (--autoDecline )?(.+?) from (\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}) to (\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}) repeats ([MTWRFSU]+) for (\\d+) times ( desc \"(.+?)\") ? ( at \"(.+?)\") ? ( private)?");
