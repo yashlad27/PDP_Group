@@ -112,7 +112,7 @@ public class CommandParser {
     matcher = PRINT_EVENTS_RANGE_PATTERN.matcher(commandString);
     if (matcher.matches()) {
       ICommand printCommand = commandFactory.getCommand("print");
-      String[] args = {"from_range", matcher.group(1), "to", matcher.group(2)};
+      String[] args = {"from_range", matcher.group(1), matcher.group(2)};
       return new CommandWithArgs(printCommand, args);
     }
 
@@ -120,7 +120,7 @@ public class CommandParser {
     matcher = SHOW_STATUS_PATTERN.matcher(commandString);
     if (matcher.matches()) {
       ICommand showCommand = commandFactory.getCommand("show");
-      String[] args = {"status", "on", matcher.group(1)};
+      String[] args = {matcher.group(1)};
       return new CommandWithArgs(showCommand, args);
     }
 
