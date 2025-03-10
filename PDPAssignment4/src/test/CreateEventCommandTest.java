@@ -1,7 +1,6 @@
 import org.junit.Before;
 import org.junit.Test;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import controller.command.CreateEventCommand;
@@ -63,8 +62,10 @@ public class CreateEventCommandTest {
 
     Event addedEvent = calendar.getAllEvents().get(0);
     assertEquals("Meeting", addedEvent.getSubject());
-    assertEquals(LocalDateTime.of(2023, 5, 15, 10, 0), addedEvent.getStartDateTime());
-    assertEquals(LocalDateTime.of(2023, 5, 15, 11, 0), addedEvent.getEndDateTime());
+    assertEquals(LocalDateTime.of(2023, 5, 15, 10, 0),
+            addedEvent.getStartDateTime());
+    assertEquals(LocalDateTime.of(2023, 5, 15, 11, 0),
+            addedEvent.getEndDateTime());
   }
 
   @Test
