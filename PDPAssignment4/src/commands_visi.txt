@@ -1,0 +1,13 @@
+create event "Team Meeting" from 2023-04-10T10:00 to 2023-04-10T11:00
+create event "Project Review" from 2023-04-10T11:30 to 2023-04-10T12:30
+create event "Confidential Discussion" from 2023-04-10T14:00 to 2023-04-10T15:00 private
+print events on 2023-04-10
+edit event visibility "Team Meeting" from 2023-04-10T10:00 to 2023-04-10T11:00 with "private"
+edit event visibility "Confidential Discussion" from 2023-04-10T14:00 to 2023-04-10T15:00 with "public"
+edit event ispublic "Project Review" from 2023-04-10T11:30 to 2023-04-10T12:30 with "false"
+print events on 2023-04-10
+create event "Weekly Standup" from 2023-04-12T09:00 to 2023-04-12T10:00 repeats MW for 4 times
+edit events visibility "Weekly Standup" with "private"
+print events from 2023-04-12 to 2023-04-19
+export cal calendar_export_visi.csv
+exit

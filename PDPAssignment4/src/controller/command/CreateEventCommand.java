@@ -40,7 +40,7 @@ public class CreateEventCommand implements ICommand {
    * @param isPublic      whether the event is public
    * @return a response indicating success or failure
    */
-  public String createEvent(String eventName, LocalDateTime startDateTime,
+  private String createEvent(String eventName, LocalDateTime startDateTime,
                             LocalDateTime endDateTime, boolean autoDecline, String description,
                             String location, boolean isPublic) {
     if (eventName == null || eventName.trim().isEmpty()) {
@@ -79,7 +79,7 @@ public class CreateEventCommand implements ICommand {
    * @param isPublic    whether the event is public
    * @return a response indicating success or failure
    */
-  public String createAllDayEvent(String eventName, LocalDate date, boolean autoDecline,
+  private String createAllDayEvent(String eventName, LocalDate date, boolean autoDecline,
                                   String description, String location, boolean isPublic) {
     if (eventName == null || eventName.trim().isEmpty()) {
       return "Error: Event name cannot be empty";
@@ -119,7 +119,7 @@ public class CreateEventCommand implements ICommand {
    * @param isPublic      whether the event is public
    * @return a response indicating success or failure
    */
-  public String createRecurringEvent(String eventName, LocalDateTime startDateTime,
+  private String createRecurringEvent(String eventName, LocalDateTime startDateTime,
                                      LocalDateTime endDateTime, String weekdays,
                                      int occurrences, boolean autoDecline,
                                      String description, String location, boolean isPublic) {
@@ -177,7 +177,7 @@ public class CreateEventCommand implements ICommand {
    * @param isPublic      whether the event is public
    * @return a response indicating success or failure
    */
-  public String createRecurringEventUntil(String eventName, LocalDateTime startDateTime,
+  private String createRecurringEventUntil(String eventName, LocalDateTime startDateTime,
                                           LocalDateTime endDateTime, String weekdays,
                                           LocalDate untilDate, boolean autoDecline,
                                           String description, String location, boolean isPublic) {
