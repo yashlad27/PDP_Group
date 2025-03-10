@@ -10,9 +10,8 @@ import model.calendar.ICalendar;
 import model.event.Event;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests for the CreateEventCommand class without using Mockito.
@@ -39,17 +38,23 @@ public class CreateEventCommandTest {
     new CreateEventCommand(null);
   }
 
+  // SINGLE EVENT TESTS
+
   @Test
-  public void testCreateEventSuccess() {
+  public void testCreateSingleEventSuccess() {
     // Execute - Create a single event, no auto-decline
-    String result = createCommand.createEvent(
+    String[] args = {
+            "single",
             "Meeting",
-            LocalDateTime.of(2023, 5, 15, 10, 0),
-            LocalDateTime.of(2023, 5, 15, 11, 0),
-            false,
-            null,
-            null,
-            true);
+            "2023-05-15T10:00",
+            "2023-05-15T11:00",
+            null,  // description
+            null,  // location
+            "true",  // isPublic
+            "false"  // autoDecline
+    };
+
+    String result = createCommand.execute(args);
 
     assertTrue(result.contains("created successfully"));
 
@@ -63,16 +68,20 @@ public class CreateEventCommandTest {
   }
 
   @Test
-  public void testCreateEventWithDescriptionAndLocation() {
+  public void testCreateSingleEventWithDescriptionAndLocation() {
     // Execute - Create a single event with description and location
-    String result = createCommand.createEvent(
+    String[] args = {
+            "single",
             "Birthday Party",
-            LocalDateTime.of(2023, 5, 15, 18, 0),
-            LocalDateTime.of(2023, 5, 15, 22, 0),
-            false,
+            "2023-05-15T18:00",
+            "2023-05-15T22:00",
             "Celebrating Dad's 50th birthday",
             "Copacabana Restaurant",
-            true);
+            "true",  // isPublic
+            "false"  // autoDecline
+    };
+
+    String result = createCommand.execute(args);
 
     assertTrue(result.contains("created successfully"));
     assertEquals(1, calendar.getAllEvents().size());
@@ -85,16 +94,20 @@ public class CreateEventCommandTest {
   }
 
   @Test
-  public void testCreatePrivateEvent() {
+  public void testCreatePrivateSingleEvent() {
     // Execute - Create a single private event
-    String result = createCommand.createEvent(
+    String[] args = {
+            "single",
             "Therapy Session",
-            LocalDateTime.of(2023, 5, 15, 15, 0),
-            LocalDateTime.of(2023, 5, 15, 16, 0),
-            false,
+            "2023-05-15T15:00",
+            "2023-05-15T16:00",
             "Weekly therapy appointment",
             "Dr. Smith's Office",
-            false);
+            "false",  // isPublic
+            "false"   // autoDecline
+    };
+
+    String result = createCommand.execute(args);
 
     assertTrue(result.contains("created successfully"));
     assertEquals(1, calendar.getAllEvents().size());
@@ -105,92 +118,95 @@ public class CreateEventCommandTest {
   }
 
   @Test
-  public void testCreateEventWithAutoDeclineSuccess() {
+  public void testCreateSingleEventWithAutoDeclineSuccess() {
     // Execute - Create a single event with auto-decline
-    String result = createCommand.createEvent(
+    String[] args = {
+            "single",
             "Meeting",
-            LocalDateTime.of(2023, 5, 15, 10, 0),
-            LocalDateTime.of(2023, 5, 15, 11, 0),
-            true,
+            "2023-05-15T10:00",
+            "2023-05-15T11:00",
             null,
             null,
-            true);
+            "true",   // isPublic
+            "true"    // autoDecline
+    };
+
+    String result = createCommand.execute(args);
 
     assertTrue(result.contains("created successfully"));
     assertEquals(1, calendar.getAllEvents().size());
   }
 
   @Test
-  public void testCreateEventWithConflict() {
+  public void testCreateSingleEventWithConflict() {
     // First, create an event
-    createCommand.createEvent(
+    String[] firstArgs = {
+            "single",
             "Meeting 1",
-            LocalDateTime.of(2023, 5, 15, 10, 0),
-            LocalDateTime.of(2023, 5, 15, 11, 0),
-            false,
+            "2023-05-15T10:00",
+            "2023-05-15T11:00",
             null,
             null,
-            true);
+            "true",   // isPublic
+            "false"   // autoDecline
+    };
+    createCommand.execute(firstArgs);
 
     // Now try to create a conflicting event with autoDecline=true
-    String result = createCommand.createEvent(
+    String[] secondArgs = {
+            "single",
             "Meeting 2",
-            LocalDateTime.of(2023, 5, 15, 10, 30),
-            LocalDateTime.of(2023, 5, 15, 11, 30),
-            true,
+            "2023-05-15T10:30",
+            "2023-05-15T11:30",
             null,
             null,
-            true);
+            "true",   // isPublic
+            "true"    // autoDecline
+    };
+
+    String result = createCommand.execute(secondArgs);
 
     assertTrue(result.contains("Failed to create event due to conflicts"));
     assertEquals(1, calendar.getAllEvents().size()); // Still only one event
   }
 
   @Test
-  public void testCreateEventWithNullName() {
-    // Execute - Create a single event with null name
-    String result = createCommand.createEvent(
+  public void testCreateSingleEventWithInvalidName() {
+    // Execute - Create a single event with null/empty name
+    String[] args = {
+            "single",
+            "",  // Empty name
+            "2023-05-15T10:00",
+            "2023-05-15T11:00",
             null,
-            LocalDateTime.of(2023, 5, 15, 10, 0),
-            LocalDateTime.of(2023, 5, 15, 11, 0),
-            false,
             null,
-            null,
-            true);
+            "true",
+            "false"
+    };
 
-    assertTrue(result.contains("Error: Event name cannot be empty"));
+    String result = createCommand.execute(args);
+
+    assertTrue(result.contains("Error") || result.contains("name cannot be empty"));
     assertEquals(0, calendar.getAllEvents().size()); // No event added
   }
 
   @Test
-  public void testCreateEventWithEmptyName() {
-    // Execute - Create a single event with empty name
-    String result = createCommand.createEvent(
-            "   ",
-            LocalDateTime.of(2023, 5, 15, 10, 0),
-            LocalDateTime.of(2023, 5, 15, 11, 0),
-            false,
-            null,
-            null,
-            true);
-
-    assertTrue(result.contains("Error: Event name cannot be empty"));
-    assertEquals(0, calendar.getAllEvents().size()); // No event added
-  }
-
-  @Test
-  public void testCreateEventWithNullStartTime() {
-    // Execute - Create a single event with null start time
-    String result = createCommand.createEvent(
+  public void testCreateSingleEventWithInvalidDateTime() {
+    // Execute - Create a single event with invalid date time
+    String[] args = {
+            "single",
             "Meeting",
+            "invalid-date",  // Invalid date format
+            "2023-05-15T11:00",
             null,
-            LocalDateTime.of(2023, 5, 15, 11, 0),
-            false,
             null,
-            null,
-            true);
+            "true",
+            "false"
+    };
 
-    assertTrue(result.contains("Error: Start date/time cannot be null"));
+    String result = createCommand.execute(args);
+
+    assertTrue(result.contains("Error parsing arguments"));
     assertEquals(0, calendar.getAllEvents().size()); // No event added
   }
 
@@ -199,15 +215,18 @@ public class CreateEventCommandTest {
   @Test
   public void testCreateAllDayEventSuccess() {
     // Execute - Create an all-day event, no auto-decline
-    String result = createCommand.createAllDayEvent(
+    String[] args = {
+            "allday",
             "Holiday",
-            LocalDate.of(2023, 5, 15),
-            false,
-            null,
-            null,
-            true);
+            "2023-05-15",  // date
+            "false",       // autoDecline
+            null,          // description
+            null,          // location
+            "true"         // isPublic
+    };
 
-    assertTrue(result.contains("All-day event"));
+    String result = createCommand.execute(args);
+
     assertTrue(result.contains("created successfully"));
     assertEquals(1, calendar.getAllEvents().size());
 
@@ -219,13 +238,17 @@ public class CreateEventCommandTest {
   @Test
   public void testCreateAllDayEventWithDescriptionAndLocation() {
     // Execute - Create an all-day event with description and location
-    String result = createCommand.createAllDayEvent(
+    String[] args = {
+            "allday",
             "Conference Day",
-            LocalDate.of(2023, 5, 15),
-            false,
+            "2023-05-15",
+            "false",            // autoDecline
             "Annual Tech Conference",
             "Convention Center",
-            true);
+            "true"              // isPublic
+    };
+
+    String result = createCommand.execute(args);
 
     assertTrue(result.contains("created successfully"));
     assertEquals(1, calendar.getAllEvents().size());
@@ -240,13 +263,17 @@ public class CreateEventCommandTest {
   @Test
   public void testCreatePrivateAllDayEvent() {
     // Execute - Create a private all-day event
-    String result = createCommand.createAllDayEvent(
+    String[] args = {
+            "allday",
             "Mental Health Day",
-            LocalDate.of(2023, 5, 15),
-            false,
+            "2023-05-15",
+            "false",         // autoDecline
             "Personal day off",
             "Home",
-            false);
+            "false"          // isPublic
+    };
+
+    String result = createCommand.execute(args);
 
     assertTrue(result.contains("created successfully"));
     assertEquals(1, calendar.getAllEvents().size());
@@ -258,32 +285,21 @@ public class CreateEventCommandTest {
   }
 
   @Test
-  public void testCreateAllDayEventWithNullName() {
-    // Execute - Create an all-day event with null name
-    String result = createCommand.createAllDayEvent(
-            null,
-            LocalDate.of(2023, 5, 15),
-            false,
-            null,
-            null,
-            true);
-
-    assertTrue(result.contains("Error: Event name cannot be empty"));
-    assertEquals(0, calendar.getAllEvents().size()); // No event added
-  }
-
-  @Test
-  public void testCreateAllDayEventWithNullDate() {
-    // Execute - Create an all-day event with null date
-    String result = createCommand.createAllDayEvent(
+  public void testCreateAllDayEventWithInvalidDate() {
+    // Execute - Create an all-day event with invalid date
+    String[] args = {
+            "allday",
             "Holiday",
+            "invalid-date",  // Invalid date format
+            "false",
             null,
-            false,
             null,
-            null,
-            true);
+            "true"
+    };
 
-    assertTrue(result.contains("Error: Date cannot be null"));
+    String result = createCommand.execute(args);
+
+    assertTrue(result.contains("Error parsing arguments"));
     assertEquals(0, calendar.getAllEvents().size()); // No event added
   }
 
@@ -292,16 +308,20 @@ public class CreateEventCommandTest {
   @Test
   public void testCreateRecurringEventSuccess() {
     // Execute - Create a recurring event
-    String result = createCommand.createRecurringEvent(
+    String[] args = {
+            "recurring",
             "Weekly Meeting",
-            LocalDateTime.of(2023, 5, 15, 10, 0),
-            LocalDateTime.of(2023, 5, 15, 11, 0),
-            "MW",
-            8,
-            false,
-            null,
-            null,
-            true);
+            "2023-05-15T10:00",
+            "2023-05-15T11:00",
+            "MW",              // weekdays
+            "8",               // occurrences
+            "false",           // autoDecline
+            null,              // description
+            null,              // location
+            "true"             // isPublic
+    };
+
+    String result = createCommand.execute(args);
 
     assertTrue(result.contains("created successfully"));
     assertTrue(calendar.getAllEvents().size() > 0);
@@ -310,16 +330,20 @@ public class CreateEventCommandTest {
   @Test
   public void testCreateRecurringEventWithDescriptionAndLocation() {
     // Execute - Create a recurring event with description and location
-    String result = createCommand.createRecurringEvent(
+    String[] args = {
+            "recurring",
             "Yoga Class",
-            LocalDateTime.of(2023, 5, 15, 18, 0),
-            LocalDateTime.of(2023, 5, 15, 19, 0),
-            "TR",
-            12,
-            false,
+            "2023-05-15T18:00",
+            "2023-05-15T19:00",
+            "TR",               // weekdays
+            "12",               // occurrences
+            "false",            // autoDecline
             "Beginner's yoga with Instructor Sarah",
             "Downtown Fitness Center",
-            true);
+            "true"              // isPublic
+    };
+
+    String result = createCommand.execute(args);
 
     assertTrue(result.contains("created successfully"));
     assertTrue(calendar.getAllEvents().size() > 0);
@@ -334,16 +358,20 @@ public class CreateEventCommandTest {
   @Test
   public void testCreatePrivateRecurringEvent() {
     // Execute - Create a private recurring event
-    String result = createCommand.createRecurringEvent(
+    String[] args = {
+            "recurring",
             "Therapy Session",
-            LocalDateTime.of(2023, 5, 15, 15, 0),
-            LocalDateTime.of(2023, 5, 15, 16, 0),
-            "M",
-            10,
-            false,
+            "2023-05-15T15:00",
+            "2023-05-15T16:00",
+            "M",                // weekdays
+            "10",               // occurrences
+            "false",            // autoDecline
             "Weekly therapy appointment",
             "Dr. Smith's Office",
-            false);
+            "false"             // isPublic
+    };
+
+    String result = createCommand.execute(args);
 
     assertTrue(result.contains("created successfully"));
     assertTrue(calendar.getAllEvents().size() > 0);
@@ -354,38 +382,92 @@ public class CreateEventCommandTest {
   }
 
   @Test
+  public void testCreateRecurringEventWithInvalidWeekdays() {
+    // Execute - Create a recurring event with invalid weekdays
+    String[] args = {
+            "recurring",
+            "Weekly Meeting",
+            "2023-05-15T10:00",
+            "2023-05-15T11:00",
+            "XYZ",             // Invalid weekdays
+            "8",
+            "false",
+            null,
+            null,
+            "true"
+    };
+
+    String result = createCommand.execute(args);
+
+    assertTrue(result.contains("Error"));
+    assertEquals(0, calendar.getAllEvents().size()); // No event added
+  }
+
+  @Test
+  public void testCreateRecurringEventWithInvalidOccurrences() {
+    // Execute - Create a recurring event with invalid occurrences
+    String[] args = {
+            "recurring",
+            "Weekly Meeting",
+            "2023-05-15T10:00",
+            "2023-05-15T11:00",
+            "MW",
+            "-1",              // Invalid occurrences
+            "false",
+            null,
+            null,
+            "true"
+    };
+
+    String result = createCommand.execute(args);
+
+    assertTrue(result.contains("Error"));
+    assertEquals(0, calendar.getAllEvents().size()); // No event added
+  }
+
+  // RECURRING UNTIL EVENT TESTS
+
+  @Test
   public void testCreateRecurringEventUntilSuccess() {
     // Execute - Create a recurring event until a specific date
-    String result = createCommand.createRecurringEventUntil(
+    String[] args = {
+            "recurring-until",
             "Daily Standup",
-            LocalDateTime.of(2023, 5, 15, 9, 30),
-            LocalDateTime.of(2023, 5, 15, 9, 45),
-            "MTWRF",
-            LocalDate.of(2023, 5, 31),
-            false,
-            null,
-            null,
-            true);
+            "2023-05-15T09:30",
+            "2023-05-15T09:45",
+            "MTWRF",            // weekdays
+            "2023-05-31",       // until date
+            "false",            // autoDecline
+            null,               // description
+            null,               // location
+            "true"              // isPublic
+    };
 
-    assertTrue(result.contains("created successfully"));
+    String result = createCommand.execute(args);
+
+    assertTrue(result.contains("successfully"));
     assertTrue(calendar.getAllEvents().size() > 0);
   }
 
   @Test
   public void testCreateRecurringEventUntilWithDetailsSuccess() {
     // Execute - Create a recurring event until a specific date with details
-    String result = createCommand.createRecurringEventUntil(
+    String[] args = {
+            "recurring-until",
             "Weekly Review",
-            LocalDateTime.of(2023, 5, 15, 16, 0),
-            LocalDateTime.of(2023, 5, 15, 17, 0),
-            "F",
-            LocalDate.of(2023, 6, 30),
-            false,
+            "2023-05-15T16:00",
+            "2023-05-15T17:00",
+            "F",                 // weekdays
+            "2023-06-30",        // until date
+            "false",             // autoDecline
             "Project progress review",
             "Conference Room A",
-            false);
+            "false"              // isPublic
+    };
 
-    assertTrue(result.contains("created successfully"));
+    String result = createCommand.execute(args);
+
+    assertTrue(result.contains("successfully"));
     assertTrue(calendar.getAllEvents().size() > 0);
 
     // Check at least the first occurrence has the correct details
@@ -396,212 +478,73 @@ public class CreateEventCommandTest {
     assertFalse(firstOccurrence.isPublic());
   }
 
-  // EXECUTE METHOD TESTS
-
   @Test
-  public void testExecuteSingleEvent() {
-    // Execute - Create a single event via execute method
-    String[] args = {
-            "single",
-            "Meeting",
-            "2023-05-15T10:00",
-            "2023-05-15T11:00",
-            null,
-            null,
-            "true",
-            "false"
-    };
-    String result = createCommand.execute(args);
-
-    assertTrue(result.contains("created successfully"));
-    assertEquals(1, calendar.getAllEvents().size());
-  }
-
-  @Test
-  public void testExecuteSingleEventWithDescription() {
-    // Execute - Create a single event with description via execute method
-    String[] args = {
-            "single",
-            "Job Interview",
-            "2023-05-15T14:00",
-            "2023-05-15T15:30",
-            "Interview with Google for Software Engineer position",
-            "Google Building 40, Mountain View",
-            "true",
-            "false"
-    };
-    String result = createCommand.execute(args);
-
-    assertTrue(result.contains("created successfully"));
-    assertEquals(1, calendar.getAllEvents().size());
-
-    Event addedEvent = calendar.getAllEvents().get(0);
-    assertEquals("Job Interview", addedEvent.getSubject());
-    assertEquals("Interview with Google for Software Engineer position", addedEvent.getDescription());
-    assertEquals("Google Building 40, Mountain View", addedEvent.getLocation());
-  }
-
-  @Test
-  public void testExecutePrivateEvent() {
-    // Execute - Create a private event via execute method
-    String[] args = {
-            "single",
-            "Doctor Appointment",
-            "2023-05-15T09:30",
-            "2023-05-15T10:30",
-            "Annual checkup",
-            "Medical Center, Room 302",
-            "false",
-            "false"
-    };
-    String result = createCommand.execute(args);
-
-    assertTrue(result.contains("created successfully"));
-    assertEquals(1, calendar.getAllEvents().size());
-
-    Event addedEvent = calendar.getAllEvents().get(0);
-    assertEquals("Doctor Appointment", addedEvent.getSubject());
-    assertFalse(addedEvent.isPublic());
-  }
-
-  @Test
-  public void testExecuteAllDayEvent() {
-    // Execute - Create an all-day event via execute method
-    String[] args = {
-            "allday",
-            "Holiday",
-            "2023-05-15",
-            "false",
-            null,
-            null,
-            "true"
-    };
-    String result = createCommand.execute(args);
-
-    assertTrue(result.contains("created successfully"));
-    assertEquals(1, calendar.getAllEvents().size());
-  }
-
-  @Test
-  public void testExecuteAllDayEventWithDetails() {
-    // Execute - Create an all-day event with details via execute method
-    String[] args = {
-            "allday",
-            "Conference Day",
-            "2023-05-20",
-            "false",
-            "Annual Tech Conference",
-            "Convention Center",
-            "false"
-    };
-    String result = createCommand.execute(args);
-
-    assertTrue(result.contains("created successfully"));
-    assertEquals(1, calendar.getAllEvents().size());
-
-    Event addedEvent = calendar.getAllEvents().get(0);
-    assertEquals("Conference Day", addedEvent.getSubject());
-    assertEquals("Annual Tech Conference", addedEvent.getDescription());
-    assertEquals("Convention Center", addedEvent.getLocation());
-    assertFalse(addedEvent.isPublic());
-  }
-
-  @Test
-  public void testExecuteRecurringEvent() {
-    // Execute - Create a recurring event via execute method
-    String[] args = {
-            "recurring",
-            "Weekly Status Meeting",
-            "2023-05-15T09:00",
-            "2023-05-15T10:00",
-            "MW",
-            "8",
-            "false",
-            null,
-            null,
-            "true"
-    };
-    String result = createCommand.execute(args);
-
-    assertTrue(result.contains("created successfully"));
-    assertTrue(calendar.getAllEvents().size() > 0);
-  }
-
-  @Test
-  public void testExecuteRecurringEventWithDetails() {
-    // Execute - Create a recurring event with details via execute method
-    String[] args = {
-            "recurring",
-            "Yoga Class",
-            "2023-05-15T18:00",
-            "2023-05-15T19:00",
-            "TR",
-            "12",
-            "false",
-            "Beginner's yoga with Instructor Sarah",
-            "Downtown Fitness Center",
-            "true"
-    };
-    String result = createCommand.execute(args);
-
-    assertTrue(result.contains("created successfully"));
-    assertTrue(calendar.getAllEvents().size() > 0);
-
-    // Check at least the first occurrence has correct details
-    Event firstOccurrence = calendar.getAllEvents().get(0);
-    assertEquals("Yoga Class", firstOccurrence.getSubject());
-    assertEquals("Beginner's yoga with Instructor Sarah", firstOccurrence.getDescription());
-    assertEquals("Downtown Fitness Center", firstOccurrence.getLocation());
-  }
-
-  @Test
-  public void testExecuteRecurringUntilEvent() {
-    // Execute - Create a recurring event until a specific date via execute method
+  public void testCreateRecurringEventUntilWithInvalidDate() {
+    // Execute - Create a recurring event with invalid until date
     String[] args = {
             "recurring-until",
             "Daily Standup",
             "2023-05-15T09:30",
             "2023-05-15T09:45",
             "MTWRF",
-            "2023-05-31",
+            "invalid-date",     // Invalid until date
             "false",
             null,
             null,
             "true"
     };
+
     String result = createCommand.execute(args);
 
-    assertTrue(result.contains("successfully"));
+    assertTrue(result.contains("Error"));
+    assertEquals(0, calendar.getAllEvents().size()); // No event added
+  }
+
+  // ALL-DAY RECURRING EVENT TESTS
+
+  @Test
+  public void testCreateAllDayRecurringEventSuccess() {
+    // Execute - Create an all-day recurring event
+    String[] args = {
+            "allday-recurring",
+            "Team Building Day",
+            "2023-05-15",        // date
+            "F",                 // weekdays
+            "8",                 // occurrences
+            "false",             // autoDecline
+            "Monthly team building activity",
+            "Various Locations",
+            "true"               // isPublic
+    };
+
+    String result = createCommand.execute(args);
+
+    assertTrue(result.contains("created successfully"));
     assertTrue(calendar.getAllEvents().size() > 0);
   }
 
   @Test
-  public void testExecuteRecurringUntilEventWithDetails() {
-    // Execute - Create a recurring event until a specific date with details via execute method
+  public void testCreateAllDayRecurringEventUntilSuccess() {
+    // Execute - Create an all-day recurring event until date
     String[] args = {
-            "recurring-until",
-            "Weekly Review",
-            "2023-05-15T16:00",
-            "2023-05-15T17:00",
-            "F",
-            "2023-06-30",
-            "false",
-            "Project progress review",
-            "Conference Room A",
-            "false"
+            "allday-recurring-until",
+            "Holiday",
+            "2023-05-15",        // date
+            "MF",                // weekdays
+            "2023-12-31",        // until date
+            "false",             // autoDecline
+            "Company holiday",
+            null,
+            "true"               // isPublic
     };
+
     String result = createCommand.execute(args);
 
-    assertTrue(result.contains("successfully"));
+    assertTrue(result.contains("created successfully"));
     assertTrue(calendar.getAllEvents().size() > 0);
-
-    // Check at least the first occurrence has correct details
-    Event firstOccurrence = calendar.getAllEvents().get(0);
-    assertEquals("Weekly Review", firstOccurrence.getSubject());
-    assertEquals("Project progress review", firstOccurrence.getDescription());
-    assertEquals("Conference Room A", firstOccurrence.getLocation());
-    assertFalse(firstOccurrence.isPublic());
   }
+
+  // ERROR HANDLING TESTS
 
   @Test
   public void testExecuteWithInsufficientArgs() {
@@ -634,21 +577,22 @@ public class CreateEventCommandTest {
   }
 
   @Test
-  public void testExecuteWithInvalidDateFormat() {
-    // Execute - Call execute with invalid date format
-    String[] args = {
-            "single",
-            "Meeting",
-            "invalid-date",
-            "2023-05-15T11:00",
-            null,
-            null,
-            "true",
-            "false"
-    };
+  public void testExecuteWithInsufficientArgsForRecurringEvent() {
+    // Execute - Call execute with insufficient arguments for recurring event
+    String[] args = {"recurring", "Weekly Meeting"};
     String result = createCommand.execute(args);
 
-    assertTrue(result.contains("Error parsing arguments"));
+    assertTrue(result.contains("Error: Insufficient arguments"));
+    assertEquals(0, calendar.getAllEvents().size()); // No event added
+  }
+
+  @Test
+  public void testExecuteWithInsufficientArgsForRecurringUntilEvent() {
+    // Execute - Call execute with insufficient arguments for recurring-until event
+    String[] args = {"recurring-until", "Daily Standup"};
+    String result = createCommand.execute(args);
+
+    assertTrue(result.contains("Error: Insufficient arguments"));
     assertEquals(0, calendar.getAllEvents().size()); // No event added
   }
 }

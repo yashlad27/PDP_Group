@@ -11,46 +11,129 @@ public class EditEventCommand implements ICommand {
   private final String subject;
   private final String property;
   private final String newValue;
-  private LocalDateTime startDateTime;
+  private final LocalDateTime startDateTime;
 
   /**
-   * Creates a command to edit a single event.
+   * Private constructor used by the builder.
    */
-  public EditEventCommand(ICalendar calendar, String commandType, String property,
-                          String subject, LocalDateTime startDateTime, String newValue) {
-    this.calendar = calendar;
-    this.commandType = commandType;
-    this.property = property;
-    this.subject = subject;
-    this.startDateTime = startDateTime;
-    this.newValue = newValue;
+  private EditEventCommand(Builder builder) {
+    this.calendar = builder.calendar;
+    this.commandType = builder.commandType;
+    this.property = builder.property;
+    this.subject = builder.subject;
+    this.newValue = builder.newValue;
+    this.startDateTime = builder.startDateTime;
   }
 
   /**
-   * Creates a command to edit all events.
-   */
-  public EditEventCommand(ICalendar calendar, String commandType, String property,
-                          String subject, String newValue) {
-    this.calendar = calendar;
-    this.commandType = commandType;
-    this.property = property;
-    this.subject = subject;
-    this.newValue = newValue;
-    this.startDateTime = null;
-  }
-
-  /**
-   * Creates a basic edit command with calendar reference.
+   * Constructor that creates a minimal EditEventCommand with just a calendar reference.
    * This constructor is used for registration with the command factory.
-   * Actual command parameters will be provided when execute() is called.
+   *
+   * @param calendar the calendar to use for editing events
+   * @throws IllegalArgumentException if calendar is null
    */
   public EditEventCommand(ICalendar calendar) {
+    if (calendar == null) {
+      throw new IllegalArgumentException("Calendar cannot be null");
+    }
     this.calendar = calendar;
     this.commandType = null;
     this.property = null;
     this.subject = null;
     this.newValue = null;
     this.startDateTime = null;
+  }
+
+  /**
+   * Builder class for EditEventCommand.
+   */
+  public static class Builder {
+    // Required parameter
+    private final ICalendar calendar;
+
+    // Optional parameters - initialized to default values
+    private String commandType = null;
+    private String subject = null;
+    private String property = null;
+    private String newValue = null;
+    private LocalDateTime startDateTime = null;
+
+    /**
+     * Creates a builder for EditEventCommand.
+     *
+     * @param calendar the calendar to use for editing events
+     * @throws IllegalArgumentException if calendar is null
+     */
+    public Builder(ICalendar calendar) {
+      if (calendar == null) {
+        throw new IllegalArgumentException("Calendar cannot be null");
+      }
+      this.calendar = calendar;
+    }
+
+    /**
+     * Sets the command type.
+     *
+     * @param commandType the type of edit command (single, series_from_date, all)
+     * @return the builder instance
+     */
+    public Builder commandType(String commandType) {
+      this.commandType = commandType;
+      return this;
+    }
+
+    /**
+     * Sets the subject of the event(s) to edit.
+     *
+     * @param subject the subject of the event(s)
+     * @return the builder instance
+     */
+    public Builder subject(String subject) {
+      this.subject = subject;
+      return this;
+    }
+
+    /**
+     * Sets the property to edit.
+     *
+     * @param property the property to edit (subject, description, etc.)
+     * @return the builder instance
+     */
+    public Builder property(String property) {
+      this.property = property;
+      return this;
+    }
+
+    /**
+     * Sets the new value for the property.
+     *
+     * @param newValue the new value for the property
+     * @return the builder instance
+     */
+    public Builder newValue(String newValue) {
+      this.newValue = newValue;
+      return this;
+    }
+
+    /**
+     * Sets the start date/time for identifying the event.
+     *
+     * @param startDateTime the start date/time of the event
+     * @return the builder instance
+     */
+    public Builder startDateTime(LocalDateTime startDateTime) {
+      this.startDateTime = startDateTime;
+      return this;
+    }
+
+    /**
+     * Builds a new EditEventCommand instance.
+     *
+     * @return a new EditEventCommand instance
+     */
+    public EditEventCommand build() {
+      return new EditEventCommand(this);
+    }
   }
 
   @Override
