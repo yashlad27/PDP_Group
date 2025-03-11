@@ -16,6 +16,9 @@ public class ShowStatusCommand implements ICommand {
    * @param calendar the calendar to query
    */
   public ShowStatusCommand(ICalendar calendar) {
+    if (calendar == null) {
+      throw new IllegalArgumentException("Calendar cannot be null");
+    }
     this.calendar = calendar;
   }
 

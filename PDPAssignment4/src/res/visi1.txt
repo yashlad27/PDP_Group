@@ -1,0 +1,67 @@
+create event "Private Meeting" from 2023-09-10T09:00 to 2023-09-10T10:00 private
+create event "Public Workshop" from 2023-09-11T14:00 to 2023-09-11T16:00 public
+create event "Default Event" from 2023-09-12T11:00 to 2023-09-12T12:00
+create event "All Day Seminar" on 2023-09-15 private
+
+print events from 2023-09-10 to 2023-09-15
+
+edit event visibility "Private Meeting" from 2023-09-10T09:00 to 2023-09-10T10:00 with "public"
+edit event ispublic "Public Workshop" from 2023-09-11T14:00 to 2023-09-11T16:00 with "false"
+edit event ispublic "Default Event" from 2023-09-12T11:00 to 2023-09-12T12:00 with "false"
+edit event visibility "All Day Seminar" from 2023-09-15T00:00 to 2023-09-15T23:59 with "public"
+
+edit event visibility "All Day Seminar" on 2023-09-15 with "public"
+
+print events from 2023-09-10 to 2023-09-15
+
+create event "Weekly Status" from 2023-09-20T10:00 to 2023-09-20T11:00 repeats T for 4 times
+create event "Bi-weekly Review" from 2023-09-21T15:00 to 2023-09-21T16:00 repeats RF until 2023-10-15 private
+
+edit events visibility "Weekly Status" with "private"
+edit events ispublic "Bi-weekly Review" with "true"
+
+print events from 2023-09-20 to 2023-10-15
+
+create event "Morning Meeting" from 2023-10-05T09:00 to 2023-10-05T10:00
+create event "Lunch with Client" from 2023-10-05T12:00 to 2023-10-05T13:30
+create event "Evening Presentation" from 2023-10-05T17:00 to 2023-10-05T18:00
+create event "Two Day Workshop" from 2023-10-10T09:00 to 2023-10-11T17:00
+
+print events from 2023-10-05 to 2023-10-11
+
+edit event start "Morning Meeting" from 2023-10-05T09:00 to 2023-10-05T10:00 with "2023-10-05T09:30"
+edit event end "Lunch with Client" from 2023-10-05T12:00 to 2023-10-05T13:30 with "2023-10-05T14:00"
+edit event start "Evening Presentation" from 2023-10-05T17:00 to 2023-10-05T18:00 with "17:30"
+edit event end "Two Day Workshop" from 2023-10-10T09:00 to 2023-10-11T17:00 with "2023-10-11T16:00"
+
+print events from 2023-10-05 to 2023-10-11
+
+create event "Daily Standup" from 2023-10-16T09:00 to 2023-10-16T09:15 repeats MTWRF for 5 times
+create event "Weekly Planning" from 2023-10-17T13:00 to 2023-10-17T14:00 repeats T until 2023-11-07
+
+edit event start "Daily Standup" from 2023-10-17T09:00 to 2023-10-17T09:15 with "2023-10-17T09:30"
+edit event end "Daily Standup" from 2023-10-18T09:00 to 2023-10-18T09:15 with "2023-10-18T09:45"
+
+edit events start "Weekly Planning" from 2023-10-24T13:00 with "13:30"
+edit events end "Weekly Planning" from 2023-10-24T13:00 with "14:30"
+
+edit events start "Daily Standup" with "08:45"
+edit events end "Daily Standup" with "09:00"
+
+print events from 2023-10-16 to 2023-11-07
+
+create event "Important Client Meeting" from 2023-11-01T10:00 to 2023-11-01T11:30 location "Conference Room A" description "Quarterly review with key client" private
+print events on 2023-11-01
+
+edit event location "Important Client Meeting" from 2023-11-01T10:00 to 2023-11-01T11:30 with "Executive Boardroom"
+edit event description "Important Client Meeting" from 2023-11-01T10:00 to 2023-11-01T11:30 with "Discuss new contract terms"
+edit event subject "Important Client Meeting" from 2023-11-01T10:00 to 2023-11-01T11:30 with "VIP Client Review"
+edit event start "VIP Client Review" from 2023-11-01T10:00 to 2023-11-01T11:30 with "2023-11-01T10:15"
+edit event end "VIP Client Review" from 2023-11-01T10:15 to 2023-11-01T11:30 with "2023-11-01T12:00"
+edit event visibility "VIP Client Review" from 2023-11-01T10:15 to 2023-11-01T12:00 with "public"
+
+print events on 2023-11-01
+
+export cal visibility_time_tests.csv
+
+exit
