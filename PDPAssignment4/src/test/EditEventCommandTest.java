@@ -318,22 +318,22 @@ public class EditEventCommandTest {
     assertTrue(result.contains("Error parsing date/time"));
   }
 
-//  @Test
-//  public void testEditEventVisibility() {
-//    // Execute - Edit event visibility (public/private)
-//    String[] args = {
-//            "single",
-//            "visibility",
-//            "Meeting",
-//            "2023-05-15T10:00",
-//            "false"  // Change to private
-//    };
-//
-//    String result = editCommand.execute(args);
-//
-//    assertTrue(result.contains("Successfully edited event"));
-//
-//    // Check if event visibility was updated
-//    // This depends on your implementation details
-//  }
+  @Test
+  public void testEditEventVisibility() {
+    // Execute - Edit event visibility (public/private)
+    String[] args = {
+            "single",
+            "visibility",
+            "Meeting",
+            "2023-05-15T10:00",
+            "false"  // Change to private
+    };
+
+    String result = editCommand.execute(args);
+
+    assertTrue(result.contains("Successfully edited event"));
+
+    // Check if event visibility was updated
+    // This depends on your implementation details
+  }
 }
