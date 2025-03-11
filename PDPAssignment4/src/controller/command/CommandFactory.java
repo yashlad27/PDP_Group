@@ -23,6 +23,14 @@ public class CommandFactory {
    * @param view     the view for user interaction
    */
   public CommandFactory(ICalendar calendar, ICalendarView view) {
+    if (calendar == null) {
+      throw new IllegalArgumentException("Calendar cannot be null");
+    }
+
+    if (view == null) {
+      throw new IllegalArgumentException("View cannot be null");
+    }
+
     this.commands = new HashMap<>();
 
     // Register all available commands

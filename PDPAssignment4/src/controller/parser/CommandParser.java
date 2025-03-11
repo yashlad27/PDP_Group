@@ -1,13 +1,12 @@
 package controller.parser;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import controller.command.CommandFactory;
-import controller.command.CreateEventCommand;
-import controller.command.EditEventCommand;
 import controller.command.ICommand;
 import model.calendar.ICalendar;
 import utilities.DateTimeUtil;
@@ -62,13 +61,16 @@ public class CommandParser {
 
   // Edit event patterns
   private static final Pattern EDIT_SINGLE_EVENT_PATTERN = Pattern.compile(
-          "edit event (\\w+) ([\"']?[^\"']+[\"']?|[^\\s]+) from (\\S+T\\S+) to (\\S+T\\S+) with (.+)");
+          "edit event (\\w+) \"([^\"]+)\" from (\\S+T\\S+) to (\\S+T\\S+) with \"?([^\"]+)\"?");
 
   private static final Pattern EDIT_EVENTS_FROM_DATE_PATTERN = Pattern.compile(
-          "edit events (\\w+) ([\"']?[^\"']+[\"']?|[^\\s]+) from (\\S+T\\S+) with (.+)");
+          "edit events (\\w+) \"([^\"]+)\" from (\\S+T\\S+) with \"?([^\"]+)\"?");
 
   private static final Pattern EDIT_ALL_EVENTS_PATTERN = Pattern.compile(
-          "edit events (\\w+) ([\"']?[^\"']+[\"']?|[^\\s]+) (.+)");
+          "edit events (\\w+) \"([^\"]+)\" with \"?([^\"]+)\"?");
+
+  private static final Pattern EDIT_ALL_DAY_EVENT_PATTERN = Pattern.compile(
+          "edit event (\\w+) \"([^\"]+)\" on (\\d{4}-\\d{2}-\\d{2}) with \"?([^\"]+)\"?");
 
   /**
    * Constructs a new CommandParser.
@@ -397,6 +399,33 @@ public class CommandParser {
               property,
               subject,
               matcher.group(3)   // newValue
+      };
+      return new CommandWithArgs(editCommand, args);
+    }
+
+    // Try to match all-day event pattern
+    matcher = EDIT_ALL_DAY_EVENT_PATTERN.matcher(commandString);
+    if (matcher.matches()) {
+      String property = matcher.group(1);
+      String subject = matcher.group(2);
+      String dateStr = matcher.group(3);
+      String newValue = matcher.group(4);
+
+      // Remove quotes if present
+      if (newValue.startsWith("\"") && newValue.endsWith("\"")) {
+        newValue = newValue.substring(1, newValue.length() - 1);
+      }
+
+      LocalDateTime startDateTime = LocalDateTime.of(
+              DateTimeUtil.parseDate(dateStr),
+              LocalTime.of(0, 0));
+
+      String[] args = {
+              "single",
+              property,
+              subject,
+              startDateTime.toString(),  // Format as LocalDateTime
+              newValue
       };
       return new CommandWithArgs(editCommand, args);
     }
