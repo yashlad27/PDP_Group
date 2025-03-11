@@ -95,7 +95,7 @@ public class RecurringEvent extends Event {
    * @param occurrences the number of times the event repeats
    * @return a new all-day recurring event
    */
-  public static RecurringEvent createAllDayRecurringEvent(String subject, LocalDate date,
+  public RecurringEvent createAllDayRecurringEvent(String subject, LocalDate date,
                                                           String description, String location,
                                                           boolean isPublic,
                                                           Set<DayOfWeek> repeatDays,
@@ -121,7 +121,7 @@ public class RecurringEvent extends Event {
    * @param endDate     the date after which the event stops repeating
    * @return a new all-day recurring event
    */
-  public static RecurringEvent createAllDayRecurringEvent(String subject, LocalDate date,
+  public RecurringEvent createAllDayRecurringEvent(String subject, LocalDate date,
                                                           String description, String location,
                                                           boolean isPublic,
                                                           Set<DayOfWeek> repeatDays,
@@ -230,7 +230,7 @@ public class RecurringEvent extends Event {
    * @param after the date after which to find the next occurrence
    * @return the next occurrence, or null if no more occurrences
    */
-  public Event getNextOccurrence(LocalDate after) {
+  private Event getNextOccurrence(LocalDate after) {
     LocalDate nextDate = after.plusDays(1);
     LocalTime startTime = getStartDateTime().toLocalTime();
     LocalTime endTime = getEndDateTime().toLocalTime();

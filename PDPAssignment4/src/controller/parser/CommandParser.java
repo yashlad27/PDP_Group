@@ -18,9 +18,6 @@ public class CommandParser {
 
   private final CommandFactory commandFactory;
 
-  // Command patterns with more flexible handling for quoted strings and optional parts
-
-  // Basic single event pattern
   private static final Pattern CREATE_EVENT_PATTERN = Pattern.compile(
           "create event (--autoDecline )?([\"']?[^\"']+[\"']?|[^\\s]+) from (\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}) to (\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2})(?:\\s+desc\\s+\"([^\"]+)\")?(?:\\s+at\\s+\"([^\"]+)\")?(?:\\s+(private))?");
 

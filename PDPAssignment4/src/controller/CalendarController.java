@@ -106,6 +106,13 @@ public class CalendarController {
           continue;
         }
 
+        if (line.equalsIgnoreCase(EXIT_COMMAND)) {
+          view.displayMessage("Executing: " + line);
+          String result = processCommand(line);
+          view.displayMessage(result);
+          break;
+        }
+
         view.displayMessage("Executing: " + line);
         String result = processCommand(line);
         view.displayMessage(result);

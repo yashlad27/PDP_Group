@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -382,24 +383,49 @@ public class Calendar implements ICalendar {
       case "location":
         event.setLocation(newValue);
         return true;
+      case "start":
+      case "starttime":
       case "startdatetime":
         try {
-          LocalDateTime newStartTime = DateTimeUtil.parseDateTime(newValue);
+          LocalDateTime newStartTime;
+          if (newValue.contains("T")) {
+            // Full datetime format
+            newStartTime = DateTimeUtil.parseDateTime(newValue);
+          } else {
+            // Time-only format, keep the same date
+            LocalTime newTime = LocalTime.parse(newValue);
+            newStartTime = LocalDateTime.of(event.getStartDateTime().toLocalDate(), newTime);
+          }
           event.setStartDateTime(newStartTime);
           return true;
         } catch (Exception e) {
           return false;
         }
+      case "end":
+      case "endtime":
       case "enddatetime":
         try {
-          LocalDateTime newEndTime = DateTimeUtil.parseDateTime(newValue);
+          LocalDateTime newEndTime;
+          if (newValue.contains("T")) {
+            // Full datetime format
+            newEndTime = DateTimeUtil.parseDateTime(newValue);
+          } else {
+            // Time-only format, keep the same date
+            LocalTime newTime = LocalTime.parse(newValue);
+            newEndTime = LocalDateTime.of(event.getEndDateTime().toLocalDate(), newTime);
+          }
           event.setEndDateTime(newEndTime);
           return true;
         } catch (Exception e) {
           return false;
         }
+      case "visibility":
       case "ispublic":
-        event.setPublic(Boolean.parseBoolean(newValue));
+      case "public":
+      case "private":
+        boolean isPublic = newValue.equalsIgnoreCase("public") ||
+                (newValue.equalsIgnoreCase("true") && !property.equals("private"));
+        event.setPublic(isPublic);
         return true;
       default:
         return false;
