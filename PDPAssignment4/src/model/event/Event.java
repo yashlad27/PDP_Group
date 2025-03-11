@@ -46,10 +46,8 @@ public class Event {
     this.location = location;
     this.isPublic = isPublic;
 
-    // If endDateTime is null, this is an all-day event
     if (endDateTime == null) {
       this.isAllDay = true;
-      // For all-day events, end date is the same as start date at end of day
       this.endDateTime = LocalDateTime.of(
               startDateTime.toLocalDate(),
               LocalTime.of(23, 59, 59)
@@ -95,7 +93,6 @@ public class Event {
       return false;
     }
 
-    // Check if this event's time interval overlaps with other's time interval
     return !this.endDateTime.isBefore(other.startDateTime) &&
             !other.endDateTime.isBefore(this.startDateTime);
   }
@@ -226,7 +223,6 @@ public class Event {
     this.isAllDay = isAllDay;
 
     if (isAllDay) {
-      // If converting to all-day, adjust end time to end of day
       this.endDateTime = LocalDateTime.of(
               startDateTime.toLocalDate(),
               LocalTime.of(23, 59, 59)
