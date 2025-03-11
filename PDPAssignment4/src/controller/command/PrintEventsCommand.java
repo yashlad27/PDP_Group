@@ -21,6 +21,9 @@ public class PrintEventsCommand implements ICommand {
    * @param calendar the calendar to query
    */
   public PrintEventsCommand(ICalendar calendar) {
+    if (calendar == null) {
+      throw new IllegalArgumentException("Calendar cannot be null");
+    }
     this.calendar = calendar;
   }
 
