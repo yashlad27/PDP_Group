@@ -136,6 +136,22 @@ public class EditEventCommand implements ICommand {
     }
   }
 
+  /**
+   * Removes surrounding quotes from a string value if present.
+   *
+   * @param value the string value to process
+   * @return the string without surrounding quotes
+   */
+  private String removeQuotes(String value) {
+    if (value != null && value.length() >= 2) {
+      if ((value.startsWith("\"") && value.endsWith("\"")) ||
+              (value.startsWith("'") && value.endsWith("'"))) {
+        return value.substring(1, value.length() - 1);
+      }
+    }
+    return value;
+  }
+
   @Override
   public String execute(String[] args) {
     if (args.length < 3) {
@@ -157,7 +173,9 @@ public class EditEventCommand implements ICommand {
       } catch (Exception e) {
         return "Error parsing date/time: " + e.getMessage();
       }
+
       String newValue = args[4];
+      newValue = removeQuotes(newValue);
 
       boolean success = calendar.editSingleEvent(subject, startDateTime, property, newValue);
 
@@ -179,7 +197,9 @@ public class EditEventCommand implements ICommand {
       } catch (Exception e) {
         return "Error parsing date/time: " + e.getMessage();
       }
+
       String newValue = args[4];
+      newValue = removeQuotes(newValue);
 
       int count = calendar.editEventsFromDate(subject, startDateTime, property, newValue);
 
@@ -196,6 +216,7 @@ public class EditEventCommand implements ICommand {
       String property = args[1];
       String subject = args[2];
       String newValue = args[3];
+      newValue = removeQuotes(newValue);
 
       int count = calendar.editAllEvents(subject, property, newValue);
 
