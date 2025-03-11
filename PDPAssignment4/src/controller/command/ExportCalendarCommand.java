@@ -17,6 +17,9 @@ public class ExportCalendarCommand implements ICommand {
    * @param calendar the calendar model
    */
   public ExportCalendarCommand(ICalendar calendar) {
+    if (calendar == null) {
+      throw new IllegalArgumentException("Calendar cannot be null");
+    }
     this.calendar = calendar;
   }
 
