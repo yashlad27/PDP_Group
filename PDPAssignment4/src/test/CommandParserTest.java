@@ -19,6 +19,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+/**
+ * Test file for Command Parser.
+ */
 public class CommandParserTest {
 
   /**
@@ -27,9 +30,9 @@ public class CommandParserTest {
   private static class MockCalendar implements ICalendar {
 
     /**
-     * Minimal implementation with no functionality
+     * Minimal implementation with no functionality.
      */
-    
+
     @Override
     public boolean addEvent(Event event, boolean autoDecline) {
       return false;
