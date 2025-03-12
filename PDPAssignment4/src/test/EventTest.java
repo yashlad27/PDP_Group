@@ -128,7 +128,8 @@ public class EventTest {
   @Test
   public void testConflictsWithSameTimeEvents() {
     Event event1 = new Event(subject, startDateTime, endDateTime, description, location, isPublic);
-    Event event2 = new Event("Another Meeting", startDateTime, endDateTime, "Description", "Location", true);
+    Event event2 = new Event("Another Meeting", startDateTime, endDateTime,
+            "Description", "Location", true);
 
     assertTrue(event1.conflictsWith(event2));
     assertTrue(event2.conflictsWith(event1));
@@ -142,7 +143,8 @@ public class EventTest {
     LocalDateTime laterStartTime = endDateTime.plusMinutes(1);
     LocalDateTime laterEndTime = laterStartTime.plusHours(1);
     Event nonOverlappingEvent = new Event(
-            "Later Meeting", laterStartTime, laterEndTime, "Description", "Location", true
+            "Later Meeting", laterStartTime, laterEndTime, "Description",
+            "Location", true
     );
 
     assertFalse(event.conflictsWith(nonOverlappingEvent));
@@ -211,7 +213,8 @@ public class EventTest {
 
     event.setEndDateTime(null);
     assertEquals(
-            LocalDateTime.of(startDateTime.toLocalDate(), LocalTime.of(23, 59, 59)),
+            LocalDateTime.of(startDateTime.toLocalDate(),
+                    LocalTime.of(23, 59, 59)),
             event.getEndDateTime()
     );
     assertTrue(event.isAllDay());
@@ -284,7 +287,8 @@ public class EventTest {
 
   @Test
   public void testSetPublic() {
-    Event event = new Event(subject, startDateTime, endDateTime, description, location, true);
+    Event event = new Event(subject, startDateTime, endDateTime, description, location,
+            true);
 
     event.setPublic(false);
     assertFalse(event.isPublic());
@@ -300,7 +304,8 @@ public class EventTest {
     event.setAllDay(true);
     assertTrue(event.isAllDay());
     assertEquals(
-            LocalDateTime.of(startDateTime.toLocalDate(), LocalTime.of(23, 59, 59)),
+            LocalDateTime.of(startDateTime.toLocalDate(),
+                    LocalTime.of(23, 59, 59)),
             event.getEndDateTime()
     );
 
@@ -320,28 +325,34 @@ public class EventTest {
   @Test
   public void testEquals() {
     Event event1 = new Event(subject, startDateTime, endDateTime, description, location, isPublic);
-    Event event2 = new Event(subject, startDateTime, endDateTime, "Different description", "Different location", false);
+    Event event2 = new Event(subject, startDateTime, endDateTime,
+            "Different description", "Different location", false);
 
     // Events with same subject, start and end time should be equal
     assertEquals(event1, event2);
 
     // Different start time
-    Event event3 = new Event(subject, startDateTime.plusHours(1), endDateTime, description, location, isPublic);
+    Event event3 = new Event(subject, startDateTime.plusHours(1), endDateTime,
+            description, location, isPublic);
     assertNotEquals(event1, event3);
 
     // Different end time
-    Event event4 = new Event(subject, startDateTime, endDateTime.plusHours(1), description, location, isPublic);
+    Event event4 = new Event(subject, startDateTime, endDateTime.plusHours(1),
+            description, location, isPublic);
     assertNotEquals(event1, event4);
 
     // Different subject
-    Event event5 = new Event("Different subject", startDateTime, endDateTime, description, location, isPublic);
+    Event event5 = new Event("Different subject", startDateTime, endDateTime,
+            description, location, isPublic);
     assertNotEquals(event1, event5);
   }
 
   @Test
   public void testHashCode() {
-    Event event1 = new Event(subject, startDateTime, endDateTime, description, location, isPublic);
-    Event event2 = new Event(subject, startDateTime, endDateTime, "Different description", "Different location", false);
+    Event event1 = new Event(subject, startDateTime, endDateTime,
+            description, location, isPublic);
+    Event event2 = new Event(subject, startDateTime, endDateTime,
+            "Different description", "Different location", false);
 
     // Hash codes should be the same for events with same subject, start and end time
     assertEquals(event1.hashCode(), event2.hashCode());
