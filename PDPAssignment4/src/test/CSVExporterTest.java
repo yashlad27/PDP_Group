@@ -80,8 +80,8 @@ public class CSVExporterTest {
     // Verify only header is present
     assertEquals("CSV file should only contain header", 1, lines.size());
     assertEquals("CSV header should be correct",
-        "Subject,Start Date,Start Time,End Date,End Time,All Day Event,Description,Location,Private",
-        lines.get(0));
+        "Subject,Start Date,Start Time,End Date,End Time,All Day Event,Description,"
+            + "Location,Private", lines.get(0));
   }
 
   @Test
@@ -207,7 +207,8 @@ public class CSVExporterTest {
 
     // Verify specific content
     assertTrue("CSV should contain header", fileContent.contains(
-        "Subject,Start Date,Start Time,End Date,End Time,All Day Event,Description,Location,Private"));
+        "Subject,Start Date,Start Time,End Date,End Time,All Day Event,Description,"
+            + "Location,Private"));
 
     assertTrue("CSV should contain Team Meeting", fileContent.contains("Team Meeting,"));
 
