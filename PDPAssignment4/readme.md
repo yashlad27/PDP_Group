@@ -1,233 +1,110 @@
 # Calendar Application
 
-This calendar application allows you to create, edit, and manage events in a virtual calendar. It supports both single events and recurring events, with features for tracking conflicts, querying the calendar, and exporting to CSV.
+## Overview
+This is a virtual calendar application that mimics features found in widely used calendar apps such as Google Calendar or Apple's iCalendar app. The application supports creating, editing, and querying calendar events, as well as exporting the calendar to a CSV file.
 
-## Getting Started
+## Features
+- Create single calendar events with subject, start date/time, and optional details
+- Create recurring calendar events on specific weekdays
+- Edit calendar events (single instances or recurring series)
+- Query calendar for events on specific dates or date ranges
+- Check availability at a specific date and time
+- Export calendar to CSV format compatible with Google Calendar
+- Interactive and headless operation modes
+- Automatic conflict detection for events
 
-### Prerequisites
+## Technical Requirements
+- Java version 11
+- Maven build system
+- PIT and Mutation Testing for quality assurance
+- Implementation follows SOLID design principles
+- Uses MVC architecture pattern
 
-- Java 11 or higher
-- PIT and Mutation Testing tools (for development)
-- Maven (for building)
+## How to Run
 
-### Running the Application
-
-The application can run in two modes: interactive and headless.
-
-#### Interactive Mode
-
-In interactive mode, you can type commands and see results immediately:
-
-```bash
-java -cp target/classes CalendarApp --mode interactive
+### Interactive Mode
 ```
-
-#### Headless Mode
-
-In headless mode, the application reads commands from a file:
-
-```bash
-java -cp target/classes CalendarApp --mode headless commands.txt
+java -jar calendar-app.jar --mode interactive
 ```
+In this mode, you can enter commands directly and see immediate results.
 
-Where `commands.txt` is a file containing commands, one per line, with an `exit` command at the end.
-
-## Commands Reference
-
-### Create Commands
-
-#### Create a Single Event
-
+### Headless Mode
 ```
-create event [--autoDecline] <eventName> from <dateTimeString> to <dateTimeString>
+java -jar calendar-app.jar --mode headless commands.txt
 ```
+In this mode, the program reads commands from a text file and executes them sequentially.
 
-Example:
-```
-create event Meeting from 2023-05-15T10:00 to 2023-05-15T11:00
-```
+## Command Reference
 
-With auto-decline for conflicts:
-```
-create event --autoDecline Team Meeting from 2023-05-15T10:00 to 2023-05-15T11:00
-```
+### Create Events
+- `create event [--autoDecline] <eventName> from <dateStringTtimeString> to <dateStringTtimeString>`
+- `create event [--autoDecline] <eventName> from <dateStringTtimeString> to <dateStringTtimeString> repeats <weekdays> for <N> times`
+- `create event [--autoDecline] <eventName> from <dateStringTtimeString> to <dateStringTtimeString> repeats <weekdays> until <dateStringTtimeString>`
+- `create event [--autoDecline] <eventName> on <dateStringTtimeString>`
+- `create event <eventName> on <dateStringTtimeString> repeats <weekdays> for <N> times`
+- `create event <eventName> on <dateStringTtimeString> repeats <weekdays> until <dateStringTtimeString>`
 
-#### Create a Recurring Event with Specified Occurrences
+### Edit Events
+- `edit event <property> <eventName> from <dateStringTtimeString> to <dateStringTtimeString> with <NewPropertyValue>`
+- `edit events <property> <eventName> from <dateStringTtimeString> with <NewPropertyValue>`
+- `edit events <property> <eventName> <NewPropertyValue>`
 
-```
-create event [--autoDecline] <eventName> from <dateTimeString> to <dateTimeString> repeats <weekdays> for <N> times
-```
+### Query Events
+- `print events on <dateStringTtimeString>`
+- `print events from <dateStringTtimeString> to <dateStringTtimeString>`
+- `show status on <dateStringTtimeString>`
 
-Example:
-```
-create event Weekly Standup from 2023-06-01T09:00 to 2023-06-01T09:30 repeats MWF for 10 times
-```
+### Export
+- `export cal fileName.csv`
 
-Weekday codes:
-- `M`: Monday
-- `T`: Tuesday
-- `W`: Wednesday
-- `R`: Thursday
-- `F`: Friday
-- `S`: Saturday
-- `U`: Sunday
+### Exit
+- `exit`
 
-#### Create a Recurring Event Until a Specific Date
+## Implementation Details
 
-```
-create event [--autoDecline] <eventName> from <dateTimeString> to <dateTimeString> repeats <weekdays> until <dateString>
-```
+### Architecture
+The application follows the Model-View-Controller (MVC) architecture:
+- **Model**: Represents the core calendar data structures and business logic
+- **View**: Handles user interface and display formatting
+- **Controller**: Processes user commands and updates the model accordingly
 
-Example:
-```
-create event Project Review from 2023-06-01T14:00 to 2023-06-01T15:00 repeats T until 2023-08-31
-```
+### Design Principles
+- **Single Responsibility Principle**: Each class has a single purpose and reason to change
+- **Open/Closed Principle**: Code is open for extension but closed for modification
+- **Liskov Substitution Principle**: Subtypes are substitutable for their base types
+- **Interface Segregation Principle**: Clients aren't forced to depend on interfaces they don't use
+- **Dependency Inversion Principle**: High-level modules don't depend on low-level modules; both depend on abstractions
 
-#### Create an All-Day Event
+## Testing
+- All code is thoroughly tested with JUnit tests
+- PIT mutation testing is used to evaluate test quality
+- Targeted 100% test coverage for both traditional coverage and mutation coverage
 
-```
-create event [--autoDecline] <eventName> on <dateString>
-```
+## Working Features
+- All features as specified in the requirements document are fully implemented
+- The application handles conflicts between events as specified
+- Export functionality produces CSV files compatible with Google Calendar
 
-Example:
-```
-create event Company Holiday on 2023-07-04
-```
+## Limitations and Future Enhancements
+- **Multiple Calendars**: Currently supports only a single calendar; future versions could support multiple calendars
+- **Notifications**: No support for event reminders or notifications
+- **Invitations**: No support for inviting other users to events
+- **Synchronization**: Does not sync with external calendar services
+- **GUI**: Currently only offers a text-based interface
+- **Attachments**: No support for adding file attachments to events
+- **Categories/Tags**: No support for categorizing or tagging events
+- **Search**: Limited search functionality; cannot search by keywords within event descriptions
+- **Timezone Management**: Currently assumes all times are in EST; could add support for multiple timezones
+- **Mobile Access**: No mobile application or responsive web interface
+- **Recurrence Exceptions**: Cannot create exceptions to recurring event patterns
 
-#### Create a Recurring All-Day Event
+## Team Contributions
+- **Yash Lad**: Core event management and CSV export functionality
+- **Gaurav Bidani**: Recurring events, conflict detection, and query functionality
 
-```
-create event [--autoDecline] <eventName> on <dateString> repeats <weekdays> for <N> times
-```
-
-Example:
-```
-create event Training Session on 2023-07-10 repeats MWF for 5 times
-```
-
-### Edit Commands
-
-#### Edit a Single Event
-
-```
-edit event <property> <eventName> from <dateTimeString> to <dateTimeString> with <newValue>
-```
-
-Example:
-```
-edit event name Meeting from 2023-05-15T10:00 to 2023-05-15T11:00 with Updated Meeting
-```
-
-#### Edit Events Starting from a Specific Date
-
-```
-edit events <property> <eventName> from <dateTimeString> with <newValue>
-```
-
-Example:
-```
-edit events location Weekly Standup from 2023-06-01T09:00 with Conference Room B
-```
-
-#### Edit All Events with a Specific Name
-
-```
-edit events <property> <eventName> <newValue>
-```
-
-Example:
-```
-edit events description Team Lunch Team lunch at the cafeteria - please bring your own drinks
-```
-
-Editable properties:
-- `name` or `subject`: The event's title
-- `description`: The event's description
-- `location`: The event's location
-- `startdatetime`: The event's start date and time
-- `enddatetime`: The event's end date and time
-- `ispublic`: Whether the event is public (true/false)
-
-### Query Commands
-
-#### Print Events on a Specific Date
-
-```
-print events on <dateString>
-```
-
-Example:
-```
-print events on 2023-05-15
-```
-
-#### Print Events in a Date Range
-
-```
-print events from <dateString> to <dateString>
-```
-
-Example:
-```
-print events from 2023-05-15 to 2023-05-21
-```
-
-#### Check Busy Status
-
-```
-show status on <dateTimeString>
-```
-
-Example:
-```
-show status on 2023-05-15T10:30
-```
-
-### Export Command
-
-#### Export Calendar to CSV
-
-```
-export cal <fileName>
-```
-
-Example:
-```
-export cal calendar_export.csv
-```
-
-### Exit Command
-
-```
-exit
-```
-
-## Date and Time Format
-
-- Date format: `YYYY-MM-DD` (e.g., `2023-05-15`)
-- Time format: `HH:MM` in 24-hour format (e.g., `14:30` for 2:30 PM)
-- DateTime format: `YYYY-MM-DDThh:mm` (e.g., `2023-05-15T14:30`)
-
-## Example Command Sequence
-
-```
-create event Team Meeting from 2023-05-15T10:00 to 2023-05-15T11:00
-create event Weekly Standup from 2023-06-01T09:00 to 2023-06-01T09:30 repeats MWF for 10 times
-edit events name Weekly Standup from 2023-06-01T09:00 with Daily Checkin
-print events from 2023-06-01 to 2023-06-07
-show status on 2023-06-05T09:15
-export cal my_calendar.csv
-exit
-```
-
-## Error Handling
-
-If an invalid command is entered, the application will display an error message. In headless mode, the application will terminate immediately if an invalid command is encountered.
-
-## Calendar Features
-
-- **Conflicts**: Two events conflict if their time intervals overlap
-- **Automatic Decline**: With `--autoDecline` flag, event creation is automatically declined if there's a conflict
-- **Recurring Events**: Support for events that repeat on specific days of the week
-- **All-Day Events**: Events that don't have a specific start/end time
-- **CSV Export**: Export all events to a CSV file compatible with Google Calendar import
+## Additional Notes
+- The application assumes all times are in EST timezone
+- Currently supports a single calendar only
+- Date strings should be in the format "YYYY-MM-DD"
+- Time strings should be in the format "hh:mm"
+- Weekday format: 'M' is Monday, 'T' is Tuesday, 'W' is Wednesday, 'R' is Thursday, 'F' is Friday, 'S' is Saturday, and 'U' is Sunday
