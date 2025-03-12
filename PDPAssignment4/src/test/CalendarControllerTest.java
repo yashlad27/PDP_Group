@@ -25,7 +25,7 @@ import static org.junit.Assert.assertTrue;
 
 public class CalendarControllerTest {
 
-  // Manual mock implementation of ICalendar
+  // This is the mock of Calendar
   private static class MockCalendar implements ICalendar {
     // Minimal implementation with no functionality
     @Override
@@ -249,6 +249,9 @@ public class CalendarControllerTest {
     }
   }
 
+  /**
+   * A testable version of CalendarController that allows mocking the file reader.
+   */
   private static class TestableCalendarController extends CalendarController {
     private final BufferedReader fileReader;
     private final ICalendarView view;
@@ -281,28 +284,43 @@ public class CalendarControllerTest {
 
       try {
         String line;
+        String lastCommand = null;
+        boolean fileHasCommands = false;
+
         while ((line = fileReader.readLine()) != null) {
           if (line.trim().isEmpty()) {
             continue;
           }
 
-          view.displayMessage("Executing: " + line);
-
-          // Check for exit command before processing
-          if (line.equalsIgnoreCase("exit")) {
-            String result = processCommand(line);
-            view.displayMessage(result);
-            return true; // Return true after processing exit command
-          }
+          fileHasCommands = true;
+          lastCommand = line;
 
           String result = processCommand(line);
           view.displayMessage(result);
+
+          if (line.equalsIgnoreCase("exit")) {
+            break;
+          }
 
           if (result.startsWith("Error")) {
             view.displayError("Command failed, stopping execution: " + result);
             return false;
           }
         }
+
+        // Check if file was empty
+        if (!fileHasCommands) {
+          view.displayError("Error: Command file is empty. "
+                  + "At least one command (exit) is required.");
+          return false;
+        }
+
+        // Check if the last command was an exit command
+        if (!lastCommand.equalsIgnoreCase("exit")) {
+          view.displayError("Headless mode requires the last command to be 'exit'");
+          return false;
+        }
+
         return true;
       } catch (IOException e) {
         view.displayError("Error reading command file: " + e.getMessage());
@@ -445,9 +463,7 @@ public class CalendarControllerTest {
     // Verify
     assertTrue(result);
     List<String> messages = view.getDisplayedMessages();
-    assertTrue(messages.contains("Executing: command1"));
     assertTrue(messages.contains("Command executed successfully"));
-    assertTrue(messages.contains("Executing: command2"));
   }
 
   @Test
@@ -464,8 +480,8 @@ public class CalendarControllerTest {
     // Verify
     assertFalse(result);
     List<String> messages = view.getDisplayedMessages();
-    assertTrue(messages.contains("Executing: command1"));
-    assertTrue(messages.contains("Executing: error"));
+    assertTrue(messages.contains("Command executed successfully"));
+    assertTrue(messages.contains("Error: Test error"));
 
     List<String> errors = view.getErrorMessages();
     assertTrue(errors.contains("Command failed, stopping execution: Error: Test error"));
@@ -534,11 +550,28 @@ public class CalendarControllerTest {
   }
 
   @Test
-  public void testStartHeadlesModeWithEmptyLines() {
+  public void testHeadlessModeWithEmptyFile() {
+    // Setup
+    BufferedReader reader = new BufferedReader(new StringReader(""));
+    TestableCalendarController testableController =
+            new TestableCalendarController(commandFactory, view, reader);
+
+    // Execute
+    boolean result = testableController.startHeadlessMode("empty_file.txt");
+
+    // Verify
+    assertFalse("Should return false for empty file", result);
+    List<String> errors = view.getErrorMessages();
+    assertTrue(errors.contains("Error: Command file is empty. At least one command (exit) is required."));
+  }
+
+  @Test
+  public void testHeadlesModeWithEmptyLines() {
     // Setup
     String mockFileContent = "\ncommand1\n\ncommand2\n\nexit\n";
     BufferedReader reader = new BufferedReader(new StringReader(mockFileContent));
-    TestableCalendarController testableController = new TestableCalendarController(commandFactory, view, reader);
+    TestableCalendarController testableController =
+            new TestableCalendarController(commandFactory, view, reader);
 
     // Execute
     boolean result = testableController.startHeadlessMode("valid_file.txt");
@@ -546,33 +579,57 @@ public class CalendarControllerTest {
     // Verify
     assertTrue(result);
     List<String> messages = view.getDisplayedMessages();
-    assertTrue(messages.contains("Executing: command1"));
-    assertTrue(messages.contains("Executing: command2"));
-    assertTrue(messages.contains("Executing: exit"));
+    assertTrue(messages.contains("Command executed successfully"));
   }
 
   @Test
-  public void testStartHeadlessModeExitsEarly() {
+  public void testHeadlessModeWithNoExitCommand() {
     // Setup
-    String mockFileContent = "command1\nexit\ncommand2\n";
+    String mockFileContent = "command1\ncommand2\n";
     BufferedReader reader = new BufferedReader(new StringReader(mockFileContent));
-    TestableCalendarController testableController = new TestableCalendarController(commandFactory, view, reader);
-
-    // Debug output to help identify issues
-    System.out.println("Starting testStartHeadlessModeExitsEarly test");
+    TestableCalendarController testableController =
+            new TestableCalendarController(commandFactory, view, reader);
 
     // Execute
-    boolean result = testableController.startHeadlessMode("valid_file.txt");
-
-    // Debug output
-    System.out.println("Result: " + result);
-    System.out.println("Messages: " + view.getDisplayedMessages());
+    boolean result = testableController.startHeadlessMode("no_exit.txt");
 
     // Verify
-    assertTrue("startHeadlessMode should return true", result);
+    assertFalse("Should return false when exit command is missing", result);
+    List<String> errors = view.getErrorMessages();
+    assertTrue(errors.contains("Headless mode requires the last command to be 'exit'"));
+  }
+
+  @Test
+  public void testHeadlesModeWithOnlyExitCommand() {
+    // Setup
+    String mockFileContent = "exit\n";
+    BufferedReader reader = new BufferedReader(new StringReader(mockFileContent));
+    TestableCalendarController testableController =
+            new TestableCalendarController(commandFactory, view, reader);
+
+    // Execute
+    boolean result = testableController.startHeadlessMode("only_exit.txt");
+
+    // Verify
+    assertTrue("Should return true with only exit command", result);
     List<String> messages = view.getDisplayedMessages();
-    assertTrue("Should contain 'Executing: command1'", messages.contains("Executing: command1"));
-    assertTrue("Should contain 'Executing: exit'", messages.contains("Executing: exit"));
-    assertFalse("Should not contain 'Executing: command2'", messages.contains("Executing: command2"));
+    assertTrue(messages.contains("Exiting application."));
+  }
+
+  @Test
+  public void testHeadlesModeWithCaseInsensitiveExit() {
+    // Setup
+    String mockFileContent = "command1\nEXIT\n";
+    BufferedReader reader = new BufferedReader(new StringReader(mockFileContent));
+    TestableCalendarController testableController =
+            new TestableCalendarController(commandFactory, view, reader);
+
+    // Execute
+    boolean result = testableController.startHeadlessMode("case_insensitive.txt");
+
+    // Verify
+    assertTrue("Should handle case-insensitive exit command", result);
+    List<String> messages = view.getDisplayedMessages();
+    assertTrue(messages.contains("Exiting application."));
   }
 }
