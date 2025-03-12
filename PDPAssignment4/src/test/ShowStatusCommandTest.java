@@ -12,8 +12,18 @@ import model.calendar.ICalendar;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+/**
+ * This test suite verifies the command’s availability status
+ * using a mock {@link ICalendar} implementation.
+ */
 public class ShowStatusCommandTest {
 
+  /**
+   * A mock implementation of the {@link ICalendar} interface used for testing.
+   * This class simulates a calendar system by providing controlled responses
+   * for availability queries and tracking the last checked date-time.
+   * It does not support actual event storage or modifications.
+   */
   private static class MockCalendar implements ICalendar {
     private boolean isBusyResult = false;
     private LocalDateTime lastCheckedDateTime = null;

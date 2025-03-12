@@ -16,8 +16,17 @@ import model.event.Event;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+/**
+ * This test suite verifies the functionality of the PrintEventsCommand using a mock ICalendar.
+ */
 public class PrintEventsCommandTest {
 
+  /**
+   * A mock implementation of the {@link ICalendar} interface used for testing.
+   * This mock simulates a calendar that returns predefined responses for queries
+   * related to events on a specific date or within a date range.
+   * It also records the last queried date or range for verification.
+   */
   private static class MockCalendar implements ICalendar {
     private List<Event> eventsOnDateResult = new ArrayList<>();
     private List<Event> eventsInRangeResult = new ArrayList<>();
