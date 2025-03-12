@@ -293,14 +293,11 @@ public class CalendarTest {
         // Generate CSV content (similar to what the actual method would do)
         StringBuilder csv = new StringBuilder();
         csv.append(
-            "Subject,Start Date,Start Time,End Date,End Time,All Day Event,Description,Location,Private\n");
-
-        // Add sample data for the events
+            "Subject,Start Date,Start Time,End Date,End Time,All Day Event,Description,Location,"
+                + "Private\n");
         csv.append(
-            "Team Meeting,05/10/2023,10:00 AM,05/10/2023,11:00 AM,False,Weekly sync-up,Conference Room A,False\n");
-        // ...more rows for recurring events would be here...
-
-        // Store in our mock file system
+            "Team Meeting,05/10/2023,10:00 AM,05/10/2023,11:00 AM,False,Weekly sync-up,Conference "
+                + "Room A,False\n");
         mockFileSystem.put(filePath, csv.toString());
 
         return filePath; // Return the path as if it were absolute

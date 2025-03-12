@@ -33,8 +33,8 @@ public class EditEventCommandTest {
 
     // Add a single event
     Event singleEvent = new Event("Meeting", startDateTime, endDateTime, null, // description
-            null, // location
-            true  // isPublic
+        null, // location
+        true  // isPublic
     );
     calendar.addEvent(singleEvent, false); // false for autoDecline
 
@@ -43,9 +43,9 @@ public class EditEventCommandTest {
 
     // Using the API provided by ICalendar
     calendar.createRecurringEventUntil("Weekly Meeting", recStartDateTime, recEndDateTime, "MW",
-            // Monday and Wednesday
-            LocalDate.of(2023, 7, 1), // until date
-            false // autoDecline
+        // Monday and Wednesday
+        LocalDate.of(2023, 7, 1), // until date
+        false // autoDecline
     );
   }
 
@@ -80,7 +80,7 @@ public class EditEventCommandTest {
   @Test
   public void testEditSingleEventDescription() {
     String[] args = {"single", "description", "Meeting", "2023-05-15T10:00",
-            "Updated meeting description"};
+        "Updated meeting description"};
 
     String result = editCommand.execute(args);
 
@@ -101,7 +101,7 @@ public class EditEventCommandTest {
   @Test
   public void testEditSingleEventNotFound() {
     String[] args = {"single", "subject", "Non-existent Meeting", "2023-05-15T10:00",
-            "Updated Meeting"};
+        "Updated Meeting"};
 
     String result = editCommand.execute(args);
 
@@ -111,7 +111,7 @@ public class EditEventCommandTest {
   @Test
   public void testEditEventsFromDateSuccess() {
     String[] args = {"series_from_date", "subject", "Weekly Meeting", "2023-06-01T14:00",
-            "Updated Weekly Meeting"};
+        "Updated Weekly Meeting"};
 
     String result = editCommand.execute(args);
 
@@ -131,7 +131,7 @@ public class EditEventCommandTest {
   @Test
   public void testEditEventsFromDateNotFound() {
     String[] args = {"series_from_date", "subject", "Non-existent Meeting", "2023-06-01T14:00",
-            "Updated Meeting"};
+        "Updated Meeting"};
 
     String result = editCommand.execute(args);
 
@@ -224,8 +224,7 @@ public class EditEventCommandTest {
 
   @Test
   public void testEditEventVisibility() {
-    String[] args = {"single", "visibility", "Meeting", "2023-05-15T10:00", "false"
-    };
+    String[] args = {"single", "visibility", "Meeting", "2023-05-15T10:00", "false"};
 
     String result = editCommand.execute(args);
 
