@@ -13,6 +13,7 @@ import java.util.List;
  * Command for printing events on a specific date or within a date range.
  */
 public class PrintEventsCommand implements ICommand {
+
   private final ICalendar calendar;
 
   /**
@@ -28,7 +29,6 @@ public class PrintEventsCommand implements ICommand {
   }
 
   /**
-   *
    * @param args the command arguments
    * @return
    */
@@ -59,7 +59,9 @@ public class PrintEventsCommand implements ICommand {
         return "Error: Missing dates for 'print events from...to' command";
       }
 
-      LocalDate startDate, endDate;
+      LocalDate startDate;
+      LocalDate endDate;
+
       try {
         startDate = DateTimeUtil.parseDate(args[1]);
         endDate = DateTimeUtil.parseDate(args[2]);
@@ -92,20 +94,19 @@ public class PrintEventsCommand implements ICommand {
     List<Event> events = calendar.getEventsInRange(startDate, endDate);
 
     if (events.isEmpty()) {
-      return "No events from " + startDate.format(DateTimeFormatter.ISO_LOCAL_DATE) +
-              " to " + endDate.format(DateTimeFormatter.ISO_LOCAL_DATE);
+      return "No events from " + startDate.format(DateTimeFormatter.ISO_LOCAL_DATE) + " to "
+          + endDate.format(DateTimeFormatter.ISO_LOCAL_DATE);
     }
 
     StringBuilder result = new StringBuilder();
     result.append("Events from ").append(startDate.format(DateTimeFormatter.ISO_LOCAL_DATE))
-            .append(" to ").append(endDate.format(DateTimeFormatter.ISO_LOCAL_DATE)).append(":\n");
+        .append(" to ").append(endDate.format(DateTimeFormatter.ISO_LOCAL_DATE)).append(":\n");
     result.append(CSVExporter.formatEventsForDisplay(events, false));
 
     return result.toString();
   }
 
   /**
-   *
    * @return
    */
   @Override

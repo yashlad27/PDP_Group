@@ -6,6 +6,7 @@ import model.calendar.ICalendar;
 import utilities.DateTimeUtil;
 
 public class EditEventCommand implements ICommand {
+
   private final ICalendar calendar;
   private final String commandType;
   private final String subject;
@@ -26,8 +27,8 @@ public class EditEventCommand implements ICommand {
   }
 
   /**
-   * Constructor that creates a minimal EditEventCommand with just a calendar reference.
-   * This constructor is used for registration with the command factory.
+   * Constructor that creates a minimal EditEventCommand with just a calendar reference. This
+   * constructor is used for registration with the command factory.
    *
    * @param calendar the calendar to use for editing events
    * @throws IllegalArgumentException if calendar is null
@@ -48,6 +49,7 @@ public class EditEventCommand implements ICommand {
    * Builder class for EditEventCommand.
    */
   public static class Builder {
+
     // Required parameter
     private final ICalendar calendar;
 
@@ -145,7 +147,7 @@ public class EditEventCommand implements ICommand {
   private String removeQuotes(String value) {
     if (value != null && value.length() >= 2) {
       if ((value.startsWith("\"") && value.endsWith("\"")) ||
-              (value.startsWith("'") && value.endsWith("'"))) {
+          (value.startsWith("'") && value.endsWith("'"))) {
         return value.substring(1, value.length() - 1);
       }
     }
@@ -159,7 +161,6 @@ public class EditEventCommand implements ICommand {
     }
 
     String type = args[0];
-
     if (type.equals("single")) {
       if (args.length < 5) {
         return "Error: Insufficient arguments for editing a single event";

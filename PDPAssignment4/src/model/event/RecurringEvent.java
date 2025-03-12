@@ -11,8 +11,8 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
- * Represents a recurring event that repeats on specific days of the week.
- * Extends the base Event class to add repetition functionality.
+ * Represents a recurring event that repeats on specific days of the week. Extends the base Event
+ * class to add repetition functionality.
  */
 public class RecurringEvent extends Event {
 
@@ -35,8 +35,8 @@ public class RecurringEvent extends Event {
    * @throws IllegalArgumentException if repeatDays is empty or occurrences is non-positive
    */
   public RecurringEvent(String subject, LocalDateTime startDateTime, LocalDateTime endDateTime,
-                        String description, String location, boolean isPublic,
-                        Set<DayOfWeek> repeatDays, int occurrences) {
+      String description, String location, boolean isPublic,
+      Set<DayOfWeek> repeatDays, int occurrences) {
     super(subject, startDateTime, endDateTime, description, location, isPublic);
 
     validateRecurringEventParams(repeatDays, occurrences);
@@ -47,7 +47,7 @@ public class RecurringEvent extends Event {
     this.recurringId = UUID.randomUUID();
 
     // Check that the event is within a single day
-    if (startDateTime.toLocalDate().equals(endDateTime.toLocalDate()) == false) {
+    if (!startDateTime.toLocalDate().equals(endDateTime.toLocalDate())) {
       throw new IllegalArgumentException("Recurring events must start and end on the same day");
     }
   }
@@ -66,8 +66,8 @@ public class RecurringEvent extends Event {
    * @throws IllegalArgumentException if repeatDays is empty or endDate is not after startDateTime
    */
   public RecurringEvent(String subject, LocalDateTime startDateTime, LocalDateTime endDateTime,
-                        String description, String location, boolean isPublic,
-                        Set<DayOfWeek> repeatDays, LocalDate endDate) {
+      String description, String location, boolean isPublic,
+      Set<DayOfWeek> repeatDays, LocalDate endDate) {
     super(subject, startDateTime, endDateTime, description, location, isPublic);
 
     validateRecurringEventParams(repeatDays, endDate, startDateTime.toLocalDate());
@@ -78,7 +78,7 @@ public class RecurringEvent extends Event {
     this.recurringId = UUID.randomUUID();
 
     // Check that the event is within a single day
-    if (startDateTime.toLocalDate().equals(endDateTime.toLocalDate()) == false) {
+    if (!startDateTime.toLocalDate().equals(endDateTime.toLocalDate())) {
       throw new IllegalArgumentException("Recurring events must start and end on the same day");
     }
   }
@@ -96,15 +96,15 @@ public class RecurringEvent extends Event {
    * @return a new all-day recurring event
    */
   public RecurringEvent createAllDayRecurringEvent(String subject, LocalDate date,
-                                                          String description, String location,
-                                                          boolean isPublic,
-                                                          Set<DayOfWeek> repeatDays,
-                                                          int occurrences) {
+      String description, String location,
+      boolean isPublic,
+      Set<DayOfWeek> repeatDays,
+      int occurrences) {
     LocalDateTime start = LocalDateTime.of(date, LocalTime.of(0, 0));
     LocalDateTime end = LocalDateTime.of(date, LocalTime.of(23, 59, 59));
 
     RecurringEvent event = new RecurringEvent(subject, start, end, description, location,
-            isPublic, repeatDays, occurrences);
+        isPublic, repeatDays, occurrences);
     event.setAllDay(true);
     return event;
   }
@@ -122,15 +122,15 @@ public class RecurringEvent extends Event {
    * @return a new all-day recurring event
    */
   public RecurringEvent createAllDayRecurringEvent(String subject, LocalDate date,
-                                                          String description, String location,
-                                                          boolean isPublic,
-                                                          Set<DayOfWeek> repeatDays,
-                                                          LocalDate endDate) {
+      String description, String location,
+      boolean isPublic,
+      Set<DayOfWeek> repeatDays,
+      LocalDate endDate) {
     LocalDateTime start = LocalDateTime.of(date, LocalTime.of(0, 0));
     LocalDateTime end = LocalDateTime.of(date, LocalTime.of(23, 59, 59));
 
     RecurringEvent event = new RecurringEvent(subject, start, end, description, location,
-            isPublic, repeatDays, endDate);
+        isPublic, repeatDays, endDate);
     event.setAllDay(true);
     return event;
   }
@@ -149,19 +149,19 @@ public class RecurringEvent extends Event {
     int count = 0;
 
     while ((this.occurrences > 0 && count < this.occurrences) ||
-            (this.endDate != null && !currentDate.isAfter(this.endDate))) {
+        (this.endDate != null && !currentDate.isAfter(this.endDate))) {
 
       if (repeatDays.contains(currentDate.getDayOfWeek())) {
         LocalDateTime occurrenceStart = LocalDateTime.of(currentDate, startTime);
         LocalDateTime occurrenceEnd = LocalDateTime.of(currentDate, endTime);
 
         Event occurrence = new Event(
-                getSubject(),
-                occurrenceStart,
-                occurrenceEnd,
-                getDescription(),
-                getLocation(),
-                isPublic()
+            getSubject(),
+            occurrenceStart,
+            occurrenceEnd,
+            getDescription(),
+            getLocation(),
+            isPublic()
         );
         occurrence.setAllDay(isAllDay());
 
@@ -250,12 +250,12 @@ public class RecurringEvent extends Event {
     LocalDateTime occurrenceEnd = LocalDateTime.of(nextDate, endTime);
 
     Event occurrence = new Event(
-            getSubject(),
-            occurrenceStart,
-            occurrenceEnd,
-            getDescription(),
-            getLocation(),
-            isPublic()
+        getSubject(),
+        occurrenceStart,
+        occurrenceEnd,
+        getDescription(),
+        getLocation(),
+        isPublic()
     );
     occurrence.setAllDay(isAllDay());
 
@@ -281,12 +281,13 @@ public class RecurringEvent extends Event {
   /**
    * Validates parameters for a recurring event with a specified end date.
    *
-   * @param repeatDays  the set of days on which the event repeats
-   * @param endDate     the end date
-   * @param startDate   the start date
+   * @param repeatDays the set of days on which the event repeats
+   * @param endDate    the end date
+   * @param startDate  the start date
    * @throws IllegalArgumentException if parameters are invalid
    */
-  private void validateRecurringEventParams(Set<DayOfWeek> repeatDays, LocalDate endDate, LocalDate startDate) {
+  private void validateRecurringEventParams(Set<DayOfWeek> repeatDays, LocalDate endDate,
+      LocalDate startDate) {
     if (repeatDays == null || repeatDays.isEmpty()) {
       throw new IllegalArgumentException("Repeat days cannot be null or empty");
     }

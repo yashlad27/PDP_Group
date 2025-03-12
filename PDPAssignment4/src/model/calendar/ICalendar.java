@@ -45,7 +45,7 @@ public interface ICalendar {
    * @return true if the event was created successfully, false otherwise
    */
   boolean createRecurringEventUntil(String name, LocalDateTime start, LocalDateTime end,
-                                    String weekdays, LocalDate untilDate, boolean autoDecline);
+      String weekdays, LocalDate untilDate, boolean autoDecline);
 
   /**
    * Creates an all-day recurring event.
@@ -57,10 +57,8 @@ public interface ICalendar {
    * @param autoDecline whether to automatically decline if there's a conflict
    * @return true if the event was created successfully, false otherwise
    */
-  boolean createAllDayRecurringEvent(String name, LocalDate date, String weekdays,
-                                     int occurrences, boolean autoDecline,
-                                     String description, String location,
-                                     boolean isPublic);
+  boolean createAllDayRecurringEvent(String name, LocalDate date, String weekdays, int occurrences,
+      boolean autoDecline, String description, String location, boolean isPublic);
 
   /**
    * Creates an all-day recurring event that repeats until a specific date.
@@ -73,9 +71,8 @@ public interface ICalendar {
    * @return true if the event was created successfully, false otherwise
    */
   boolean createAllDayRecurringEventUntil(String name, LocalDate date, String weekdays,
-                                          LocalDate untilDate, boolean autoDecline,
-                                          String description, String location,
-                                          boolean isPublic);
+      LocalDate untilDate, boolean autoDecline, String description, String location,
+      boolean isPublic);
 
   /**
    * Gets all events occurring on a specific date.
@@ -131,8 +128,8 @@ public interface ICalendar {
    * @param newValue      the new value for the property
    * @return true if the event was found and edited, false otherwise
    */
-  boolean editSingleEvent(String subject, LocalDateTime startDateTime,
-                          String property, String newValue);
+  boolean editSingleEvent(String subject, LocalDateTime startDateTime, String property,
+      String newValue);
 
   /**
    * Edits all events in a recurring series starting from a specific date.
@@ -143,8 +140,8 @@ public interface ICalendar {
    * @param newValue      the new value for the property
    * @return the number of events that were edited
    */
-  int editEventsFromDate(String subject, LocalDateTime startDateTime,
-                         String property, String newValue);
+  int editEventsFromDate(String subject, LocalDateTime startDateTime, String property,
+      String newValue);
 
   /**
    * Edits all events with a specific subject.
