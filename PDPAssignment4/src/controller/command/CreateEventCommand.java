@@ -41,8 +41,8 @@ public class CreateEventCommand implements ICommand {
    * @return a response indicating success or failure
    */
   private String createEvent(String eventName, LocalDateTime startDateTime,
-      LocalDateTime endDateTime, boolean autoDecline, String description,
-      String location, boolean isPublic) {
+      LocalDateTime endDateTime, boolean autoDecline, String description, String location,
+      boolean isPublic) {
     if (eventName == null || eventName.trim().isEmpty()) {
       return "Error: Event name cannot be empty";
     }
@@ -50,14 +50,7 @@ public class CreateEventCommand implements ICommand {
       return "Error: Start date/time cannot be null";
     }
 
-    Event event = new Event(
-        eventName,
-        startDateTime,
-        endDateTime,
-        description,
-        location,
-        isPublic
-    );
+    Event event = new Event(eventName, startDateTime, endDateTime, description, location, isPublic);
 
     boolean success = calendar.addEvent(event, autoDecline);
 
@@ -88,13 +81,7 @@ public class CreateEventCommand implements ICommand {
       return "Error: Date cannot be null";
     }
 
-    Event event = Event.createAllDayEvent(
-        eventName,
-        date,
-        description,
-        location,
-        isPublic
-    );
+    Event event = Event.createAllDayEvent(eventName, date, description, location, isPublic);
 
     boolean success = calendar.addEvent(event, autoDecline);
 
@@ -120,8 +107,7 @@ public class CreateEventCommand implements ICommand {
    * @return a response indicating success or failure
    */
   private String createRecurringEvent(String eventName, LocalDateTime startDateTime,
-      LocalDateTime endDateTime, String weekdays,
-      int occurrences, boolean autoDecline,
+      LocalDateTime endDateTime, String weekdays, int occurrences, boolean autoDecline,
       String description, String location, boolean isPublic) {
     if (eventName == null || eventName.trim().isEmpty()) {
       return "Error: Event name cannot be empty";
@@ -139,22 +125,14 @@ public class CreateEventCommand implements ICommand {
     try {
       Set<java.time.DayOfWeek> repeatDays = DateTimeUtil.parseWeekdays(weekdays);
 
-      RecurringEvent recurringEvent = new RecurringEvent(
-          eventName,
-          startDateTime,
-          endDateTime,
-          description,
-          location,
-          isPublic,
-          repeatDays,
-          occurrences
-      );
+      RecurringEvent recurringEvent = new RecurringEvent(eventName, startDateTime, endDateTime,
+          description, location, isPublic, repeatDays, occurrences);
 
       boolean success = calendar.addRecurringEvent(recurringEvent, autoDecline);
 
       if (success) {
-        return "Recurring event '" + eventName + "' created successfully with "
-            + occurrences + " occurrences.";
+        return "Recurring event '" + eventName + "' created successfully with " + occurrences
+            + " occurrences.";
       } else {
         return "Failed to create recurring event due to conflicts.";
       }
@@ -178,8 +156,7 @@ public class CreateEventCommand implements ICommand {
    * @return a response indicating success or failure
    */
   private String createRecurringEventUntil(String eventName, LocalDateTime startDateTime,
-      LocalDateTime endDateTime, String weekdays,
-      LocalDate untilDate, boolean autoDecline,
+      LocalDateTime endDateTime, String weekdays, LocalDate untilDate, boolean autoDecline,
       String description, String location, boolean isPublic) {
     if (eventName == null || eventName.trim().isEmpty()) {
       return "Error: Event name cannot be empty";
@@ -197,16 +174,8 @@ public class CreateEventCommand implements ICommand {
     try {
       Set<java.time.DayOfWeek> repeatDays = DateTimeUtil.parseWeekdays(weekdays);
 
-      RecurringEvent recurringEvent = new RecurringEvent(
-          eventName,
-          startDateTime,
-          endDateTime,
-          description,
-          location,
-          isPublic,
-          repeatDays,
-          untilDate
-      );
+      RecurringEvent recurringEvent = new RecurringEvent(eventName, startDateTime, endDateTime,
+          description, location, isPublic, repeatDays, untilDate);
 
       boolean success = calendar.addRecurringEvent(recurringEvent, autoDecline);
 
@@ -240,7 +209,10 @@ public class CreateEventCommand implements ICommand {
 
     switch (args[0]) {
       case "single":
-        // Example: single "Meeting" 2023-05-15T10:00 2023-05-15T11:00 "Description" "Location" true true
+        /*
+        Example: single "Meeting" 2023-05-15T10:00 2023-05-15T11:00 "Description"
+        "Location" true true
+         */
         if (args.length < 4) {
           return "Error: Insufficient arguments for creating a single event";
         }
@@ -338,8 +310,7 @@ public class CreateEventCommand implements ICommand {
           boolean isPublic = args.length > 8 ? Boolean.parseBoolean(args[8]) : true;
 
           boolean success = calendar.createAllDayRecurringEvent(name, date, weekdays, occurrences,
-              autoDecline,
-              description, location, isPublic);
+              autoDecline, description, location, isPublic);
 
           if (success) {
             return "All-day recurring event '" + name + "' created successfully with " + occurrences
@@ -367,8 +338,7 @@ public class CreateEventCommand implements ICommand {
           boolean isPublic = args.length > 8 ? Boolean.parseBoolean(args[8]) : true;
 
           boolean success = calendar.createAllDayRecurringEventUntil(name, date, weekdays,
-              untilDate, autoDecline,
-              description, location, isPublic);
+              untilDate, autoDecline, description, location, isPublic);
 
           if (success) {
             return "All-day recurring event '" + name + "' created successfully until " + untilDate
