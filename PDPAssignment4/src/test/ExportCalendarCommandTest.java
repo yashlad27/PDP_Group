@@ -14,6 +14,9 @@ import model.event.RecurringEvent;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+/**
+ * This test suite verifies the functionality of the ExportCalendarCommand using a mock ICalendar.
+ */
 public class ExportCalendarCommandTest {
 
   /**

@@ -16,6 +16,9 @@ import model.event.Event;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+/**
+ * This test suite verifies the functionality of the PrintEventsCommand using a mock ICalendar.
+ */
 public class PrintEventsCommandTest {
 
   /**

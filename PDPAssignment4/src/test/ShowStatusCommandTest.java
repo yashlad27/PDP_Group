@@ -12,6 +12,10 @@ import model.calendar.ICalendar;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+/**
+ * This test suite verifies the command’s availability status
+ * using a mock {@link ICalendar} implementation.
+ */
 public class ShowStatusCommandTest {
 
   /**
