@@ -23,34 +23,43 @@ import static org.junit.Assert.assertTrue;
 
 public class CommandFactoryTest {
 
-  // Manual mock implementation of ICalendar
+  /*
+   Manual mock implementation of ICalendar.
+   */
   private static class MockCalendar implements ICalendar {
-    // Minimal implementation with no functionality
+
+    /*
+    Minimal implementation with no functionality.
+     */
     @Override
     public boolean addEvent(model.event.Event event, boolean autoDecline) {
       return false;
     }
 
     @Override
-    public boolean addRecurringEvent(model.event.RecurringEvent recurringEvent, boolean autoDecline) {
+    public boolean addRecurringEvent(model.event.RecurringEvent recurringEvent,
+        boolean autoDecline) {
       return false;
     }
 
     @Override
-    public boolean createRecurringEventUntil(String name, java.time.LocalDateTime start, java.time.LocalDateTime end,
-                                             String weekdays, java.time.LocalDate untilDate, boolean autoDecline) {
+    public boolean createRecurringEventUntil(String name, java.time.LocalDateTime start,
+        java.time.LocalDateTime end, String weekdays, java.time.LocalDate untilDate,
+        boolean autoDecline) {
       return false;
     }
 
     @Override
-    public boolean createAllDayRecurringEvent(String name, java.time.LocalDate date, String weekdays,
-                                              int occurrences, boolean autoDecline, String description, String location, boolean isPublic) {
+    public boolean createAllDayRecurringEvent(String name, java.time.LocalDate date,
+        String weekdays, int occurrences, boolean autoDecline, String description, String location,
+        boolean isPublic) {
       return false;
     }
 
     @Override
-    public boolean createAllDayRecurringEventUntil(String name, java.time.LocalDate date, String weekdays,
-                                                   java.time.LocalDate untilDate, boolean autoDecline, String description, String location, boolean isPublic) {
+    public boolean createAllDayRecurringEventUntil(String name, java.time.LocalDate date,
+        String weekdays, java.time.LocalDate untilDate, boolean autoDecline, String description,
+        String location, boolean isPublic) {
       return false;
     }
 
@@ -60,7 +69,8 @@ public class CommandFactoryTest {
     }
 
     @Override
-    public java.util.List<model.event.Event> getEventsInRange(java.time.LocalDate startDate, java.time.LocalDate endDate) {
+    public java.util.List<model.event.Event> getEventsInRange(java.time.LocalDate startDate,
+        java.time.LocalDate endDate) {
       return null;
     }
 
@@ -80,12 +90,14 @@ public class CommandFactoryTest {
     }
 
     @Override
-    public boolean editSingleEvent(String subject, java.time.LocalDateTime startDateTime, String property, String newValue) {
+    public boolean editSingleEvent(String subject, java.time.LocalDateTime startDateTime,
+        String property, String newValue) {
       return false;
     }
 
     @Override
-    public int editEventsFromDate(String subject, java.time.LocalDateTime startDateTime, String property, String newValue) {
+    public int editEventsFromDate(String subject, java.time.LocalDateTime startDateTime,
+        String property, String newValue) {
       return 0;
     }
 
@@ -107,6 +119,7 @@ public class CommandFactoryTest {
 
   // Manual mock implementation of ICalendarView
   private static class MockCalendarView implements ICalendarView {
+
     @Override
     public String readCommand() {
       return null;
@@ -114,10 +127,12 @@ public class CommandFactoryTest {
 
     @Override
     public void displayMessage(String message) {
+      int i = 0;
     }
 
     @Override
     public void displayError(String errorMessage) {
+      int i = 0;
     }
   }
 

@@ -23,6 +23,7 @@ public class CommandParserTest {
 
   // Mock implementations
   private static class MockCalendar implements ICalendar {
+
     // Minimal implementation with no functionality
     @Override
     public boolean addEvent(Event event, boolean autoDecline) {
@@ -30,35 +31,27 @@ public class CommandParserTest {
     }
 
     @Override
-    public boolean addRecurringEvent(RecurringEvent recurringEvent,
-                                     boolean autoDecline) {
+    public boolean addRecurringEvent(RecurringEvent recurringEvent, boolean autoDecline) {
       return false;
     }
 
     @Override
-    public boolean createRecurringEventUntil(String name, LocalDateTime start,
-                                             LocalDateTime end,
-                                             String weekdays,
-                                             LocalDate untilDate, boolean autoDecline) {
+    public boolean createRecurringEventUntil(String name, LocalDateTime start, LocalDateTime end,
+        String weekdays, LocalDate untilDate, boolean autoDecline) {
       return false;
     }
 
     @Override
     public boolean createAllDayRecurringEvent(String name, LocalDate date, String weekdays,
-                                              int occurrences, boolean autoDecline,
-                                              String description, String location,
-                                              boolean isPublic) {
+        int occurrences, boolean autoDecline, String description, String location,
+        boolean isPublic) {
       return false;
     }
 
     @Override
-    public boolean createAllDayRecurringEventUntil(String name, LocalDate date,
-                                                   String weekdays,
-                                                   LocalDate untilDate,
-                                                   boolean autoDecline,
-                                                   String description,
-                                                   String location,
-                                                   boolean isPublic) {
+    public boolean createAllDayRecurringEventUntil(String name, LocalDate date, String weekdays,
+        LocalDate untilDate, boolean autoDecline, String description, String location,
+        boolean isPublic) {
       return false;
     }
 
@@ -88,14 +81,14 @@ public class CommandParserTest {
     }
 
     @Override
-    public boolean editSingleEvent(String subject, LocalDateTime startDateTime,
-                                   String property, String newValue) {
+    public boolean editSingleEvent(String subject, LocalDateTime startDateTime, String property,
+        String newValue) {
       return false;
     }
 
     @Override
-    public int editEventsFromDate(String subject, LocalDateTime startDateTime,
-                                  String property, String newValue) {
+    public int editEventsFromDate(String subject, LocalDateTime startDateTime, String property,
+        String newValue) {
       return 0;
     }
 
@@ -116,6 +109,7 @@ public class CommandParserTest {
   }
 
   private static class MockCalendarView implements ICalendarView {
+
     @Override
     public String readCommand() {
       return null;
@@ -123,15 +117,18 @@ public class CommandParserTest {
 
     @Override
     public void displayMessage(String message) {
+      int i = 0;
     }
 
     @Override
     public void displayError(String errorMessage) {
+      int i = 0;
     }
   }
 
   // Mock command classes
   private static class MockCreateCommand implements ICommand {
+
     @Override
     public String execute(String[] args) {
       return "MockCreateCommand.execute called";
@@ -144,6 +141,7 @@ public class CommandParserTest {
   }
 
   private static class MockPrintCommand implements ICommand {
+
     @Override
     public String execute(String[] args) {
       return "MockPrintCommand.execute called";
@@ -156,6 +154,7 @@ public class CommandParserTest {
   }
 
   private static class MockShowCommand implements ICommand {
+
     @Override
     public String execute(String[] args) {
       return "MockShowCommand.execute called";
@@ -168,6 +167,7 @@ public class CommandParserTest {
   }
 
   private static class MockExportCommand implements ICommand {
+
     @Override
     public String execute(String[] args) {
       return "MockExportCommand.execute called";
@@ -180,6 +180,7 @@ public class CommandParserTest {
   }
 
   private static class MockEditCommand implements ICommand {
+
     @Override
     public String execute(String[] args) {
       return "MockEditCommand.execute called";
@@ -192,6 +193,7 @@ public class CommandParserTest {
   }
 
   private static class MockExitCommand implements ICommand {
+
     @Override
     public String execute(String[] args) {
       return "MockExitCommand.execute called";
@@ -205,6 +207,7 @@ public class CommandParserTest {
 
   // Mock CommandFactory
   private static class MockCommandFactory extends CommandFactory {
+
     private final ICommand createCommand;
     private final ICommand printCommand;
     private final ICommand showCommand;
@@ -224,7 +227,9 @@ public class CommandParserTest {
 
     @Override
     public ICommand getCommand(String name) {
-      if (name == null) return null;
+      if (name == null) {
+        return null;
+      }
 
       switch (name) {
         case "create":
@@ -246,15 +251,12 @@ public class CommandParserTest {
   }
 
   private CommandParser parser;
-  private MockCommandFactory commandFactory;
-  private ICalendar calendar;
-  private ICalendarView view;
 
   @Before
   public void setUp() {
-    calendar = new MockCalendar();
-    view = new MockCalendarView();
-    commandFactory = new MockCommandFactory(calendar, view);
+    ICalendar calendar = new MockCalendar();
+    ICalendarView view = new MockCalendarView();
+    MockCommandFactory commandFactory = new MockCommandFactory(calendar, view);
     parser = new CommandParser(commandFactory);
   }
 
@@ -300,7 +302,7 @@ public class CommandParserTest {
   public void testParseCreateEventWithAutoDecline() {
     // Setup
     String commandString = "create event --autoDecline \"Project Review\" from 2023-04-10T11:30 "
-            + "to 2023-04-10T12:30";
+        + "to 2023-04-10T12:30";
 
     // Execute
     CommandParser.CommandWithArgs result = parser.parseCommand(commandString);
@@ -335,7 +337,7 @@ public class CommandParserTest {
   public void testParseCreateRecurringEvent() {
     // Setup
     String commandString = "create event \"Weekly Status Meeting\" "
-            + "from 2023-04-12T09:00 to 2023-04-12T10:00 repeats MW for 4 times";
+        + "from 2023-04-12T09:00 to 2023-04-12T10:00 repeats MW for 4 times";
 
     // Execute
     CommandParser.CommandWithArgs result = parser.parseCommand(commandString);
@@ -354,7 +356,7 @@ public class CommandParserTest {
   public void testParseCreateRecurringUntilEvent() {
     // Setup
     String commandString = "create event \"Department Sync\" from 2023-04-14T14:00 to"
-            + " 2023-04-14T15:00 repeats F until 2023-05-05";
+        + " 2023-04-14T15:00 repeats F until 2023-05-05";
 
     // Execute
     CommandParser.CommandWithArgs result = parser.parseCommand(commandString);
@@ -372,8 +374,8 @@ public class CommandParserTest {
   @Test
   public void testParseCreateAllDayRecurringEvent() {
     // Setup
-    String commandString = "create event \"Morning Standup\" on "
-            + "2023-04-17 repeats MTWRF for 10 times";
+    String commandString =
+        "create event \"Morning Standup\" on " + "2023-04-17 repeats MTWRF for 10 times";
 
     // Execute
     CommandParser.CommandWithArgs result = parser.parseCommand(commandString);
@@ -391,8 +393,8 @@ public class CommandParserTest {
   @Test
   public void testParseCreateAllDayRecurringUntilEvent() {
     // Setup
-    String commandString = "create event \"Monthly Planning\" "
-            + "on 2023-04-20 repeats F until 2023-07-20";
+    String commandString =
+        "create event \"Monthly Planning\" " + "on 2023-04-20 repeats F until 2023-07-20";
 
     // Execute
     CommandParser.CommandWithArgs result = parser.parseCommand(commandString);
@@ -476,7 +478,7 @@ public class CommandParserTest {
   public void testParseEditSingleEvent() {
     // Setup
     String commandString = "edit event subject \"Team Meeting\" from "
-            + "2023-04-10T10:00 to 2023-04-10T11:00 with \"Team Sync\"";
+        + "2023-04-10T10:00 to 2023-04-10T11:00 with \"Team Sync\"";
 
     // Execute
     CommandParser.CommandWithArgs result = parser.parseCommand(commandString);
@@ -495,8 +497,8 @@ public class CommandParserTest {
   @Test
   public void testParseEditEventsFromDate() {
     // Setup
-    String commandString = "edit events visibility \"Weekly Meeting\" "
-            + "from 2023-04-12T09:00 with private";
+    String commandString =
+        "edit events visibility \"Weekly Meeting\" " + "from 2023-04-12T09:00 with private";
 
     // Execute
     CommandParser.CommandWithArgs result = parser.parseCommand(commandString);
@@ -511,24 +513,6 @@ public class CommandParserTest {
     assertEquals("2023-04-12T09:00", args[3]);
     assertEquals("private", args[4]);
   }
-
-//  @Test
-//  public void testParseEditAllEvents() {
-//    // Setup
-//    String commandString = "edit events visibility \"Standup\" public";
-//
-//    // Execute
-//    CommandParser.CommandWithArgs result = parser.parseCommand(commandString);
-//
-//    // Verify
-//    assertNotNull(result);
-//    assertTrue(result.getCommand() instanceof MockEditCommand);
-//    String[] args = result.getArgs();
-//    assertEquals("all", args[0]);
-//    assertEquals("visibility", args[1]);
-//    assertEquals("Standup", args[2]);
-//    assertEquals("public", args[3]);
-//  }
 
   @Test(expected = IllegalArgumentException.class)
   public void testParseEmptyCommand() {
@@ -574,7 +558,7 @@ public class CommandParserTest {
   public void testEventWithDescription() {
     // Setup
     String commandString = "create event \"Meeting\" from 2023-04-10T10:00 to 2023-04-10T11:00 "
-            + "desc \"Team discussion\"";
+        + "desc \"Team discussion\"";
 
     // Execute
     CommandParser.CommandWithArgs result = parser.parseCommand(commandString);
@@ -588,7 +572,7 @@ public class CommandParserTest {
   public void testEventWithLocation() {
     // Setup
     String commandString = "create event \"Meeting\" from 2023-04-10T10:00 to 2023-04-10T11:00 "
-            + "at \"Conference Room\"";
+        + "at \"Conference Room\"";
 
     // Execute
     CommandParser.CommandWithArgs result = parser.parseCommand(commandString);
@@ -602,7 +586,7 @@ public class CommandParserTest {
   public void testPrivateEvent() {
     // Setup
     String commandString = "create event \"Confidential Meeting\" from 2023-04-10T10:00 to "
-            + "2023-04-10T11:00 private";
+        + "2023-04-10T11:00 private";
 
     // Execute
     CommandParser.CommandWithArgs result = parser.parseCommand(commandString);
@@ -616,7 +600,7 @@ public class CommandParserTest {
   public void testComplexEvent() {
     // Setup
     String commandString = "create event --autoDecline \"Project Meeting\" from 2023-04-10T10:00 "
-            + "to 2023-04-10T11:00 desc \"Quarterly project review\" at \"Room 101\" private";
+        + "to 2023-04-10T11:00 desc \"Quarterly project review\" at \"Room 101\" private";
 
     // Execute
     CommandParser.CommandWithArgs result = parser.parseCommand(commandString);
