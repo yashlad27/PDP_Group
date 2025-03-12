@@ -42,16 +42,8 @@ public class CreateEventCommandTest {
   @Test
   public void testCreateSingleEventSuccess() {
     // Execute - Create a single event, no auto-decline
-    String[] args = {
-            "single",
-            "Meeting",
-            "2023-05-15T10:00",
-            "2023-05-15T11:00",
-            null,  // description
-            null,  // location
-            "true",  // isPublic
-            "false"  // autoDecline
-    };
+    String[] args = {"single", "Meeting", "2023-05-15T10:00", "2023-05-15T11:00", null, null,
+        "true", "false"};
 
     String result = createCommand.execute(args);
 
@@ -62,25 +54,15 @@ public class CreateEventCommandTest {
 
     Event addedEvent = calendar.getAllEvents().get(0);
     assertEquals("Meeting", addedEvent.getSubject());
-    assertEquals(LocalDateTime.of(2023, 5, 15, 10, 0),
-            addedEvent.getStartDateTime());
-    assertEquals(LocalDateTime.of(2023, 5, 15, 11, 0),
-            addedEvent.getEndDateTime());
+    assertEquals(LocalDateTime.of(2023, 5, 15, 10, 0), addedEvent.getStartDateTime());
+    assertEquals(LocalDateTime.of(2023, 5, 15, 11, 0), addedEvent.getEndDateTime());
   }
 
   @Test
   public void testCreateSingleEventWithDescriptionAndLocation() {
     // Execute - Create a single event with description and location
-    String[] args = {
-            "single",
-            "Birthday Party",
-            "2023-05-15T18:00",
-            "2023-05-15T22:00",
-            "Celebrating Dad's 50th birthday",
-            "Copacabana Restaurant",
-            "true",  // isPublic
-            "false"  // autoDecline
-    };
+    String[] args = {"single", "Birthday Party", "2023-05-15T18:00", "2023-05-15T22:00",
+        "Celebrating Dad's 50th birthday", "Copacabana Restaurant", "true", "false"};
 
     String result = createCommand.execute(args);
 
@@ -97,16 +79,8 @@ public class CreateEventCommandTest {
   @Test
   public void testCreatePrivateSingleEvent() {
     // Execute - Create a single private event
-    String[] args = {
-            "single",
-            "Therapy Session",
-            "2023-05-15T15:00",
-            "2023-05-15T16:00",
-            "Weekly therapy appointment",
-            "Dr. Smith's Office",
-            "false",  // isPublic
-            "false"   // autoDecline
-    };
+    String[] args = {"single", "Therapy Session", "2023-05-15T15:00", "2023-05-15T16:00",
+        "Weekly therapy appointment", "Dr. Smith's Office", "false", "false"};
 
     String result = createCommand.execute(args);
 
@@ -121,16 +95,8 @@ public class CreateEventCommandTest {
   @Test
   public void testCreateSingleEventWithAutoDeclineSuccess() {
     // Execute - Create a single event with auto-decline
-    String[] args = {
-            "single",
-            "Meeting",
-            "2023-05-15T10:00",
-            "2023-05-15T11:00",
-            null,
-            null,
-            "true",   // isPublic
-            "true"    // autoDecline
-    };
+    String[] args = {"single", "Meeting", "2023-05-15T10:00", "2023-05-15T11:00", null, null,
+        "true", "true"};
 
     String result = createCommand.execute(args);
 
@@ -141,29 +107,13 @@ public class CreateEventCommandTest {
   @Test
   public void testCreateSingleEventWithConflict() {
     // First, create an event
-    String[] firstArgs = {
-            "single",
-            "Meeting 1",
-            "2023-05-15T10:00",
-            "2023-05-15T11:00",
-            null,
-            null,
-            "true",   // isPublic
-            "false"   // autoDecline
-    };
+    String[] firstArgs = {"single", "Meeting 1", "2023-05-15T10:00", "2023-05-15T11:00", null, null,
+        "true", "false"};
     createCommand.execute(firstArgs);
 
     // Now try to create a conflicting event with autoDecline=true
-    String[] secondArgs = {
-            "single",
-            "Meeting 2",
-            "2023-05-15T10:30",
-            "2023-05-15T11:30",
-            null,
-            null,
-            "true",   // isPublic
-            "true"    // autoDecline
-    };
+    String[] secondArgs = {"single", "Meeting 2", "2023-05-15T10:30", "2023-05-15T11:30", null,
+        null, "true", "true"};
 
     String result = createCommand.execute(secondArgs);
 
@@ -174,16 +124,8 @@ public class CreateEventCommandTest {
   @Test
   public void testCreateSingleEventWithInvalidName() {
     // Execute - Create a single event with null/empty name
-    String[] args = {
-            "single",
-            "",  // Empty name
-            "2023-05-15T10:00",
-            "2023-05-15T11:00",
-            null,
-            null,
-            "true",
-            "false"
-    };
+    String[] args = {"single", "", "2023-05-15T10:00", "2023-05-15T11:00", null, null, "true",
+        "false"};
 
     String result = createCommand.execute(args);
 
@@ -194,16 +136,8 @@ public class CreateEventCommandTest {
   @Test
   public void testCreateSingleEventWithInvalidDateTime() {
     // Execute - Create a single event with invalid date time
-    String[] args = {
-            "single",
-            "Meeting",
-            "invalid-date",  // Invalid date format
-            "2023-05-15T11:00",
-            null,
-            null,
-            "true",
-            "false"
-    };
+    String[] args = {"single", "Meeting", "invalid-date", "2023-05-15T11:00", null, null, "true",
+        "false"};
 
     String result = createCommand.execute(args);
 
@@ -216,15 +150,7 @@ public class CreateEventCommandTest {
   @Test
   public void testCreateAllDayEventSuccess() {
     // Execute - Create an all-day event, no auto-decline
-    String[] args = {
-            "allday",
-            "Holiday",
-            "2023-05-15",  // date
-            "false",       // autoDecline
-            null,          // description
-            null,          // location
-            "true"         // isPublic
-    };
+    String[] args = {"allday", "Holiday", "2023-05-15", "false", null, null, "true"};
 
     String result = createCommand.execute(args);
 
@@ -239,15 +165,8 @@ public class CreateEventCommandTest {
   @Test
   public void testCreateAllDayEventWithDescriptionAndLocation() {
     // Execute - Create an all-day event with description and location
-    String[] args = {
-            "allday",
-            "Conference Day",
-            "2023-05-15",
-            "false",            // autoDecline
-            "Annual Tech Conference",
-            "Convention Center",
-            "true"              // isPublic
-    };
+    String[] args = {"allday", "Conference Day", "2023-05-15", "false", "Annual Tech Conference",
+        "Convention Center", "true"};
 
     String result = createCommand.execute(args);
 
@@ -264,15 +183,8 @@ public class CreateEventCommandTest {
   @Test
   public void testCreatePrivateAllDayEvent() {
     // Execute - Create a private all-day event
-    String[] args = {
-            "allday",
-            "Mental Health Day",
-            "2023-05-15",
-            "false",         // autoDecline
-            "Personal day off",
-            "Home",
-            "false"          // isPublic
-    };
+    String[] args = {"allday", "Mental Health Day", "2023-05-15", "false", "Personal day off",
+        "Home", "false"};
 
     String result = createCommand.execute(args);
 
@@ -288,20 +200,12 @@ public class CreateEventCommandTest {
   @Test
   public void testCreateAllDayEventWithInvalidDate() {
     // Execute - Create an all-day event with invalid date
-    String[] args = {
-            "allday",
-            "Holiday",
-            "invalid-date",  // Invalid date format
-            "false",
-            null,
-            null,
-            "true"
-    };
+    String[] args = {"allday", "Holiday", "invalid-date", "false", null, null, "true"};
 
     String result = createCommand.execute(args);
 
     assertTrue(result.contains("Error parsing arguments"));
-    assertEquals(0, calendar.getAllEvents().size()); // No event added
+    assertEquals(0, calendar.getAllEvents().size());
   }
 
   // RECURRING EVENT TESTS
@@ -309,18 +213,8 @@ public class CreateEventCommandTest {
   @Test
   public void testCreateRecurringEventSuccess() {
     // Execute - Create a recurring event
-    String[] args = {
-            "recurring",
-            "Weekly Meeting",
-            "2023-05-15T10:00",
-            "2023-05-15T11:00",
-            "MW",              // weekdays
-            "8",               // occurrences
-            "false",           // autoDecline
-            null,              // description
-            null,              // location
-            "true"             // isPublic
-    };
+    String[] args = {"recurring", "Weekly Meeting", "2023-05-15T10:00", "2023-05-15T11:00", "MW",
+        "8", "false", null, null, "true"};
 
     String result = createCommand.execute(args);
 
@@ -331,18 +225,9 @@ public class CreateEventCommandTest {
   @Test
   public void testCreateRecurringEventWithDescriptionAndLocation() {
     // Execute - Create a recurring event with description and location
-    String[] args = {
-            "recurring",
-            "Yoga Class",
-            "2023-05-15T18:00",
-            "2023-05-15T19:00",
-            "TR",               // weekdays
-            "12",               // occurrences
-            "false",            // autoDecline
-            "Beginner's yoga with Instructor Sarah",
-            "Downtown Fitness Center",
-            "true"              // isPublic
-    };
+    String[] args = {"recurring", "Yoga Class", "2023-05-15T18:00", "2023-05-15T19:00", "TR",
+
+        "12", "false", "Beginner's yoga with Instructor Sarah", "Downtown Fitness Center", "true"};
 
     String result = createCommand.execute(args);
 
@@ -359,18 +244,9 @@ public class CreateEventCommandTest {
   @Test
   public void testCreatePrivateRecurringEvent() {
     // Execute - Create a private recurring event
-    String[] args = {
-            "recurring",
-            "Therapy Session",
-            "2023-05-15T15:00",
-            "2023-05-15T16:00",
-            "M",                // weekdays
-            "10",               // occurrences
-            "false",            // autoDecline
-            "Weekly therapy appointment",
-            "Dr. Smith's Office",
-            "false"             // isPublic
-    };
+    String[] args = {"recurring", "Therapy Session", "2023-05-15T15:00", "2023-05-15T16:00", "M",
+
+        "10", "false", "Weekly therapy appointment", "Dr. Smith's Office", "false"};
 
     String result = createCommand.execute(args);
 
@@ -385,18 +261,9 @@ public class CreateEventCommandTest {
   @Test
   public void testCreateRecurringEventWithInvalidWeekdays() {
     // Execute - Create a recurring event with invalid weekdays
-    String[] args = {
-            "recurring",
-            "Weekly Meeting",
-            "2023-05-15T10:00",
-            "2023-05-15T11:00",
-            "XYZ",             // Invalid weekdays
-            "8",
-            "false",
-            null,
-            null,
-            "true"
-    };
+    String[] args = {"recurring", "Weekly Meeting", "2023-05-15T10:00", "2023-05-15T11:00", "XYZ",
+
+        "8", "false", null, null, "true"};
 
     String result = createCommand.execute(args);
 
@@ -407,18 +274,8 @@ public class CreateEventCommandTest {
   @Test
   public void testCreateRecurringEventWithInvalidOccurrences() {
     // Execute - Create a recurring event with invalid occurrences
-    String[] args = {
-            "recurring",
-            "Weekly Meeting",
-            "2023-05-15T10:00",
-            "2023-05-15T11:00",
-            "MW",
-            "-1",              // Invalid occurrences
-            "false",
-            null,
-            null,
-            "true"
-    };
+    String[] args = {"recurring", "Weekly Meeting", "2023-05-15T10:00", "2023-05-15T11:00", "MW",
+        "-1", "false", null, null, "true"};
 
     String result = createCommand.execute(args);
 
@@ -431,18 +288,8 @@ public class CreateEventCommandTest {
   @Test
   public void testCreateRecurringEventUntilSuccess() {
     // Execute - Create a recurring event until a specific date
-    String[] args = {
-            "recurring-until",
-            "Daily Standup",
-            "2023-05-15T09:30",
-            "2023-05-15T09:45",
-            "MTWRF",            // weekdays
-            "2023-05-31",       // until date
-            "false",            // autoDecline
-            null,               // description
-            null,               // location
-            "true"              // isPublic
-    };
+    String[] args = {"recurring-until", "Daily Standup", "2023-05-15T09:30", "2023-05-15T09:45",
+        "MTWRF", "2023-05-31", "false", null, null, "true"};
 
     String result = createCommand.execute(args);
 
@@ -453,18 +300,8 @@ public class CreateEventCommandTest {
   @Test
   public void testCreateRecurringEventUntilWithDetailsSuccess() {
     // Execute - Create a recurring event until a specific date with details
-    String[] args = {
-            "recurring-until",
-            "Weekly Review",
-            "2023-05-15T16:00",
-            "2023-05-15T17:00",
-            "F",                 // weekdays
-            "2023-06-30",        // until date
-            "false",             // autoDecline
-            "Project progress review",
-            "Conference Room A",
-            "false"              // isPublic
-    };
+    String[] args = {"recurring-until", "Weekly Review", "2023-05-15T16:00", "2023-05-15T17:00",
+        "F", "2023-06-30", "false", "Project progress review", "Conference Room A", "false"};
 
     String result = createCommand.execute(args);
 
@@ -482,18 +319,8 @@ public class CreateEventCommandTest {
   @Test
   public void testCreateRecurringEventUntilWithInvalidDate() {
     // Execute - Create a recurring event with invalid until date
-    String[] args = {
-            "recurring-until",
-            "Daily Standup",
-            "2023-05-15T09:30",
-            "2023-05-15T09:45",
-            "MTWRF",
-            "invalid-date",     // Invalid until date
-            "false",
-            null,
-            null,
-            "true"
-    };
+    String[] args = {"recurring-until", "Daily Standup", "2023-05-15T09:30", "2023-05-15T09:45",
+        "MTWRF", "invalid-date", "false", null, null, "true"};
 
     String result = createCommand.execute(args);
 
@@ -506,17 +333,8 @@ public class CreateEventCommandTest {
   @Test
   public void testCreateAllDayRecurringEventSuccess() {
     // Execute - Create an all-day recurring event
-    String[] args = {
-            "allday-recurring",
-            "Team Building Day",
-            "2023-05-15",        // date
-            "F",                 // weekdays
-            "8",                 // occurrences
-            "false",             // autoDecline
-            "Monthly team building activity",
-            "Various Locations",
-            "true"               // isPublic
-    };
+    String[] args = {"allday-recurring", "Team Building Day", "2023-05-15", "F", "8", "false",
+        "Monthly team building activity", "Various Locations", "true"};
 
     String result = createCommand.execute(args);
 
@@ -527,17 +345,8 @@ public class CreateEventCommandTest {
   @Test
   public void testCreateAllDayRecurringEventUntilSuccess() {
     // Execute - Create an all-day recurring event until date
-    String[] args = {
-            "allday-recurring-until",
-            "Holiday",
-            "2023-05-15",        // date
-            "MF",                // weekdays
-            "2023-12-31",        // until date
-            "false",             // autoDecline
-            "Company holiday",
-            null,
-            "true"               // isPublic
-    };
+    String[] args = {"allday-recurring-until", "Holiday", "2023-05-15", "MF", "2023-12-31", "false",
+        "Company holiday", null, "true"};
 
     String result = createCommand.execute(args);
 
