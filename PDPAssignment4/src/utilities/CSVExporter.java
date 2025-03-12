@@ -8,11 +8,15 @@ import java.util.List;
 
 import model.event.Event;
 
+/**
+ * Utility class for exporting events to csv format.
+ */
 public class CSVExporter {
 
   private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("MM/dd/yyyy");
   private static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("hh:mm a");
-  private static final DateTimeFormatter DISPLAY_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+  private static final DateTimeFormatter DISPLAY_DATE_FORMAT = DateTimeFormatter.ofPattern(
+      "yyyy-MM-dd");
   private static final DateTimeFormatter DISPLAY_TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm");
 
   /**
@@ -25,7 +29,8 @@ public class CSVExporter {
   public static String exportToCSV(String filePath, List<Event> events) {
     try (FileWriter writer = new FileWriter(filePath)) {
       // Write CSV header
-      writer.write("Subject,Start Date,Start Time,End Date,End Time,All Day Event,Description,Location,Private\n");
+      writer.write(
+          "Subject,Start Date,Start Time,End Date,End Time,All Day Event,Description,Location,Private\n");
 
       // Write each event
       for (Event event : events) {
@@ -73,7 +78,8 @@ public class CSVExporter {
         line.append(isAllDay ? "True" : "False").append(",");
 
         // Description
-        line.append(escapeCSV(event.getDescription() != null ? event.getDescription() : "")).append(",");
+        line.append(escapeCSV(event.getDescription() != null ? event.getDescription() : ""))
+            .append(",");
 
         // Location
         line.append(escapeCSV(event.getLocation() != null ? event.getLocation() : "")).append(",");
@@ -129,7 +135,8 @@ public class CSVExporter {
           result.append(" to ");
 
           // If event ends on a different day, include the end date
-          if (!event.getStartDateTime().toLocalDate().equals(event.getEndDateTime().toLocalDate())) {
+          if (!event.getStartDateTime().toLocalDate()
+              .equals(event.getEndDateTime().toLocalDate())) {
             result.append(event.getEndDateTime().format(DISPLAY_DATE_FORMAT)).append(" ");
           }
 
