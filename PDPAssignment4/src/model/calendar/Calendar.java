@@ -182,7 +182,9 @@ public class Calendar implements ICalendar {
   }
 
   /**
-   * @return
+   * Retrieves all events in calendar.
+   *
+   * @return List of all events.
    */
   @Override
   public List<Event> getAllEvents() {
@@ -226,7 +228,7 @@ public class Calendar implements ICalendar {
 
     // gets all events with the given subject
     List<Event> matchingEvents = events.stream().filter(
-            e -> e.getSubject().equals(subject) && !e.getStartDateTime().isBefore(startDateTime))
+        e -> e.getSubject().equals(subject) && !e.getStartDateTime().isBefore(startDateTime))
         .collect(Collectors.toList());
 
     // update each matching event
@@ -273,7 +275,7 @@ public class Calendar implements ICalendar {
   }
 
   /**
-   * Export all events of the calendar to a  csv file
+   * Export all events of the calendar to a  csv file.
    *
    * @param filePath the path where the CSV file should be created
    * @return filePath of exported csv.
