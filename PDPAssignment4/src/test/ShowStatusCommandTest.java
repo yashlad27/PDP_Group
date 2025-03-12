@@ -14,6 +14,12 @@ import static org.junit.Assert.assertTrue;
 
 public class ShowStatusCommandTest {
 
+  /**
+   * A mock implementation of the {@link ICalendar} interface used for testing.
+   * This class simulates a calendar system by providing controlled responses
+   * for availability queries and tracking the last checked date-time.
+   * It does not support actual event storage or modifications.
+   */
   private static class MockCalendar implements ICalendar {
     private boolean isBusyResult = false;
     private LocalDateTime lastCheckedDateTime = null;

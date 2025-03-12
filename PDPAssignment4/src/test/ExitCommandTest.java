@@ -5,6 +5,9 @@ import controller.command.ExitCommand;
 
 import static org.junit.Assert.assertEquals;
 
+/**
+ * Unit tests for the {@link ExitCommand} class.
+ */
 public class ExitCommandTest {
 
   private ExitCommand command;

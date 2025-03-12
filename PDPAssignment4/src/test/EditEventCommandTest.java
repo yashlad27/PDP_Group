@@ -10,7 +10,6 @@ import model.calendar.ICalendar;
 import model.event.Event;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -23,37 +22,35 @@ public class EditEventCommandTest {
 
   @Before
   public void setUp() {
-    // Create a real calendar for testing
     calendar = new Calendar();
     editCommand = new EditEventCommand(calendar);
 
-    // Add some test events to the calendar
     LocalDateTime now = LocalDateTime.now();
-    LocalDateTime startDateTime = LocalDateTime.of(2023, 5, 15, 10, 0);
-    LocalDateTime endDateTime = LocalDateTime.of(2023, 5, 15, 11, 0);
+    LocalDateTime startDateTime = LocalDateTime.of(2023, 5, 15, 10,
+            0);
+    LocalDateTime endDateTime = LocalDateTime.of(2023, 5, 15, 11,
+            0);
 
-    // Add a single event
     Event singleEvent = new Event(
             "Meeting",
             startDateTime,
             endDateTime,
-            null, // description
-            null, // location
-            true  // isPublic
+            null,
+            null,
+            true
     );
-    calendar.addEvent(singleEvent, false); // false for autoDecline
+    calendar.addEvent(singleEvent, false);
 
     LocalDateTime recStartDateTime = LocalDateTime.of(2023, 6, 1, 14, 0);
     LocalDateTime recEndDateTime = LocalDateTime.of(2023, 6, 1, 15, 0);
 
-    // Using the API provided by ICalendar
     calendar.createRecurringEventUntil(
             "Weekly Meeting",
             recStartDateTime,
             recEndDateTime,
-            "MW", // Monday and Wednesday
-            LocalDate.of(2023, 7, 1), // until date
-            false // autoDecline
+            "MW",
+            LocalDate.of(2023, 7, 1),
+            false
     );
   }
 
@@ -62,28 +59,19 @@ public class EditEventCommandTest {
     assertEquals("edit", editCommand.getName());
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void testConstructorWithNullCalendar() {
-    assertNotNull(new EditEventCommand(calendar));
-    assertTrue(true);
+    new EditEventCommand(null);
   }
 
   @Test
   public void testEditSingleEventSuccess() {
-    // Execute - Edit a single event's subject
-    String[] args = {
-            "single",
-            "subject",
-            "Meeting",
-            "2023-05-15T10:00",
-            "Updated Meeting"
-    };
+    String[] args = {"single", "subject", "Meeting", "2023-05-15T10:00", "Updated Meeting"};
 
     String result = editCommand.execute(args);
 
     assertTrue(result.contains("Successfully edited event"));
 
-    // Check if event was updated
     boolean foundUpdatedEvent = false;
     for (Event event : calendar.getAllEvents()) {
       if (event.getSubject().equals("Updated Meeting")) {
@@ -96,14 +84,8 @@ public class EditEventCommandTest {
 
   @Test
   public void testEditSingleEventDescription() {
-    // Execute - Edit a single event's description
-    String[] args = {
-            "single",
-            "description",
-            "Meeting",
-            "2023-05-15T10:00",
-            "Updated meeting description"
-    };
+    String[] args = {"single", "description", "Meeting", "2023-05-15T10:00",
+            "Updated meeting description"};
 
     String result = editCommand.execute(args);
 
@@ -113,14 +95,7 @@ public class EditEventCommandTest {
 
   @Test
   public void testEditSingleEventLocation() {
-    // Execute - Edit a single event's location
-    String[] args = {
-            "single",
-            "location",
-            "Meeting",
-            "2023-05-15T10:00",
-            "Conference Room B"
-    };
+    String[] args = {"single", "location", "Meeting", "2023-05-15T10:00", "Conference Room B"};
 
     String result = editCommand.execute(args);
 
@@ -130,14 +105,8 @@ public class EditEventCommandTest {
 
   @Test
   public void testEditSingleEventNotFound() {
-    // Execute - Try to edit a non-existent event
-    String[] args = {
-            "single",
-            "subject",
-            "Non-existent Meeting",
-            "2023-05-15T10:00",
-            "Updated Meeting"
-    };
+    String[] args = {"single", "subject", "Non-existent Meeting", "2023-05-15T10:00",
+            "Updated Meeting"};
 
     String result = editCommand.execute(args);
 
@@ -146,21 +115,14 @@ public class EditEventCommandTest {
 
   @Test
   public void testEditEventsFromDateSuccess() {
-    // Execute - Edit events in a series from a specific date
-    String[] args = {
-            "series_from_date",
-            "subject",
-            "Weekly Meeting",
-            "2023-06-01T14:00",
-            "Updated Weekly Meeting"
-    };
+    String[] args = {"series_from_date", "subject", "Weekly Meeting", "2023-06-01T14:00",
+            "Updated Weekly Meeting"};
 
     String result = editCommand.execute(args);
 
     assertTrue(result.contains("Successfully edited"));
     assertTrue(result.contains("events in the series"));
 
-    // Check if events were updated
     boolean foundUpdatedEvents = false;
     for (Event event : calendar.getAllEvents()) {
       if (event.getSubject().equals("Updated Weekly Meeting")) {
@@ -173,14 +135,8 @@ public class EditEventCommandTest {
 
   @Test
   public void testEditEventsFromDateNotFound() {
-    // Execute - Try to edit events from a date for a non-existent series
-    String[] args = {
-            "series_from_date",
-            "subject",
-            "Non-existent Meeting",
-            "2023-06-01T14:00",
-            "Updated Meeting"
-    };
+    String[] args = {"series_from_date", "subject", "Non-existent Meeting", "2023-06-01T14:00",
+            "Updated Meeting"};
 
     String result = editCommand.execute(args);
 
@@ -189,19 +145,12 @@ public class EditEventCommandTest {
 
   @Test
   public void testEditAllEventsSuccess() {
-    // Execute - Edit all events with a specific name
-    String[] args = {
-            "all",
-            "subject",
-            "Weekly Meeting",
-            "Updated All Meetings"
-    };
+    String[] args = {"all", "subject", "Weekly Meeting", "Updated All Meetings"};
 
     String result = editCommand.execute(args);
 
     assertTrue(result.contains("Successfully edited"));
 
-    // Check if all events were updated
     boolean foundUpdatedEvents = false;
     for (Event event : calendar.getAllEvents()) {
       if (event.getSubject().equals("Updated All Meetings")) {
@@ -214,13 +163,7 @@ public class EditEventCommandTest {
 
   @Test
   public void testEditAllEventsNotFound() {
-    // Execute - Try to edit all events with a non-existent name
-    String[] args = {
-            "all",
-            "subject",
-            "Non-existent Meeting",
-            "Updated Meeting"
-    };
+    String[] args = {"all", "subject", "Non-existent Meeting", "Updated Meeting"};
 
     String result = editCommand.execute(args);
 
@@ -229,13 +172,7 @@ public class EditEventCommandTest {
 
   @Test
   public void testEditAllEventsLocation() {
-    // Execute - Edit location for all events with a specific name
-    String[] args = {
-            "all",
-            "location",
-            "Weekly Meeting",
-            "New Conference Hall"
-    };
+    String[] args = {"all", "location", "Weekly Meeting", "New Conference Hall"};
 
     String result = editCommand.execute(args);
 
@@ -244,7 +181,6 @@ public class EditEventCommandTest {
 
   @Test
   public void testExecuteWithInsufficientArgs() {
-    // Execute - Call execute with insufficient arguments
     String[] args = {};
     String result = editCommand.execute(args);
 
@@ -253,13 +189,7 @@ public class EditEventCommandTest {
 
   @Test
   public void testExecuteWithUnknownEditType() {
-    // Execute - Call execute with unknown edit type
-    String[] args = {
-            "unknown_type",
-            "subject",
-            "Meeting",
-            "Updated Meeting"
-    };
+    String[] args = {"unknown_type", "subject", "Meeting", "Updated Meeting"};
     String result = editCommand.execute(args);
 
     assertTrue(result.contains("Unknown edit command type"));
@@ -267,12 +197,7 @@ public class EditEventCommandTest {
 
   @Test
   public void testExecuteWithInsufficientArgsForSingleEdit() {
-    // Execute - Call execute with insufficient arguments for editing a single event
-    String[] args = {
-            "single",
-            "subject",
-            "Meeting"
-    };
+    String[] args = {"single", "subject", "Meeting"};
     String result = editCommand.execute(args);
 
     assertTrue(result.contains("Error: Insufficient arguments"));
@@ -280,12 +205,7 @@ public class EditEventCommandTest {
 
   @Test
   public void testExecuteWithInsufficientArgsForSeriesFromDateEdit() {
-    // Execute - Call execute with insufficient arguments for editing events from date
-    String[] args = {
-            "series_from_date",
-            "subject",
-            "Weekly Meeting"
-    };
+    String[] args = {"series_from_date", "subject", "Weekly Meeting"};
     String result = editCommand.execute(args);
 
     assertTrue(result.contains("Error: Insufficient arguments"));
@@ -293,11 +213,7 @@ public class EditEventCommandTest {
 
   @Test
   public void testExecuteWithInsufficientArgsForAllEventsEdit() {
-    // Execute - Call execute with insufficient arguments for editing all events
-    String[] args = {
-            "all",
-            "subject"
-    };
+    String[] args = {"all", "subject"};
     String result = editCommand.execute(args);
 
     assertTrue(result.contains("Error: Insufficient arguments"));
@@ -305,14 +221,7 @@ public class EditEventCommandTest {
 
   @Test
   public void testExecuteWithInvalidDateFormat() {
-    // Execute - Call execute with invalid date format
-    String[] args = {
-            "single",
-            "subject",
-            "Meeting",
-            "invalid-date",
-            "Updated Meeting"
-    };
+    String[] args = {"single", "subject", "Meeting", "invalid-date", "Updated Meeting"};
     String result = editCommand.execute(args);
 
     assertTrue(result.contains("Error parsing date/time"));
@@ -320,20 +229,10 @@ public class EditEventCommandTest {
 
   @Test
   public void testEditEventVisibility() {
-    // Execute - Edit event visibility (public/private)
-    String[] args = {
-            "single",
-            "visibility",
-            "Meeting",
-            "2023-05-15T10:00",
-            "false"  // Change to private
-    };
+    String[] args = {"single", "visibility", "Meeting", "2023-05-15T10:00", "false"};
 
     String result = editCommand.execute(args);
 
     assertTrue(result.contains("Successfully edited event"));
-
-    // Check if event visibility was updated
-    // This depends on your implementation details
   }
 }
