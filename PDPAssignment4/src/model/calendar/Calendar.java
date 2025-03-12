@@ -39,9 +39,11 @@ public class Calendar implements ICalendar {
   }
 
   /**
+   * method to add event to the calendar.
+   *
    * @param event       the event to add
    * @param autoDecline if true, the addition will be declined if it conflicts with existing events
-   * @return
+   * @return true if created successfully.
    */
   @Override
   public boolean addEvent(Event event, boolean autoDecline) {
@@ -61,9 +63,11 @@ public class Calendar implements ICalendar {
   }
 
   /**
+   * Method to add recurring event to the calendar.
+   *
    * @param recurringEvent the recurring event to add
    * @param autoDecline    if true, the addition will be declined if any occurrence conflicts
-   * @return
+   * @return true if created successfully.
    */
   @Override
   public boolean addRecurringEvent(RecurringEvent recurringEvent, boolean autoDecline) {
@@ -160,9 +164,11 @@ public class Calendar implements ICalendar {
   }
 
   /**
+   * Method to find event on a certain date.
+   *
    * @param subject       the subject of the event
    * @param startDateTime the start date and time of the event
-   * @return
+   * @return Event type object.
    */
   @Override
   public Event findEvent(String subject, LocalDateTime startDateTime) {
@@ -184,11 +190,13 @@ public class Calendar implements ICalendar {
   }
 
   /**
+   * Edits a specific event in calendar.
+   *
    * @param subject       the subject of the event to edit
    * @param startDateTime the start date/time of the event to edit
    * @param property      the property to edit (name, startTime, endTime, etc.)
    * @param newValue      the new value for the property
-   * @return
+   * @return true if the operation is successful.
    */
   @Override
   public boolean editSingleEvent(String subject, LocalDateTime startDateTime, String property,
@@ -203,11 +211,13 @@ public class Calendar implements ICalendar {
   }
 
   /**
+   * Edits a specific event in calendar for a given date.
+   *
    * @param subject       the subject of the recurring events to edit
    * @param startDateTime the start date/time to begin editing from
    * @param property      the property to edit
    * @param newValue      the new value for the property
-   * @return
+   * @return true if the operation is successful.
    */
   @Override
   public int editEventsFromDate(String subject, LocalDateTime startDateTime, String property,
@@ -230,10 +240,12 @@ public class Calendar implements ICalendar {
   }
 
   /**
+   * Edits multiple events at once.
+   *
    * @param subject  the subject of the events to edit
    * @param property the property to edit
    * @param newValue the new value for the property
-   * @return
+   * @return number of occurrences edited.
    */
   @Override
   public int editAllEvents(String subject, String property, String newValue) {
@@ -251,7 +263,9 @@ public class Calendar implements ICalendar {
   }
 
   /**
-   * @return
+   * retrieves oll reccurring events in the calendar.
+   *
+   * @return a list of all reccuring events.
    */
   @Override
   public List<RecurringEvent> getAllRecurringEvents() {
@@ -259,8 +273,10 @@ public class Calendar implements ICalendar {
   }
 
   /**
+   * Export all events of the calendar to a  csv file
+   *
    * @param filePath the path where the CSV file should be created
-   * @return
+   * @return filePath of exported csv.
    */
   @Override
   public String exportToCSV(String filePath) throws IOException {
