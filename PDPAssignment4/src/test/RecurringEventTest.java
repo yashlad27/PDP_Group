@@ -12,7 +12,13 @@ import java.util.Set;
 import model.event.Event;
 import model.event.RecurringEvent;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Test class for RecurringEvent.
@@ -124,7 +130,6 @@ public class RecurringEventTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testConstructorWithMultiDayEvent() {
-    // Create an end date time that is the next day
     LocalDateTime nextDayEndTime = startDateTime.plusDays(1);
     new RecurringEvent(
             subject, startDateTime, nextDayEndTime,
@@ -143,27 +148,20 @@ public class RecurringEventTest {
 
     List<Event> allOccurrences = event.getAllOccurrences();
 
-    // Should have exactly 4 occurrences
     assertEquals(occurrences, allOccurrences.size());
 
-    // Verify the dates of the occurrences
-    // The first occurrence should be on May 1 (Monday)
     assertEquals(LocalDate.of(2023, 5, 1),
             allOccurrences.get(0).getStartDateTime().toLocalDate());
-    // The second occurrence should be on May 3 (Wednesday)
     assertEquals(LocalDate.of(2023, 5, 3),
             allOccurrences.get(1).getStartDateTime().toLocalDate());
-    // The third occurrence should be on May 5 (Friday)
     assertEquals(LocalDate.of(2023, 5, 5),
             allOccurrences.get(2).getStartDateTime().toLocalDate());
-    // The fourth occurrence should be on May 8 (Monday)
     assertEquals(LocalDate.of(2023, 5, 8),
             allOccurrences.get(3).getStartDateTime().toLocalDate());
   }
 
   @Test
   public void testGetAllOccurrencesWithEndDate() {
-    // End date is May 15, so it should include all M-W-F from May 1 to May 15
     RecurringEvent event = new RecurringEvent(
             subject, startDateTime, endDateTime,
             description, location, isPublic,
@@ -172,10 +170,8 @@ public class RecurringEventTest {
 
     List<Event> allOccurrences = event.getAllOccurrences();
 
-    // Should have 7 occurrences: May 1, 3, 5, 8, 10, 12, 15
     assertEquals(7, allOccurrences.size());
 
-    // Test a few of the dates
     assertEquals(LocalDate.of(2023, 5, 1),
             allOccurrences.get(0).getStartDateTime().toLocalDate());
     assertEquals(LocalDate.of(2023, 5, 8),
@@ -186,7 +182,6 @@ public class RecurringEventTest {
 
   @Test
   public void testAllDayRecurringEvent() {
-    // Create a RecurringEvent instance using the all-day factory method
     LocalDate date = LocalDate.of(2023, 5, 1);
     RecurringEvent recurringEvent = new RecurringEvent(
             subject, startDateTime, endDateTime,
@@ -195,10 +190,8 @@ public class RecurringEventTest {
     );
     recurringEvent.setAllDay(true);
 
-    // Verify that the event is marked as all-day
     assertTrue(recurringEvent.isAllDay());
 
-    // Get all occurrences and verify they are all all-day events
     List<Event> occurrences = recurringEvent.getAllOccurrences();
     for (Event occurrence : occurrences) {
       assertTrue(occurrence.isAllDay());
@@ -219,7 +212,6 @@ public class RecurringEventTest {
             repeatDays, occurrences
     );
 
-    // Verify that each event has a different recurring ID
     assertNotEquals(event1.getRecurringId(), event2.getRecurringId());
   }
 
@@ -232,8 +224,6 @@ public class RecurringEventTest {
     );
 
     List<Event> occurrences = template.getAllOccurrences();
-
-    // Check that each occurrence inherits the details from the template
     for (Event occurrence : occurrences) {
       assertEquals(template.getSubject(), occurrence.getSubject());
       assertEquals(template.getDescription(), occurrence.getDescription());
@@ -241,7 +231,6 @@ public class RecurringEventTest {
       assertEquals(template.isPublic(), occurrence.isPublic());
       assertEquals(template.isAllDay(), occurrence.isAllDay());
 
-      // Time should be the same but date might differ
       assertEquals(template.getStartDateTime().toLocalTime(),
               occurrence.getStartDateTime().toLocalTime());
       assertEquals(template.getEndDateTime().toLocalTime(),
@@ -251,24 +240,19 @@ public class RecurringEventTest {
 
   @Test
   public void testUpdateRecurringEventAffectsAllOccurrences() {
-    // Create a recurring event
     RecurringEvent recurringEvent = new RecurringEvent(
             subject, startDateTime, endDateTime,
             description, location, isPublic,
             repeatDays, occurrences
     );
 
-    // Get the initial occurrences
     List<Event> initialOccurrences = recurringEvent.getAllOccurrences();
 
-    // Modify the template event
     String newSubject = "Updated Meeting";
     recurringEvent.setSubject(newSubject);
 
-    // Get the occurrences after the update
     List<Event> updatedOccurrences = recurringEvent.getAllOccurrences();
 
-    // Verify that all new occurrences have the updated subject
     for (Event occurrence : updatedOccurrences) {
       assertEquals(newSubject, occurrence.getSubject());
     }
@@ -284,11 +268,9 @@ public class RecurringEventTest {
 
     Set<DayOfWeek> returnedDays = event.getRepeatDays();
 
-    // Verify that we get a copy, not the original reference
     assertEquals(repeatDays, returnedDays);
     assertNotSame(repeatDays, returnedDays);
 
-    // Modify the returned set should not affect the original
     returnedDays.add(DayOfWeek.SUNDAY);
     assertFalse(repeatDays.contains(DayOfWeek.SUNDAY));
   }
