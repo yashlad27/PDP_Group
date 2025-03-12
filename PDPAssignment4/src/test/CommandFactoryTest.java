@@ -21,6 +21,9 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
+/**
+ * Junit test file to test command factory.
+ */
 public class CommandFactoryTest {
 
   /**
