@@ -7,10 +7,11 @@ import java.util.Objects;
 import java.util.UUID;
 
 /**
- * Represents a calendar event with properties like subject, start and end times,
- * description, location, and privacy setting.
+ * Represents a calendar event with properties like subject, start and end times, description,
+ * location, and privacy setting.
  */
 public class Event {
+
   private final UUID id;
   private String subject;
   private LocalDateTime startDateTime;
@@ -31,7 +32,7 @@ public class Event {
    * @param isPublic      whether the event is public
    */
   public Event(String subject, LocalDateTime startDateTime, LocalDateTime endDateTime,
-               String description, String location, boolean isPublic) {
+      String description, String location, boolean isPublic) {
     if (subject == null || subject.trim().isEmpty()) {
       throw new IllegalArgumentException("Event subject cannot be null or empty");
     }
@@ -48,10 +49,7 @@ public class Event {
 
     if (endDateTime == null) {
       this.isAllDay = true;
-      this.endDateTime = LocalDateTime.of(
-              startDateTime.toLocalDate(),
-              LocalTime.of(23, 59, 59)
-      );
+      this.endDateTime = LocalDateTime.of(startDateTime.toLocalDate(), LocalTime.of(23, 59, 59));
     } else {
       if (endDateTime.isBefore(startDateTime)) {
         throw new IllegalArgumentException("End date/time cannot be before start date/time");
@@ -71,8 +69,8 @@ public class Event {
    * @param isPublic    whether the event is public
    * @return a new all-day Event
    */
-  public static Event createAllDayEvent(String subject, LocalDate date,
-                                        String description, String location, boolean isPublic) {
+  public static Event createAllDayEvent(String subject, LocalDate date, String description,
+      String location, boolean isPublic) {
     LocalDateTime start = LocalDateTime.of(date, LocalTime.of(0, 0));
     LocalDateTime end = LocalDateTime.of(date, LocalTime.of(23, 59, 59));
 
@@ -83,8 +81,8 @@ public class Event {
   }
 
   /**
-   * Checks if this event conflicts with another event.
-   * Two events conflict if their time intervals overlap.
+   * Checks if this event conflicts with another event. Two events conflict if their time intervals
+   * overlap.
    *
    * @param other the event to check for conflicts
    * @return true if there is a conflict, false otherwise
@@ -94,8 +92,8 @@ public class Event {
       return false;
     }
 
-    return !this.endDateTime.isBefore(other.startDateTime) &&
-            !other.endDateTime.isBefore(this.startDateTime);
+    return !this.endDateTime.isBefore(other.startDateTime) && !other.endDateTime.isBefore(
+        this.startDateTime);
   }
 
   /**
@@ -166,10 +164,7 @@ public class Event {
     if (endDateTime == null) {
       // Converting to all-day event
       this.isAllDay = true;
-      this.endDateTime = LocalDateTime.of(
-              startDateTime.toLocalDate(),
-              LocalTime.of(23, 59, 59)
-      );
+      this.endDateTime = LocalDateTime.of(startDateTime.toLocalDate(), LocalTime.of(23, 59, 59));
     } else {
       if (endDateTime.isBefore(startDateTime)) {
         throw new IllegalArgumentException("End date/time cannot be before start date/time");
@@ -224,10 +219,7 @@ public class Event {
     this.isAllDay = isAllDay;
 
     if (isAllDay) {
-      this.endDateTime = LocalDateTime.of(
-              startDateTime.toLocalDate(),
-              LocalTime.of(23, 59, 59)
-      );
+      this.endDateTime = LocalDateTime.of(startDateTime.toLocalDate(), LocalTime.of(23, 59, 59));
     }
   }
 
@@ -307,12 +299,15 @@ public class Event {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
     Event event = (Event) o;
-    return Objects.equals(subject, event.subject) &&
-            Objects.equals(startDateTime, event.startDateTime) &&
-            Objects.equals(endDateTime, event.endDateTime);
+    return Objects.equals(subject, event.subject) && Objects.equals(startDateTime,
+        event.startDateTime) && Objects.equals(endDateTime, event.endDateTime);
   }
 
   @Override
@@ -322,12 +317,8 @@ public class Event {
 
   @Override
   public String toString() {
-    return "Event{" +
-            "subject='" + subject + '\'' +
-            ", startDateTime=" + startDateTime +
-            ", endDateTime=" + endDateTime +
-            ", isAllDay=" + isAllDay +
-            ", location='" + (location != null ? location : "N/A") + '\'' +
-            '}';
+    return "Event{" + "subject='" + subject + '\'' + ", startDateTime=" + startDateTime
+        + ", endDateTime=" + endDateTime + ", isAllDay=" + isAllDay + ", location='" + (
+        location != null ? location : "N/A") + '\'' + '}';
   }
 }

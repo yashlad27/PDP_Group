@@ -10,15 +10,12 @@ import model.calendar.ICalendar;
 import view.ICalendarView;
 
 /**
- * A simplified implementation of the calendar controller that handles
- * event creation commands.
+ * A simplified implementation of the calendar controller that handles event creation commands.
  */
 public class CalendarController {
 
-  private final ICalendar calendar;
   private final ICalendarView view;
   private final CommandParser parser;
-  private final CommandFactory commandFactory;
   private static final String EXIT_COMMAND = "exit";
 
   /**
@@ -35,10 +32,9 @@ public class CalendarController {
       throw new IllegalArgumentException("View cannot be null");
     }
 
-    this.commandFactory = commandFactory;
     this.view = view;
-    this.calendar = commandFactory.getCalendar();
-    this.parser = new CommandParser(this.commandFactory);
+    ICalendar calendar = commandFactory.getCalendar();
+    this.parser = new CommandParser(commandFactory);
   }
 
   /**
@@ -126,8 +122,8 @@ public class CalendarController {
 
       // Check if file was empty
       if (!fileHasCommands) {
-        view.displayError("Error: Command file is empty. "
-                + "At least one command (exit) is required.");
+        view.displayError(
+            "Error: Command file is empty. " + "At least one command (exit) is required.");
         return false;
       }
 

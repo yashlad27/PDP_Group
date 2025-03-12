@@ -6,7 +6,11 @@ import java.time.format.DateTimeFormatter;
 import model.calendar.ICalendar;
 import utilities.DateTimeUtil;
 
+/**
+ * Command for showing the status on a specific date.
+ */
 public class ShowStatusCommand implements ICommand {
+
   private final ICalendar calendar;
 
   /**
@@ -36,8 +40,8 @@ public class ShowStatusCommand implements ICommand {
 
     boolean isBusy = calendar.isBusy(dateTime);
 
-    return "Status on " + dateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) +
-            ": " + (isBusy ? "Busy" : "Available");
+    return "Status on " + dateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) + ": " + (isBusy
+        ? "Busy" : "Available");
   }
 
   @Override

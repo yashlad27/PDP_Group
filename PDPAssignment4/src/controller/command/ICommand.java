@@ -1,8 +1,8 @@
 package controller.command;
 
 /**
- * Interface for command pattern implementation.
- * Each command represents a specific operation in the calendar application.
+ * Interface for command pattern implementation. Each command represents a specific operation in the
+ * calendar application.
  */
 public interface ICommand {
 

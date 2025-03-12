@@ -28,7 +28,8 @@ public class CalendarApp {
 
     // Check arguments
     if (args.length < 2) {
-      view.displayError("Insufficient arguments. Usage: --mode [interactive|headless filename.txt]");
+      view.displayError(
+          "Insufficient arguments. Usage: --mode [interactive|headless filename.txt]");
       return;
     }
 
