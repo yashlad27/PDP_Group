@@ -286,7 +286,8 @@ public class CommandParserTest {
   @Test
   public void testParseCreateEventCommand() {
     // Setup
-    String commandString = "create event \"Team Meeting\" from 2023-04-10T10:00 to 2023-04-10T11:00";
+    String commandString = "create event \"Team Meeting\" from 2023-04-10T10:00 "
+        + "to 2023-04-10T11:00";
 
     // Execute
     CommandParser.CommandWithArgs result = parser.parseCommand(commandString);
