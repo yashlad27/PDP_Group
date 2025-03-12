@@ -2,13 +2,11 @@ package controller.parser;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import controller.command.CommandFactory;
 import controller.command.ICommand;
-import model.calendar.ICalendar;
 import utilities.DateTimeUtil;
 
 /**
@@ -86,7 +84,6 @@ public class CommandParser {
    * @throws IllegalArgumentException if the command is invalid or unsupported
    */
   public CommandWithArgs parseCommand(String commandString) {
-    System.out.println("Parsing command: " + commandString);
 
     if (commandString == null || commandString.trim().isEmpty()) {
       throw new IllegalArgumentException("Command string cannot be null or empty");
@@ -137,19 +134,16 @@ public class CommandParser {
    * @throws IllegalArgumentException if the command is invalid
    */
   private CommandWithArgs parseCreateEventCommand(String commandString) {
-    System.out.println("Attempting to parse create command: " + commandString);
     ICommand createCommand = commandFactory.getCommand("create");
     Matcher matcher;
 
     // Clean up quoted strings - remove surrounding quotes if present
     String cleanCommand = commandString.replaceAll("\"([^\"]+)\"", "$1");
     cleanCommand = cleanCommand.replaceAll("'([^']+)'", "$1");
-    System.out.println("Cleaned command: " + cleanCommand);
 
     // Regular event
     matcher = CREATE_EVENT_PATTERN.matcher(commandString);
     if (matcher.matches()) {
-      System.out.println("Matched CREATE_EVENT_PATTERN");
       boolean autoDecline = matcher.group(1) != null;
 
       // Remove quotes from event name if present
@@ -160,25 +154,22 @@ public class CommandParser {
 
       String[] args = {
               "single",
-              eventName,  // event name
-              matcher.group(3),  // start date/time
-              matcher.group(4),  // end date/time
-              matcher.group(5),  // description
-              matcher.group(6),  // location
-              matcher.group(7) != null ? "false" : "true",  // isPublic (inverse of private)
+              eventName,
+              matcher.group(3),
+              matcher.group(4),
+              matcher.group(5),
+              matcher.group(6),
+              matcher.group(7) != null ? "false" : "true",
               String.valueOf(autoDecline)
       };
-      System.out.println("Args for single event: " + Arrays.toString(args));
       return new CommandWithArgs(createCommand, args);
     }
 
     // Recurring event with occurrences
     matcher = CREATE_RECURRING_EVENT_PATTERN.matcher(commandString);
     if (matcher.matches()) {
-      System.out.println("Matched CREATE_RECURRING_EVENT_PATTERN");
       boolean autoDecline = matcher.group(1) != null;
 
-      // Remove quotes from event name if present
       String eventName = matcher.group(2);
       if (eventName.startsWith("\"") && eventName.endsWith("\"")) {
         eventName = eventName.substring(1, eventName.length() - 1);
@@ -196,14 +187,12 @@ public class CommandParser {
               matcher.group(8),  // location
               matcher.group(9) != null ? "false" : "true"  // isPublic
       };
-      System.out.println("Args for recurring event: " + Arrays.toString(args));
       return new CommandWithArgs(createCommand, args);
     }
 
     // Recurring event until date
     matcher = CREATE_RECURRING_UNTIL_PATTERN.matcher(commandString);
     if (matcher.matches()) {
-      System.out.println("Matched CREATE_RECURRING_UNTIL_PATTERN");
       boolean autoDecline = matcher.group(1) != null;
 
       // Remove quotes from event name if present
@@ -224,14 +213,12 @@ public class CommandParser {
               matcher.group(8),  // location
               matcher.group(9) != null ? "false" : "true"  // isPublic
       };
-      System.out.println("Args for recurring-until event: " + Arrays.toString(args));
       return new CommandWithArgs(createCommand, args);
     }
 
     // All-day event
     matcher = CREATE_ALL_DAY_EVENT_PATTERN.matcher(commandString);
     if (matcher.matches()) {
-      System.out.println("Matched CREATE_ALL_DAY_EVENT_PATTERN");
       boolean autoDecline = matcher.group(1) != null;
 
       // Remove quotes from event name if present
@@ -249,14 +236,12 @@ public class CommandParser {
               matcher.group(5),  // location
               matcher.group(6) != null ? "false" : "true"  // isPublic
       };
-      System.out.println("Args for all-day event: " + Arrays.toString(args));
       return new CommandWithArgs(createCommand, args);
     }
 
     // All-day recurring event with occurrences
     matcher = CREATE_ALL_DAY_RECURRING_PATTERN.matcher(commandString);
     if (matcher.matches()) {
-      System.out.println("Matched CREATE_ALL_DAY_RECURRING_PATTERN");
       boolean autoDecline = matcher.group(1) != null;
 
       // Remove quotes from event name if present
@@ -276,14 +261,12 @@ public class CommandParser {
               matcher.group(7),  // location
               matcher.group(8) != null ? "false" : "true"  // isPublic
       };
-      System.out.println("Args for all-day recurring event: " + Arrays.toString(args));
       return new CommandWithArgs(createCommand, args);
     }
 
     // All-day recurring event until date
     matcher = CREATE_ALL_DAY_RECURRING_UNTIL_PATTERN.matcher(commandString);
     if (matcher.matches()) {
-      System.out.println("Matched CREATE_ALL_DAY_RECURRING_UNTIL_PATTERN");
       boolean autoDecline = matcher.group(1) != null;
 
       // Remove quotes from event name if present
@@ -303,12 +286,9 @@ public class CommandParser {
               matcher.group(7),  // location
               matcher.group(8) != null ? "false" : "true"  // isPublic
       };
-      System.out.println("Args for all-day recurring until event: " + Arrays.toString(args));
       return new CommandWithArgs(createCommand, args);
     }
 
-    // If we reach here, no pattern matched
-    System.out.println("No pattern matched for: " + commandString);
     throw new IllegalArgumentException("Invalid create event command format");
   }
 
@@ -341,7 +321,6 @@ public class CommandParser {
     ICommand editCommand = commandFactory.getCommand("edit");
     Matcher matcher;
 
-    // Try to match single event edit pattern
     matcher = EDIT_SINGLE_EVENT_PATTERN.matcher(commandString);
     if (matcher.matches()) {
       String property = matcher.group(1);
@@ -484,12 +463,5 @@ public class CommandParser {
     }
 
     throw new IllegalArgumentException("Invalid export command format: " + commandString);
-  }
-
-  /**
-   * For backward compatibility - kept for reference
-   */
-  public ICommand parseCommand(String commandString, ICalendar calendar) {
-    throw new UnsupportedOperationException("This method is deprecated. Use parseCommand(String) instead.");
   }
 }

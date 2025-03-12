@@ -1,11 +1,10 @@
 package controller.command;
 
-import model.calendar.ICalendar;
-import utilities.DateTimeUtil;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
+
+import model.calendar.ICalendar;
+import utilities.DateTimeUtil;
 
 public class ShowStatusCommand implements ICommand {
   private final ICalendar calendar;
@@ -24,8 +23,6 @@ public class ShowStatusCommand implements ICommand {
 
   @Override
   public String execute(String[] args) {
-    System.out.println("ShowStatusCommand received args: " + Arrays.toString(args));
-
     if (args.length < 1) {
       return "Error: Missing date/time for status command";
     }

@@ -1,14 +1,13 @@
 package controller;
 
-import controller.command.CommandFactory;
-import controller.command.ICommand;
-import controller.parser.CommandParser;
-import model.calendar.ICalendar;
-import view.ICalendarView;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+
+import controller.command.CommandFactory;
+import controller.parser.CommandParser;
+import model.calendar.ICalendar;
+import view.ICalendarView;
 
 /**
  * A simplified implementation of the calendar controller that handles
@@ -26,7 +25,7 @@ public class CalendarController {
    * Constructs a new BasicCalendarController.
    *
    * @param commandFactory the command factory
-   * @param view the view for user interaction
+   * @param view           the view for user interaction
    */
   public CalendarController(CommandFactory commandFactory, ICalendarView view) {
     if (commandFactory == null) {
@@ -107,13 +106,11 @@ public class CalendarController {
         }
 
         if (line.equalsIgnoreCase(EXIT_COMMAND)) {
-          view.displayMessage("Executing: " + line);
           String result = processCommand(line);
           view.displayMessage(result);
           break;
         }
 
-        view.displayMessage("Executing: " + line);
         String result = processCommand(line);
         view.displayMessage(result);
 

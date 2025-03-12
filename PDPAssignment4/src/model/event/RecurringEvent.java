@@ -148,13 +148,10 @@ public class RecurringEvent extends Event {
     LocalTime endTime = getEndDateTime().toLocalTime();
     int count = 0;
 
-    // Keep generating occurrences until we reach the specified conditions
     while ((this.occurrences > 0 && count < this.occurrences) ||
             (this.endDate != null && !currentDate.isAfter(this.endDate))) {
 
-      // Check if the current date falls on one of the repeat days
       if (repeatDays.contains(currentDate.getDayOfWeek())) {
-        // Create a new event for this occurrence
         LocalDateTime occurrenceStart = LocalDateTime.of(currentDate, startTime);
         LocalDateTime occurrenceEnd = LocalDateTime.of(currentDate, endTime);
 
@@ -174,12 +171,10 @@ public class RecurringEvent extends Event {
 
       currentDate = currentDate.plusDays(1);
 
-      // If we're using occurrences and have reached the limit, break
       if (this.occurrences > 0 && count >= this.occurrences) {
         break;
       }
 
-      // If we're using an end date and have reached it, break
       if (this.endDate != null && currentDate.isAfter(this.endDate)) {
         break;
       }
