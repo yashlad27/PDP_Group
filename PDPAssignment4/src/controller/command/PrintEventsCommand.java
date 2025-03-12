@@ -29,8 +29,10 @@ public class PrintEventsCommand implements ICommand {
   }
 
   /**
-   * @param args the command arguments
-   * @return
+   * Executes the command to print events based on arguments provided.
+   *
+   * @param args the command arguments.
+   * @return a string containing the list of events or error message.
    */
   @Override
   public String execute(String[] args) {
@@ -107,7 +109,9 @@ public class PrintEventsCommand implements ICommand {
   }
 
   /**
-   * @return
+   * fetches the name of the command.
+   *
+   * @return the name of command as String.
    */
   @Override
   public String getName() {

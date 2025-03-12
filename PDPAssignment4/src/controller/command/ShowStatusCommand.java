@@ -6,6 +6,9 @@ import java.time.format.DateTimeFormatter;
 import model.calendar.ICalendar;
 import utilities.DateTimeUtil;
 
+/**
+ * Command for showing the status on a specific date.
+ */
 public class ShowStatusCommand implements ICommand {
 
   private final ICalendar calendar;

@@ -5,6 +5,9 @@ import java.time.LocalDateTime;
 import model.calendar.ICalendar;
 import utilities.DateTimeUtil;
 
+/**
+ * Command for editing calendar events (both single and recurring events).
+ */
 public class EditEventCommand implements ICommand {
 
   private final ICalendar calendar;
