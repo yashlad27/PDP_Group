@@ -30,7 +30,7 @@ In this mode, you can enter commands directly and see immediate results.
 
 ### Headless Mode
 ```
-java -jar calendar-app.jar --mode headless commands.txt
+java -jar calendar-app.jar --mode headless res/commands.txt
 ```
 In this mode, the program reads commands from a text file and executes them sequentially.
 
@@ -78,7 +78,7 @@ The application follows the Model-View-Controller (MVC) architecture:
 ## Testing
 - All code is thoroughly tested with JUnit tests
 - PIT mutation testing is used to evaluate test quality
-- Targeted 100% test coverage for both traditional coverage and mutation coverage
+- Targeted 86% test coverage for both traditional coverage and mutation coverage
 
 ## Working Features
 - All features as specified in the requirements document are fully implemented
