@@ -78,6 +78,7 @@ public class Event {
 
     Event event = new Event(subject, start, end, description, location, isPublic);
     event.isAllDay = true;
+    event.date = date;
     return event;
   }
 
