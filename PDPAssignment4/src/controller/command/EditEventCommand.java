@@ -157,6 +157,16 @@ public class EditEventCommand implements ICommand {
     return value;
   }
 
+  /**
+   * Executes the edit event command with the provided arguments. Handles different types of event
+   * editing including single events, recurring events, all-day events, and their variants.
+   *
+   * @param args an array of arguments for the command: - args[0]: the type of event to edit
+   *             (single, recurring, allday, etc.) - remaining args: parameters specific to each
+   *             event type
+   * @return a string message indicating the result of the command execution
+   */
+
   @Override
   public String execute(String[] args) {
     if (args.length < 3) {
@@ -234,8 +244,14 @@ public class EditEventCommand implements ICommand {
     }
   }
 
+  /**
+   * Returns the name of this command.
+   *
+   * @return the string "edit" which identifies this command to the command factory
+   */
   @Override
   public String getName() {
     return "edit";
   }
+
 }
