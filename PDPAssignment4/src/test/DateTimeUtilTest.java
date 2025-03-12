@@ -1,5 +1,6 @@
 import org.junit.Test;
 
+import java.lang.reflect.Constructor;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -183,7 +184,6 @@ public class DateTimeUtilTest {
   public void testFormatWeekdaysValid() {
     Set<DayOfWeek> weekdays = EnumSet.of(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY);
     String formattedWeekdays = DateTimeUtil.formatWeekdays(weekdays);
-    // Note: The order may vary depending on the implementation
     assertTrue(formattedWeekdays.contains("M"));
     assertTrue(formattedWeekdays.contains("W"));
     assertTrue(formattedWeekdays.contains("F"));
@@ -217,8 +217,7 @@ public class DateTimeUtilTest {
   @Test(expected = AssertionError.class)
   public void testConstructorShouldNotBeInstantiated() {
     try {
-      // Use reflection to make the constructor accessible and invoke it
-      java.lang.reflect.Constructor<DateTimeUtil> constructor = DateTimeUtil.class.getDeclaredConstructor();
+      Constructor<DateTimeUtil> constructor = DateTimeUtil.class.getDeclaredConstructor();
       constructor.setAccessible(true);
       constructor.newInstance();
     } catch (ReflectiveOperationException e) {
@@ -233,33 +232,28 @@ public class DateTimeUtilTest {
   public void testFormatWeekdaysOrder() {
     // Test that the formatted weekdays are in the correct order: M, T, W, R, F, S, U
     Set<DayOfWeek> weekdays = EnumSet.of(DayOfWeek.SUNDAY,   // U
-        DayOfWeek.FRIDAY,   // F
-        DayOfWeek.WEDNESDAY, // W
-        DayOfWeek.MONDAY    // M
+            DayOfWeek.FRIDAY,   // F
+            DayOfWeek.WEDNESDAY, // W
+            DayOfWeek.MONDAY    // M
     );
 
     String formattedWeekdays = DateTimeUtil.formatWeekdays(weekdays);
 
-    // Create a map of expected positions for each weekday character
     int posM = formattedWeekdays.indexOf('M');
     int posF = formattedWeekdays.indexOf('F');
     int posW = formattedWeekdays.indexOf('W');
     int posU = formattedWeekdays.indexOf('U');
 
-    // All characters should be present
     assertTrue(posM >= 0);
     assertTrue(posF >= 0);
     assertTrue(posW >= 0);
     assertTrue(posU >= 0);
 
-    // Ensure weekdays are in the expected order in the result string
     String resultOrder = "";
     for (char c : formattedWeekdays.toCharArray()) {
       resultOrder += c;
     }
 
-    // Check each position is where we expect it
-    // We can just check relative positions here
     assertTrue("M should come before W", posM < posW);
     assertTrue("W should come before F", posW < posF);
     assertTrue("F should come before U", posF < posU);
