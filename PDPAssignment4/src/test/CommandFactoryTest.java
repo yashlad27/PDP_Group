@@ -23,13 +23,13 @@ import static org.junit.Assert.assertTrue;
 
 public class CommandFactoryTest {
 
-  /*
-   Manual mock implementation of ICalendar.
+  /**
+   * Manual mock implementation of ICalendar.
    */
   private static class MockCalendar implements ICalendar {
 
-    /*
-    Minimal implementation with no functionality.
+    /**
+     * Minimal implementation with no functionality.
      */
     @Override
     public boolean addEvent(model.event.Event event, boolean autoDecline) {
