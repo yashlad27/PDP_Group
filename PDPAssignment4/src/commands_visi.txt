@@ -1,13 +1,14 @@
-create event "Team Meeting" from 2023-04-10T10:00 to 2023-04-10T11:00
-create event "Project Review" from 2023-04-10T11:30 to 2023-04-10T12:30
-create event "Confidential Discussion" from 2023-04-10T14:00 to 2023-04-10T15:00 private
-print events on 2023-04-10
-edit event visibility "Team Meeting" from 2023-04-10T10:00 to 2023-04-10T11:00 with "private"
-edit event visibility "Confidential Discussion" from 2023-04-10T14:00 to 2023-04-10T15:00 with "public"
-edit event ispublic "Project Review" from 2023-04-10T11:30 to 2023-04-10T12:30 with "false"
-print events on 2023-04-10
-create event "Weekly Standup" from 2023-04-12T09:00 to 2023-04-12T10:00 repeats MW for 4 times
-edit events visibility "Weekly Standup" with "private"
-print events from 2023-04-12 to 2023-04-19
-export cal calendar_export_visi.csv
+create event "Team Planning" from 2023-05-15T09:00 to 2023-05-15T10:30 desc "Quarterly planning session for Q3 deliverables" at "Building A, Room 305"
+create event "Client Presentation" from 2023-05-15T11:00 to 2023-05-15T12:30 desc "Final presentation of the marketing proposal" at "Building B, Conference Room 2"
+create event "Department Lunch" from 2023-05-15T12:45 to 2023-05-15T14:00 desc "Team lunch to welcome new members" at "Building A, Cafeteria"
+create event "Code Review" from 2023-05-16T10:00 to 2023-05-16T11:30 desc "Review pull requests for the new authentication module" at "Building C, Room 410"
+create event "Weekly Standup" from 2023-05-17T09:00 to 2023-05-17T09:30 repeats MW for 4 times desc "Regular team sync to discuss progress and blockers" at "Building B, Room 101"
+create event "Project Kickoff" from 2023-05-18T14:00 to 2023-05-18T16:00 desc "Initial meeting to start the database migration project" at "Building C, Executive Room"
+create event "Training Workshop" from 2023-05-19T10:00 to 2023-05-19T16:00 desc "Full-day workshop on the new compliance requirements" at "Building A, Training Center"
+create event "Quarterly Review" from 2023-05-22T09:00 to 2023-05-22T10:30 repeats MWF until 2023-06-15 desc "Recurring performance review meetings" at "Building B, Room 202"
+create event "Team Building" on 2023-05-26 desc "Full day team building activities and outdoor games" at "Building C, Garden Area" private
+print events from 2023-05-15 to 2023-05-26
+edit event location "Team Planning" from 2023-05-15T09:00 to 2023-05-15T10:30 with "Building B, Main Conference Room"
+edit event description "Code Review" from 2023-05-16T10:00 to 2023-05-16T11:30 with "Detailed code review of the security enhancements"
+export cal calendar_export.csv
 exit

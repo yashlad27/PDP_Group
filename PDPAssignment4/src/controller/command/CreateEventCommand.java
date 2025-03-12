@@ -41,8 +41,8 @@ public class CreateEventCommand implements ICommand {
    * @return a response indicating success or failure
    */
   private String createEvent(String eventName, LocalDateTime startDateTime,
-                            LocalDateTime endDateTime, boolean autoDecline, String description,
-                            String location, boolean isPublic) {
+                             LocalDateTime endDateTime, boolean autoDecline, String description,
+                             String location, boolean isPublic) {
     if (eventName == null || eventName.trim().isEmpty()) {
       return "Error: Event name cannot be empty";
     }
@@ -80,7 +80,7 @@ public class CreateEventCommand implements ICommand {
    * @return a response indicating success or failure
    */
   private String createAllDayEvent(String eventName, LocalDate date, boolean autoDecline,
-                                  String description, String location, boolean isPublic) {
+                                   String description, String location, boolean isPublic) {
     if (eventName == null || eventName.trim().isEmpty()) {
       return "Error: Event name cannot be empty";
     }
@@ -120,9 +120,9 @@ public class CreateEventCommand implements ICommand {
    * @return a response indicating success or failure
    */
   private String createRecurringEvent(String eventName, LocalDateTime startDateTime,
-                                     LocalDateTime endDateTime, String weekdays,
-                                     int occurrences, boolean autoDecline,
-                                     String description, String location, boolean isPublic) {
+                                      LocalDateTime endDateTime, String weekdays,
+                                      int occurrences, boolean autoDecline,
+                                      String description, String location, boolean isPublic) {
     if (eventName == null || eventName.trim().isEmpty()) {
       return "Error: Event name cannot be empty";
     }
@@ -178,9 +178,9 @@ public class CreateEventCommand implements ICommand {
    * @return a response indicating success or failure
    */
   private String createRecurringEventUntil(String eventName, LocalDateTime startDateTime,
-                                          LocalDateTime endDateTime, String weekdays,
-                                          LocalDate untilDate, boolean autoDecline,
-                                          String description, String location, boolean isPublic) {
+                                           LocalDateTime endDateTime, String weekdays,
+                                           LocalDate untilDate, boolean autoDecline,
+                                           String description, String location, boolean isPublic) {
     if (eventName == null || eventName.trim().isEmpty()) {
       return "Error: Event name cannot be empty";
     }

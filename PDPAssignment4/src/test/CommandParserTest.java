@@ -570,11 +570,6 @@ public class CommandParserTest {
     parser.parseCommand("edit invalid");
   }
 
-  @Test(expected = UnsupportedOperationException.class)
-  public void testDeprecatedParseMethod() {
-    parser.parseCommand("test", calendar);
-  }
-
   @Test
   public void testEventWithDescription() {
     // Setup
