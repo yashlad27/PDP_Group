@@ -17,7 +17,12 @@ import static org.junit.Assert.fail;
 
 public class ExportCalendarCommandTest {
 
-  // Manual mock implementation of ICalendar
+  /**
+   * A mock implementation of the {@link ICalendar} interface used for testing.
+   * This mock allows control over the behavior of the {@code exportToCSV} method
+   * by setting predefined responses or exceptions. It also keeps track of the last
+   * file path used for exporting.
+   */
   private static class MockCalendar implements ICalendar {
     private String lastFilePath = null;
     private String exportResult = null;
@@ -46,7 +51,6 @@ public class ExportCalendarCommandTest {
       return exportResult;
     }
 
-    // Implement other methods from ICalendar with minimal implementations
     @Override
     public boolean isBusy(LocalDateTime dateTime) {
       return false;
@@ -64,19 +68,26 @@ public class ExportCalendarCommandTest {
 
     @Override
     public boolean createRecurringEventUntil(String name, LocalDateTime start, LocalDateTime end,
-                                             String weekdays, LocalDate untilDate, boolean autoDecline) {
+                                             String weekdays, LocalDate untilDate,
+                                             boolean autoDecline) {
       return false;
     }
 
     @Override
     public boolean createAllDayRecurringEvent(String name, LocalDate date, String weekdays,
-                                              int occurrences, boolean autoDecline, String description, String location, boolean isPublic) {
+                                              int occurrences, boolean autoDecline,
+                                              String description, String location,
+                                              boolean isPublic) {
       return false;
     }
 
     @Override
     public boolean createAllDayRecurringEventUntil(String name, LocalDate date, String weekdays,
-                                                   LocalDate untilDate, boolean autoDecline, String description, String location, boolean isPublic) {
+                                                   LocalDate untilDate,
+                                                   boolean autoDecline,
+                                                   String description,
+                                                   String location,
+                                                   boolean isPublic) {
       return false;
     }
 
@@ -101,12 +112,14 @@ public class ExportCalendarCommandTest {
     }
 
     @Override
-    public boolean editSingleEvent(String subject, LocalDateTime startDateTime, String property, String newValue) {
+    public boolean editSingleEvent(String subject, LocalDateTime startDateTime,
+                                   String property, String newValue) {
       return false;
     }
 
     @Override
-    public int editEventsFromDate(String subject, LocalDateTime startDateTime, String property, String newValue) {
+    public int editEventsFromDate(String subject, LocalDateTime startDateTime,
+                                  String property, String newValue) {
       return 0;
     }
 
@@ -137,62 +150,47 @@ public class ExportCalendarCommandTest {
 
   @Test
   public void testExecuteWithValidFilename() {
-    // Setup
     String[] args = {"calendar.csv"};
     String expectedPath = "/absolute/path/to/calendar.csv";
     calendar.setExportResult(expectedPath);
 
-    // Execute
     String result = command.execute(args);
 
-    // Verify
     assertEquals("calendar.csv", calendar.getLastFilePath());
     assertEquals("Calendar exported successfully to: " + expectedPath, result);
   }
 
   @Test
   public void testExecuteWithMissingFilename() {
-    // Setup
     String[] args = {};
 
-    // Execute
     String result = command.execute(args);
 
-    // Verify
     assertEquals(null, calendar.getLastFilePath());
     assertEquals("Error: Missing filename for export command", result);
   }
 
   @Test
   public void testExecuteWithIOException() {
-    // Setup
     String[] args = {"invalid_path.csv"};
     IOException expectedException = new IOException("Permission denied");
     calendar.setExportException(expectedException);
 
-    // Execute
     String result = command.execute(args);
 
-    // Verify
     assertEquals("invalid_path.csv", calendar.getLastFilePath());
     assertEquals("Failed to export calendar: Permission denied", result);
   }
 
   @Test
   public void testExecuteWithNullFilename() {
-    // Setup
     String[] args = {null};
 
-    // Setting a valid result for testing
     calendar.setExportResult("/path/to/null.csv");
 
-    // Execute
     String result = command.execute(args);
 
-    // Verify
     assertEquals(null, calendar.getLastFilePath());
-    // Since args[0] is null, we expect the command to handle it gracefully
-    // The exact behavior depends on your implementation
     assertTrue(result.startsWith("Calendar exported successfully") ||
             result.startsWith("Error") ||
             result.startsWith("Failed"));
@@ -200,42 +198,30 @@ public class ExportCalendarCommandTest {
 
   @Test
   public void testExecuteWithEmptyFilename() {
-    // Setup
     String[] args = {""};
 
-    // Setting an exception for empty filename
     calendar.setExportException(new IOException("Filename cannot be empty"));
 
-    // Execute
     String result = command.execute(args);
 
-    // Verify
     assertEquals("", calendar.getLastFilePath());
     assertTrue(result.startsWith("Failed to export calendar:"));
     assertTrue(result.contains("Filename cannot be empty"));
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void testConstructorWithNullCalendar() {
-    try {
-      new ExportCalendarCommand(null);
-      fail("Should have thrown IllegalArgumentException");
-    } catch (IllegalArgumentException e) {
-      assertTrue(true);
-    }
+    new ExportCalendarCommand(null);
   }
 
   @Test
   public void testExecuteWithExtraArguments() {
-    // Setup - command should only use the first argument and ignore the rest
     String[] args = {"calendar.csv", "extra", "arguments"};
     String expectedPath = "/absolute/path/to/calendar.csv";
     calendar.setExportResult(expectedPath);
 
-    // Execute
     String result = command.execute(args);
 
-    // Verify
     assertEquals("calendar.csv", calendar.getLastFilePath());
     assertEquals("Calendar exported successfully to: " + expectedPath, result);
   }

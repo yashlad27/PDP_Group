@@ -21,51 +21,34 @@ public class ExitCommandTest {
 
   @Test
   public void testExecuteWithNoArguments() {
-    // Setup
     String[] args = {};
 
-    // Execute
     String result = command.execute(args);
-
-    // Verify
     assertEquals("Exiting application.", result);
   }
 
   @Test
   public void testExecuteWithArguments() {
-    // Setup - command should ignore any arguments
     String[] args = {"ignored", "arguments"};
-
-    // Execute
     String result = command.execute(args);
-
-    // Verify
     assertEquals("Exiting application.", result);
   }
 
   @Test
   public void testExecuteWithNullArguments() {
-    // Setup - command should handle null arguments gracefully
     String[] args = null;
-
-    // Execute
     String result = command.execute(args);
-
-    // Verify
     assertEquals("Exiting application.", result);
   }
 
   @Test
   public void testMultipleExecutions() {
-    // Setup
     String[] args = {};
 
-    // Execute multiple times to ensure consistent behavior
     String result1 = command.execute(args);
     String result2 = command.execute(args);
     String result3 = command.execute(args);
 
-    // Verify
     assertEquals("Exiting application.", result1);
     assertEquals("Exiting application.", result2);
     assertEquals("Exiting application.", result3);
