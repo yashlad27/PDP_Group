@@ -100,16 +100,16 @@ public class CalendarController {
 
     try (BufferedReader reader = new BufferedReader(new FileReader(commandsFilePath))) {
       String line;
+      String lastCommand = null;
+      boolean fileHasCommands = false;
+
       while ((line = reader.readLine()) != null) {
         if (line.trim().isEmpty()) {
           continue;
         }
 
-        if (line.equalsIgnoreCase(EXIT_COMMAND)) {
-          String result = processCommand(line);
-          view.displayMessage(result);
-          break;
-        }
+        fileHasCommands = true;
+        lastCommand = line;
 
         String result = processCommand(line);
         view.displayMessage(result);
@@ -123,6 +123,20 @@ public class CalendarController {
           return false;
         }
       }
+
+      // Check if file was empty
+      if (!fileHasCommands) {
+        view.displayError("Error: Command file is empty. "
+                + "At least one command (exit) is required.");
+        return false;
+      }
+
+      // Check if the last command was an exit command
+      if (!lastCommand.equalsIgnoreCase(EXIT_COMMAND)) {
+        view.displayError("Headless mode requires the last command to be 'exit'");
+        return false;
+      }
+
       return true;
     } catch (IOException e) {
       view.displayError("Error reading command file: " + e.getMessage());
