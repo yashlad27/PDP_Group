@@ -23,10 +23,16 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+/**
+ * Test class for calendar control.
+ */
 public class CalendarControllerTest {
 
-  // This is the mock of Calendar
+  /**
+   * This is the mock implementation of Calendar.
+   */
   private static class MockCalendar implements ICalendar {
+
     // Minimal implementation with no functionality
     @Override
     public boolean addEvent(Event event, boolean autoDecline) {
@@ -40,24 +46,24 @@ public class CalendarControllerTest {
 
     @Override
     public boolean createRecurringEventUntil(String name, LocalDateTime start, LocalDateTime end,
-                                             String weekdays, LocalDate untilDate,
-                                             boolean autoDecline) {
+        String weekdays, LocalDate untilDate,
+        boolean autoDecline) {
       return false;
     }
 
     @Override
     public boolean createAllDayRecurringEvent(String name, LocalDate date, String weekdays,
-                                              int occurrences, boolean autoDecline,
-                                              String description, String location,
-                                              boolean isPublic) {
+        int occurrences, boolean autoDecline,
+        String description, String location,
+        boolean isPublic) {
       return false;
     }
 
     @Override
     public boolean createAllDayRecurringEventUntil(String name, LocalDate date, String weekdays,
-                                                   LocalDate untilDate, boolean autoDecline,
-                                                   String description, String location,
-                                                   boolean isPublic) {
+        LocalDate untilDate, boolean autoDecline,
+        String description, String location,
+        boolean isPublic) {
       return false;
     }
 
@@ -88,13 +94,13 @@ public class CalendarControllerTest {
 
     @Override
     public boolean editSingleEvent(String subject, LocalDateTime startDateTime,
-                                   String property, String newValue) {
+        String property, String newValue) {
       return false;
     }
 
     @Override
     public int editEventsFromDate(String subject, LocalDateTime startDateTime,
-                                  String property, String newValue) {
+        String property, String newValue) {
       return 0;
     }
 
@@ -115,6 +121,7 @@ public class CalendarControllerTest {
   }
 
   private static class MockCalendarView implements ICalendarView {
+
     private final List<String> displayedMessages = new ArrayList<>();
     private final List<String> errorMessages = new ArrayList<>();
     private final String[] commandsToReturn;
@@ -153,6 +160,7 @@ public class CalendarControllerTest {
 
   // Mock command that returns a predefined result
   private static class MockCommand implements ICommand {
+
     private final String result;
     private final String name;
 
@@ -174,6 +182,7 @@ public class CalendarControllerTest {
 
   // Mock command factory that returns predefined commands
   private static class MockCommandFactory extends CommandFactory {
+
     private final MockCalendar calendar;
     private final MockCalendarView view;
     private final ICommand mockCommand;
@@ -218,6 +227,7 @@ public class CalendarControllerTest {
 
   // Mock command parser that returns predefined command with args
   private static class MockCommandParser extends CommandParser {
+
     private boolean throwException = false;
     private final MockCommandFactory factory;
 
@@ -253,11 +263,13 @@ public class CalendarControllerTest {
    * A testable version of CalendarController that allows mocking the file reader.
    */
   private static class TestableCalendarController extends CalendarController {
+
     private final BufferedReader fileReader;
     private final ICalendarView view;
     private final CommandParser parser;
 
-    public TestableCalendarController(CommandFactory commandFactory, ICalendarView view, BufferedReader fileReader) {
+    public TestableCalendarController(CommandFactory commandFactory, ICalendarView view,
+        BufferedReader fileReader) {
       super(commandFactory, view);
       this.fileReader = fileReader;
       this.view = view;
@@ -311,7 +323,7 @@ public class CalendarControllerTest {
         // Check if file was empty
         if (!fileHasCommands) {
           view.displayError("Error: Command file is empty. "
-                  + "At least one command (exit) is required.");
+              + "At least one command (exit) is required.");
           return false;
         }
 
@@ -354,7 +366,6 @@ public class CalendarControllerTest {
     }
   }
 
-  private MockCalendar calendar;
   private MockCalendarView view;
   private MockCommandFactory commandFactory;
   private MockCommandParser parser;
@@ -362,7 +373,7 @@ public class CalendarControllerTest {
 
   @Before
   public void setUp() {
-    calendar = new MockCalendar();
+    MockCalendar calendar = new MockCalendar();
     view = new MockCalendarView("command1", "command2", "exit");
     commandFactory = new MockCommandFactory(calendar, view);
     controller = new CalendarController(commandFactory, view);
@@ -455,7 +466,7 @@ public class CalendarControllerTest {
     String mockFileContent = "command1\ncommand2\nexit\n";
     BufferedReader reader = new BufferedReader(new StringReader(mockFileContent));
     TestableCalendarController testableController =
-            new TestableCalendarController(commandFactory, view, reader);
+        new TestableCalendarController(commandFactory, view, reader);
 
     // Execute
     boolean result = testableController.startHeadlessMode("valid_file.txt");
@@ -472,7 +483,7 @@ public class CalendarControllerTest {
     String mockFileContent = "command1\nerror\ncommand3\n";
     BufferedReader reader = new BufferedReader(new StringReader(mockFileContent));
     TestableCalendarController testableController =
-            new TestableCalendarController(commandFactory, view, reader);
+        new TestableCalendarController(commandFactory, view, reader);
 
     // Execute
     boolean result = testableController.startHeadlessMode("error_file.txt");
@@ -491,7 +502,7 @@ public class CalendarControllerTest {
   public void testStartHeadlessModeWithEmptyFilePath() {
     // Setup
     TestableCalendarController testableController = new TestableCalendarController(
-            commandFactory, view, new BufferedReader(new StringReader("")));
+        commandFactory, view, new BufferedReader(new StringReader("")));
 
     // Execute
     boolean result = testableController.startHeadlessMode("");
@@ -506,7 +517,7 @@ public class CalendarControllerTest {
   public void testStartHeadlessModeWithNullFilePath() {
     // Setup
     TestableCalendarController testableController = new TestableCalendarController(
-            commandFactory, view, new BufferedReader(new StringReader("")));
+        commandFactory, view, new BufferedReader(new StringReader("")));
 
     // Execute
     boolean result = testableController.startHeadlessMode(null);
@@ -528,7 +539,7 @@ public class CalendarControllerTest {
     };
 
     TestableCalendarController testableController = new TestableCalendarController(
-            commandFactory, view, errorReader);
+        commandFactory, view, errorReader);
 
     // Execute
     boolean result = testableController.startHeadlessMode("file.txt");
@@ -554,7 +565,7 @@ public class CalendarControllerTest {
     // Setup
     BufferedReader reader = new BufferedReader(new StringReader(""));
     TestableCalendarController testableController =
-            new TestableCalendarController(commandFactory, view, reader);
+        new TestableCalendarController(commandFactory, view, reader);
 
     // Execute
     boolean result = testableController.startHeadlessMode("empty_file.txt");
@@ -562,7 +573,8 @@ public class CalendarControllerTest {
     // Verify
     assertFalse("Should return false for empty file", result);
     List<String> errors = view.getErrorMessages();
-    assertTrue(errors.contains("Error: Command file is empty. At least one command (exit) is required."));
+    assertTrue(
+        errors.contains("Error: Command file is empty. At least one command (exit) is required."));
   }
 
   @Test
@@ -571,7 +583,7 @@ public class CalendarControllerTest {
     String mockFileContent = "\ncommand1\n\ncommand2\n\nexit\n";
     BufferedReader reader = new BufferedReader(new StringReader(mockFileContent));
     TestableCalendarController testableController =
-            new TestableCalendarController(commandFactory, view, reader);
+        new TestableCalendarController(commandFactory, view, reader);
 
     // Execute
     boolean result = testableController.startHeadlessMode("valid_file.txt");
@@ -588,7 +600,7 @@ public class CalendarControllerTest {
     String mockFileContent = "command1\ncommand2\n";
     BufferedReader reader = new BufferedReader(new StringReader(mockFileContent));
     TestableCalendarController testableController =
-            new TestableCalendarController(commandFactory, view, reader);
+        new TestableCalendarController(commandFactory, view, reader);
 
     // Execute
     boolean result = testableController.startHeadlessMode("no_exit.txt");
@@ -605,7 +617,7 @@ public class CalendarControllerTest {
     String mockFileContent = "exit\n";
     BufferedReader reader = new BufferedReader(new StringReader(mockFileContent));
     TestableCalendarController testableController =
-            new TestableCalendarController(commandFactory, view, reader);
+        new TestableCalendarController(commandFactory, view, reader);
 
     // Execute
     boolean result = testableController.startHeadlessMode("only_exit.txt");
@@ -622,7 +634,7 @@ public class CalendarControllerTest {
     String mockFileContent = "command1\nEXIT\n";
     BufferedReader reader = new BufferedReader(new StringReader(mockFileContent));
     TestableCalendarController testableController =
-            new TestableCalendarController(commandFactory, view, reader);
+        new TestableCalendarController(commandFactory, view, reader);
 
     // Execute
     boolean result = testableController.startHeadlessMode("case_insensitive.txt");

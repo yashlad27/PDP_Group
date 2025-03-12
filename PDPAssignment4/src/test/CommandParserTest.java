@@ -21,10 +21,15 @@ import static org.junit.Assert.assertTrue;
 
 public class CommandParserTest {
 
-  // Mock implementations
+  /**
+   * Mock implementations of calendar.
+   */
   private static class MockCalendar implements ICalendar {
 
-    // Minimal implementation with no functionality
+    /**
+     * Minimal implementation with no functionality
+     */
+    
     @Override
     public boolean addEvent(Event event, boolean autoDecline) {
       return false;
