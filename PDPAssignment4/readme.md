@@ -24,15 +24,24 @@ This is a virtual calendar application that mimics features found in widely used
 
 ### Interactive Mode
 ```
-java -jar calendar-app.jar --mode interactive
+java -jar CalendarApp.jar --mode interactive
 ```
 In this mode, you can enter commands directly and see immediate results.
 
+OR you would need to change your directory to src/ and run 
+```
+java CalendarApp.java --mode interactive
+```
 ### Headless Mode
 ```
 java -jar calendar-app.jar --mode headless res/commands.txt
 ```
 In this mode, the program reads commands from a text file and executes them sequentially.
+
+OR you would need to change your directory to src/ and run
+```
+java CalendarApp.java --mode headless res/commands.txt 
+```
 
 ## Command Reference
 
