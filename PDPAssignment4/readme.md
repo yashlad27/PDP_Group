@@ -34,13 +34,13 @@ java CalendarApp.java --mode interactive
 ```
 ### Headless Mode
 ```
-java -jar calendar-app.jar --mode headless res/commands.txt
+java -jar calendar-app.jar --mode headless resources/commands.txt
 ```
 In this mode, the program reads commands from a text file and executes them sequentially.
 
 OR you would need to change your directory to src/ and run
 ```
-java CalendarApp.java --mode headless res/commands.txt 
+java CalendarApp.java --mode headless resources/commands.txt 
 ```
 
 ## Command Reference
