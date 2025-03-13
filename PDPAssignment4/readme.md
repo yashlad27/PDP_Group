@@ -34,13 +34,13 @@ java CalendarApp.java --mode interactive
 ```
 ### Headless Mode
 ```
-java -jar calendar-app.jar --mode headless res/commands.txt
+java -jar calendar-app.jar --mode headless resources/commands.txt
 ```
 In this mode, the program reads commands from a text file and executes them sequentially.
 
 OR you would need to change your directory to src/ and run
 ```
-java CalendarApp.java --mode headless res/commands.txt 
+java CalendarApp.java --mode headless resources/commands.txt 
 ```
 
 ## Command Reference
@@ -77,17 +77,11 @@ The application follows the Model-View-Controller (MVC) architecture:
 - **View**: Handles user interface and display formatting
 - **Controller**: Processes user commands and updates the model accordingly
 
-### Design Principles
-- **Single Responsibility Principle**: Each class has a single purpose and reason to change
-- **Open/Closed Principle**: Code is open for extension but closed for modification
-- **Liskov Substitution Principle**: Subtypes are substitutable for their base types
-- **Interface Segregation Principle**: Clients aren't forced to depend on interfaces they don't use
-- **Dependency Inversion Principle**: High-level modules don't depend on low-level modules; both depend on abstractions
-
 ## Testing
 - All code is thoroughly tested with JUnit tests
 - PIT mutation testing is used to evaluate test quality
-- Targeted 86% test coverage for both traditional coverage and mutation coverage
+- Targeted 86% Test strength
+- 69% for Mutation Coverage
 
 ## Working Features
 - All features as specified in the requirements document are fully implemented
@@ -96,24 +90,14 @@ The application follows the Model-View-Controller (MVC) architecture:
 
 ## Limitations and Future Enhancements
 - **Multiple Calendars**: Currently supports only a single calendar; future versions could support multiple calendars
-- **Notifications**: No support for event reminders or notifications
-- **Invitations**: No support for inviting other users to events
-- **Synchronization**: Does not sync with external calendar services
 - **GUI**: Currently only offers a text-based interface
 - **Attachments**: No support for adding file attachments to events
-- **Categories/Tags**: No support for categorizing or tagging events
-- **Search**: Limited search functionality; cannot search by keywords within event descriptions
+- **Search**: cannot search by keywords within event descriptions
 - **Timezone Management**: Currently assumes all times are in EST; could add support for multiple timezones
-- **Mobile Access**: No mobile application or responsive web interface
 - **Recurrence Exceptions**: Cannot create exceptions to recurring event patterns
+- **Builder Pattern**: For recurring event file 
+- **Headless Mode**: mocking for recurring event needs to be handled correctly.
 
 ## Team Contributions
 - **Yash Lad**: Core event management and CSV export functionality
 - **Gaurav Bidani**: Recurring events, conflict detection, and query functionality
-
-## Additional Notes
-- The application assumes all times are in EST timezone
-- Currently supports a single calendar only
-- Date strings should be in the format "YYYY-MM-DD"
-- Time strings should be in the format "hh:mm"
-- Weekday format: 'M' is Monday, 'T' is Tuesday, 'W' is Wednesday, 'R' is Thursday, 'F' is Friday, 'S' is Saturday, and 'U' is Sunday

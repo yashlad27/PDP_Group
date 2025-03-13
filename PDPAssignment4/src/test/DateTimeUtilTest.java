@@ -230,7 +230,7 @@ public class DateTimeUtilTest {
 
   @Test
   public void testFormatWeekdaysOrder() {
-    // Test that the formatted weekdays are in the correct order: M, T, W, R, F, S, U
+    // test that the formatted weekdays are in the correct order: M, T, W, R, F, S, U
     Set<DayOfWeek> weekdays = EnumSet.of(DayOfWeek.SUNDAY,   // U
             DayOfWeek.FRIDAY,   // F
             DayOfWeek.WEDNESDAY, // W

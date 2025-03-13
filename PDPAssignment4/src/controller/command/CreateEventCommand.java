@@ -201,8 +201,6 @@ public class CreateEventCommand implements ICommand {
    */
   @Override
   public String execute(String[] args) {
-    // This method would parse command line arguments and call the appropriate creation method
-
     if (args.length < 1) {
       return "Error: Insufficient arguments for create command";
     }

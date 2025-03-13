@@ -32,7 +32,6 @@ public class ExportCalendarCommand implements ICommand {
     String filePath = args[0];
 
     try {
-      // Change based on your ICalendar interface implementation
       String absolutePath = calendar.exportToCSV(filePath);
       return "Calendar exported successfully to: " + absolutePath;
     } catch (IOException e) {

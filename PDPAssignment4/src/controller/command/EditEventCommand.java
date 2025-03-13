@@ -53,10 +53,8 @@ public class EditEventCommand implements ICommand {
    */
   public static class Builder {
 
-    // Required parameter
     private final ICalendar calendar;
 
-    // Optional parameters - initialized to default values
     private String commandType = null;
     private String subject = null;
     private String property = null;
@@ -74,17 +72,6 @@ public class EditEventCommand implements ICommand {
         throw new IllegalArgumentException("Calendar cannot be null");
       }
       this.calendar = calendar;
-    }
-
-    /**
-     * Sets the command type.
-     *
-     * @param commandType the type of edit command (single, series_from_date, all)
-     * @return the builder instance
-     */
-    public Builder commandType(String commandType) {
-      this.commandType = commandType;
-      return this;
     }
 
     /**
@@ -110,17 +97,6 @@ public class EditEventCommand implements ICommand {
     }
 
     /**
-     * Sets the new value for the property.
-     *
-     * @param newValue the new value for the property
-     * @return the builder instance
-     */
-    public Builder newValue(String newValue) {
-      this.newValue = newValue;
-      return this;
-    }
-
-    /**
      * Sets the start date/time for identifying the event.
      *
      * @param startDateTime the start date/time of the event
@@ -131,14 +107,6 @@ public class EditEventCommand implements ICommand {
       return this;
     }
 
-    /**
-     * Builds a new EditEventCommand instance.
-     *
-     * @return a new EditEventCommand instance
-     */
-    public EditEventCommand build() {
-      return new EditEventCommand(this);
-    }
   }
 
   /**
@@ -150,7 +118,7 @@ public class EditEventCommand implements ICommand {
   private String removeQuotes(String value) {
     if (value != null && value.length() >= 2) {
       if ((value.startsWith("\"") && value.endsWith("\"")) ||
-          (value.startsWith("'") && value.endsWith("'"))) {
+              (value.startsWith("'") && value.endsWith("'"))) {
         return value.substring(1, value.length() - 1);
       }
     }

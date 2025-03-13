@@ -43,10 +43,9 @@ public class RecurringEvent extends Event {
 
     this.repeatDays = EnumSet.copyOf(repeatDays);
     this.occurrences = occurrences;
-    this.endDate = null;  // Recurrence is based on count, not end date
+    this.endDate = null;
     this.recurringId = UUID.randomUUID();
 
-    // Check that the event is within a single day
     if (!startDateTime.toLocalDate().equals(endDateTime.toLocalDate())) {
       throw new IllegalArgumentException("Recurring events must start and end on the same day");
     }
@@ -74,10 +73,9 @@ public class RecurringEvent extends Event {
 
     this.repeatDays = EnumSet.copyOf(repeatDays);
     this.endDate = endDate;
-    this.occurrences = -1;  // Recurrence is based on end date, not count
+    this.occurrences = -1;
     this.recurringId = UUID.randomUUID();
 
-    // Check that the event is within a single day
     if (!startDateTime.toLocalDate().equals(endDateTime.toLocalDate())) {
       throw new IllegalArgumentException("Recurring events must start and end on the same day");
     }

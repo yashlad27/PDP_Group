@@ -50,13 +50,9 @@ public class Calendar implements ICalendar {
     if (event == null) {
       throw new IllegalArgumentException("Event cannot be null");
     }
-
-    // Check for conflicts if autoDecline is true
     if (autoDecline && hasConflict(event)) {
       return false;
     }
-
-    // Add the event
     events.add(event);
     eventById.put(event.getId(), event);
     return true;
@@ -75,10 +71,8 @@ public class Calendar implements ICalendar {
       throw new IllegalArgumentException("Recurring event cannot be null");
     }
 
-    // Get all occurrences of the recurring event
     List<Event> occurrences = recurringEvent.getAllOccurrences();
 
-    // Check for conflicts if autoDecline is true
     if (autoDecline) {
       for (Event occurrence : occurrences) {
         if (hasConflict(occurrence)) {
@@ -87,11 +81,9 @@ public class Calendar implements ICalendar {
       }
     }
 
-    // Add the recurring event and all its occurrences
     recurringEvents.add(recurringEvent);
     recurringEventById.put(recurringEvent.getId(), recurringEvent);
 
-    // Add all occurrences to the events list
     for (Event occurrence : occurrences) {
       events.add(occurrence);
       eventById.put(occurrence.getId(), occurrence);
@@ -107,9 +99,8 @@ public class Calendar implements ICalendar {
       Set<DayOfWeek> repeatDays = DateTimeUtil.parseWeekdays(weekdays);
 
       RecurringEvent recurringEvent = new RecurringEvent(name, start, end, null,
-          // Default description
-          null,  // Default location
-          true,  // Default to public
+          null,
+          true,
           repeatDays, untilDate);
 
       return addRecurringEvent(recurringEvent, autoDecline);
@@ -124,14 +115,12 @@ public class Calendar implements ICalendar {
     try {
       Set<DayOfWeek> repeatDays = DateTimeUtil.parseWeekdays(weekdays);
 
-      // Create an all-day recurring event
       LocalDateTime startOfDay = date.atStartOfDay();
       LocalDateTime endOfDay = date.atTime(23, 59, 59);
 
       RecurringEvent recurringEvent = new RecurringEvent(name, startOfDay, endOfDay, description,
           location, isPublic, repeatDays, occurrences);
 
-      // Mark it as an all-day event
       recurringEvent.setAllDay(true);
 
       return addRecurringEvent(recurringEvent, autoDecline);
@@ -147,14 +136,12 @@ public class Calendar implements ICalendar {
     try {
       Set<DayOfWeek> repeatDays = DateTimeUtil.parseWeekdays(weekdays);
 
-      // Create an all-day recurring event
       LocalDateTime startOfDay = date.atStartOfDay();
       LocalDateTime endOfDay = date.atTime(23, 59, 59);
 
       RecurringEvent recurringEvent = new RecurringEvent(name, startOfDay, endOfDay, description,
           location, isPublic, repeatDays, untilDate);
 
-      // Mark it as an all-day event
       recurringEvent.setAllDay(true);
 
       return addRecurringEvent(recurringEvent, autoDecline);
@@ -226,12 +213,10 @@ public class Calendar implements ICalendar {
       String newValue) {
     int count = 0;
 
-    // gets all events with the given subject
     List<Event> matchingEvents = events.stream().filter(
         e -> e.getSubject().equals(subject) && !e.getStartDateTime().isBefore(startDateTime))
         .collect(Collectors.toList());
 
-    // update each matching event
     for (Event event : matchingEvents) {
       if (updateEventProperty(event, property, newValue)) {
         count++;
@@ -296,64 +281,6 @@ public class Calendar implements ICalendar {
   }
 
   /**
-   * Checks if an event occurs on a specific date.
-   *
-   * @param event the event to check
-   * @param date  the date to check against
-   * @return true if the event occurs on the given date, false otherwise
-   */
-  private boolean eventOccursOnDate(Event event, LocalDate date) {
-    if (event == null || date == null) {
-      return false;
-    }
-    LocalDate eventStartDate = event.getStartDateTime().toLocalDate();
-    LocalDate eventEndDate = event.getEndDateTime().toLocalDate();
-
-    // The event occurs on the date if:
-    // 1. The date is between the event's start and end dates (inclusive)
-    return !date.isBefore(eventStartDate) && !date.isAfter(eventEndDate);
-  }
-
-  /**
-   * Checks if an event occurs within a date range.
-   *
-   * @param event     the event to check
-   * @param startDate the start date of the range
-   * @param endDate   the end date of the range
-   * @return true if the event occurs within the given range, false otherwise
-   */
-  private boolean eventOccursInRange(Event event, LocalDate startDate, LocalDate endDate) {
-    if (event == null || startDate == null || endDate == null) {
-      return false;
-    }
-    LocalDate eventStartDate = event.getStartDateTime().toLocalDate();
-    LocalDate eventEndDate = event.getEndDateTime().toLocalDate();
-
-    // The event occurs in the range if:
-    // 1. The event's end date is on or after the start date of the range, and
-    // 2. The event's start date is on or before the end date of the range
-    return !eventEndDate.isBefore(startDate) && !eventStartDate.isAfter(endDate);
-  }
-
-  /**
-   * Checks if a given date and time falls within an event's interval.
-   *
-   * @param event    the event to check
-   * @param dateTime the date and time to check
-   * @return true if the date and time is within the event's interval, false otherwise
-   */
-  private boolean isTimeInEventInterval(Event event, LocalDateTime dateTime) {
-    if (event == null || dateTime == null) {
-      return false;
-    }
-    // The time is in the event's interval if:
-    // 1. The time is on or after the event's start date/time, and
-    // 2. The time is on or before the event's end date/time
-    return !dateTime.isBefore(event.getStartDateTime()) && !dateTime.isAfter(
-        event.getEndDateTime());
-  }
-
-  /**
    * Updates a specific property of an event.
    *
    * @param event    the event to update.
@@ -379,10 +306,8 @@ public class Calendar implements ICalendar {
         try {
           LocalDateTime newStartTime;
           if (newValue.contains("T")) {
-            // Full datetime format
             newStartTime = DateTimeUtil.parseDateTime(newValue);
           } else {
-            // Time-only format, keep the same date
             LocalTime newTime = LocalTime.parse(newValue);
             newStartTime = LocalDateTime.of(event.getStartDateTime().toLocalDate(), newTime);
           }
@@ -397,10 +322,8 @@ public class Calendar implements ICalendar {
         try {
           LocalDateTime newEndTime;
           if (newValue.contains("T")) {
-            // Full datetime format
             newEndTime = DateTimeUtil.parseDateTime(newValue);
           } else {
-            // Time-only format, keep the same date
             LocalTime newTime = LocalTime.parse(newValue);
             newEndTime = LocalDateTime.of(event.getEndDateTime().toLocalDate(), newTime);
           }
@@ -425,20 +348,16 @@ public class Calendar implements ICalendar {
   @Override
   public List<Event> getEventsOnDate(LocalDate date) {
     return events.stream().filter(event -> {
-      // For events with a specific date/time
       if (event.getStartDateTime() != null) {
         LocalDate eventStartDate = event.getStartDateTime().toLocalDate();
 
-        // Handle multi-day events - check if the date falls within event duration
         if (event.getEndDateTime() != null) {
           LocalDate eventEndDate = event.getEndDateTime().toLocalDate();
           return !date.isBefore(eventStartDate) && !date.isAfter(eventEndDate);
         } else {
-          // Single day event
           return eventStartDate.equals(date);
         }
       } else if (event.getDate() != null) {
-        // For all-day events
         return event.getDate().equals(date);
       }
       return false;
@@ -448,17 +367,14 @@ public class Calendar implements ICalendar {
   @Override
   public List<Event> getEventsInRange(LocalDate startDate, LocalDate endDate) {
     return events.stream().filter(event -> {
-      // For events with a specific date/time
       if (event.getStartDateTime() != null) {
         LocalDate eventStartDate = event.getStartDateTime().toLocalDate();
         LocalDate eventEndDate =
             (event.getEndDateTime() != null) ? event.getEndDateTime().toLocalDate()
                 : eventStartDate;
 
-        // Check if the event overlaps with the date range
         return !(eventEndDate.isBefore(startDate) || eventStartDate.isAfter(endDate));
       } else if (event.getDate() != null) {
-        // For all-day events
         return !event.getDate().isBefore(startDate) && !event.getDate().isAfter(endDate);
       }
       return false;
@@ -468,13 +384,11 @@ public class Calendar implements ICalendar {
   @Override
   public boolean isBusy(LocalDateTime dateTime) {
     return events.stream().anyMatch(event -> {
-      // For events with a specific date/time
       if (event.getStartDateTime() != null && event.getEndDateTime() != null) {
         return !dateTime.isBefore(event.getStartDateTime()) && !dateTime.isAfter(
             event.getEndDateTime());
       }
 
-      // For all-day events
       if (event.getDate() != null) {
         LocalDate targetDate = dateTime.toLocalDate();
         return event.getDate().equals(targetDate);

@@ -56,7 +56,6 @@ public class EventTest {
 
     assertEquals(subject, event.getSubject());
     assertEquals(startDateTime, event.getStartDateTime());
-    // End time should be set to end of day
     assertEquals(
             LocalDateTime.of(startDateTime.toLocalDate(), LocalTime.of(23, 59, 59)),
             event.getEndDateTime()
@@ -114,7 +113,6 @@ public class EventTest {
   public void testConflictsWithOverlappingEvents() {
     Event event = new Event(subject, startDateTime, endDateTime, description, location, isPublic);
 
-    // Event that starts during the first event
     LocalDateTime overlapStartTime = startDateTime.plusMinutes(30);
     LocalDateTime overlapEndTime = endDateTime.plusHours(1);
     Event overlappingEvent = new Event(
@@ -139,7 +137,6 @@ public class EventTest {
   public void testNoConflictWithNonOverlappingEvents() {
     Event event = new Event(subject, startDateTime, endDateTime, description, location, isPublic);
 
-    // Event that starts after the first event ends
     LocalDateTime laterStartTime = endDateTime.plusMinutes(1);
     LocalDateTime laterEndTime = laterStartTime.plusHours(1);
     Event nonOverlappingEvent = new Event(
@@ -328,20 +325,16 @@ public class EventTest {
     Event event2 = new Event(subject, startDateTime, endDateTime,
             "Different description", "Different location", false);
 
-    // Events with same subject, start and end time should be equal
     assertEquals(event1, event2);
 
-    // Different start time
     Event event3 = new Event(subject, startDateTime.plusHours(1), endDateTime,
             description, location, isPublic);
     assertNotEquals(event1, event3);
 
-    // Different end time
     Event event4 = new Event(subject, startDateTime, endDateTime.plusHours(1),
             description, location, isPublic);
     assertNotEquals(event1, event4);
 
-    // Different subject
     Event event5 = new Event("Different subject", startDateTime, endDateTime,
             description, location, isPublic);
     assertNotEquals(event1, event5);
@@ -354,7 +347,6 @@ public class EventTest {
     Event event2 = new Event(subject, startDateTime, endDateTime,
             "Different description", "Different location", false);
 
-    // Hash codes should be the same for events with same subject, start and end time
     assertEquals(event1.hashCode(), event2.hashCode());
   }
 
@@ -363,7 +355,6 @@ public class EventTest {
     Event event = new Event(subject, startDateTime, endDateTime, description, location, isPublic);
     String toString = event.toString();
 
-    // Basic checks that toString contains important information
     assertTrue(toString.contains(subject));
     assertTrue(toString.contains(startDateTime.toString()));
     assertTrue(toString.contains(endDateTime.toString()));

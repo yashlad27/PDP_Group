@@ -120,7 +120,6 @@ public class CommandFactoryTest {
     }
   }
 
-  // Manual mock implementation of ICalendarView
   private static class MockCalendarView implements ICalendarView {
 
     @Override
@@ -152,7 +151,6 @@ public class CommandFactoryTest {
 
   @Test
   public void testGetCommandWithValidName() {
-    // Check each registered command type
     ICommand createCommand = factory.getCommand("create");
     ICommand printCommand = factory.getCommand("print");
     ICommand showCommand = factory.getCommand("show");
@@ -160,7 +158,6 @@ public class CommandFactoryTest {
     ICommand editCommand = factory.getCommand("edit");
     ICommand exitCommand = factory.getCommand("exit");
 
-    // Verify all commands are of the correct type
     assertTrue(createCommand instanceof CreateEventCommand);
     assertTrue(printCommand instanceof PrintEventsCommand);
     assertTrue(showCommand instanceof ShowStatusCommand);
@@ -194,16 +191,13 @@ public class CommandFactoryTest {
 
   @Test
   public void testGetCommandNames() {
-    // Get all command names
     Iterable<String> commandNames = factory.getCommandNames();
 
-    // Convert to a set for easier verification
     Set<String> nameSet = new HashSet<>();
     for (String name : commandNames) {
       nameSet.add(name);
     }
 
-    // Verify all expected commands are present
     assertTrue(nameSet.contains("create"));
     assertTrue(nameSet.contains("print"));
     assertTrue(nameSet.contains("show"));
@@ -211,7 +205,6 @@ public class CommandFactoryTest {
     assertTrue(nameSet.contains("edit"));
     assertTrue(nameSet.contains("exit"));
 
-    // Verify the count (should be exactly 6)
     assertEquals(6, nameSet.size());
   }
 
@@ -227,29 +220,22 @@ public class CommandFactoryTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testConstructorWithNullCalendar() {
-    // This should throw an IllegalArgumentException
     new CommandFactory(null, view);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testConstructorWithNullView() {
-    // This should throw an IllegalArgumentException
     new CommandFactory(calendar, null);
   }
 
   @Test
   public void testCommandInitialization() {
-    // All commands should be properly initialized with the calendar
-
-    // Get each command
     CreateEventCommand createCommand = (CreateEventCommand) factory.getCommand("create");
     PrintEventsCommand printCommand = (PrintEventsCommand) factory.getCommand("print");
     ShowStatusCommand showCommand = (ShowStatusCommand) factory.getCommand("show");
     ExportCalendarCommand exportCommand = (ExportCalendarCommand) factory.getCommand("export");
     EditEventCommand editCommand = (EditEventCommand) factory.getCommand("edit");
 
-    // Test some simple functionality to ensure they're properly initialized
-    // We'll just verify they don't throw exceptions when getting their names
     assertEquals("create", createCommand.getName());
     assertEquals("print", printCommand.getName());
     assertEquals("show", showCommand.getName());
@@ -259,20 +245,13 @@ public class CommandFactoryTest {
 
   @Test
   public void testRegisterDuplicateCommand() {
-    // Test registering a duplicate command with the same name
-    // We need to use reflection to access the private method
-    // or adjust your design to make this testable
-
-    // For now, we can verify the behavior indirectly
     int initialCommandCount = 0;
     for (String name : factory.getCommandNames()) {
       initialCommandCount++;
     }
 
-    // Create a new factory to reset state
     CommandFactory newFactory = new CommandFactory(calendar, view);
 
-    // Verify it has the same number of commands
     int newCommandCount = 0;
     for (String name : newFactory.getCommandNames()) {
       newCommandCount++;
@@ -283,11 +262,9 @@ public class CommandFactoryTest {
 
   @Test
   public void testNullCommandName() {
-    // Verify behavior when we try to get a command with null name
     ICommand command = factory.getCommand(null);
     assertNull(command);
 
-    // Verify behavior when we check if a null command exists
     assertFalse(factory.hasCommand(null));
   }
 }

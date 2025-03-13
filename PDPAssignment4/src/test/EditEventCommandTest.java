@@ -22,30 +22,25 @@ public class EditEventCommandTest {
 
   @Before
   public void setUp() {
-    // Create a real calendar for testing
     calendar = new Calendar();
     editCommand = new EditEventCommand(calendar);
 
-    // Add some test events to the calendar
     LocalDateTime now = LocalDateTime.now();
     LocalDateTime startDateTime = LocalDateTime.of(2023, 5, 15, 10, 0);
     LocalDateTime endDateTime = LocalDateTime.of(2023, 5, 15, 11, 0);
 
-    // Add a single event
-    Event singleEvent = new Event("Meeting", startDateTime, endDateTime, null, // description
-        null, // location
-        true  // isPublic
+    Event singleEvent = new Event("Meeting", startDateTime, endDateTime, null,
+        null,
+        true
     );
-    calendar.addEvent(singleEvent, false); // false for autoDecline
+    calendar.addEvent(singleEvent, false);
 
     LocalDateTime recStartDateTime = LocalDateTime.of(2023, 6, 1, 14, 0);
     LocalDateTime recEndDateTime = LocalDateTime.of(2023, 6, 1, 15, 0);
 
-    // Using the API provided by ICalendar
     calendar.createRecurringEventUntil("Weekly Meeting", recStartDateTime, recEndDateTime, "MW",
-        // Monday and Wednesday
-        LocalDate.of(2023, 7, 1), // until date
-        false // autoDecline
+        LocalDate.of(2023, 7, 1),
+        false
     );
   }
 

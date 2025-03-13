@@ -28,63 +28,47 @@ public class CSVExporter {
    */
   public static String exportToCSV(String filePath, List<Event> events) {
     try (FileWriter writer = new FileWriter(filePath)) {
-      // Write CSV header
       writer.write(
-          "Subject,Start Date,Start Time,End Date,End Time,All Day Event,Description,Location,Private\n");
+          "Subject,Start Date,Start Time,End Date,End Time,All Day Event,Description,Location,"
+                  + "Private\n");
 
-      // Write each event
       for (Event event : events) {
         StringBuilder line = new StringBuilder();
 
-        // Subject
         line.append(escapeCSV(event.getSubject())).append(",");
 
-        // Determine if it's an all-day event
         boolean isAllDay = event.isAllDay();
 
-        // Start Date & Time
         if (isAllDay && event.getDate() != null) {
-          // All-day event with date
           line.append(event.getDate().format(DATE_FORMAT)).append(",");
-          line.append(","); // No start time for all-day events
+          line.append(",");
         } else if (event.getStartDateTime() != null) {
-          // Regular event with start date/time
           line.append(event.getStartDateTime().format(DATE_FORMAT)).append(",");
           line.append(event.getStartDateTime().format(TIME_FORMAT)).append(",");
         } else {
-          // Fallback (should not happen)
           line.append(",").append(",");
         }
 
-        // End Date & Time
         if (isAllDay && event.getDate() != null) {
-          // All-day event with date
           line.append(event.getDate().format(DATE_FORMAT)).append(",");
-          line.append(","); // No end time for all-day events
+          line.append(",");
         } else if (event.getEndDateTime() != null) {
-          // Regular event with end date/time
           line.append(event.getEndDateTime().format(DATE_FORMAT)).append(",");
           line.append(event.getEndDateTime().format(TIME_FORMAT)).append(",");
         } else if (event.getStartDateTime() != null) {
-          // Event with start time but no end time
           line.append(event.getStartDateTime().format(DATE_FORMAT)).append(",");
           line.append(event.getStartDateTime().format(TIME_FORMAT)).append(",");
         } else {
-          // Fallback (should not happen)
           line.append(",").append(",");
         }
 
-        // All Day Event
         line.append(isAllDay ? "True" : "False").append(",");
 
-        // Description
         line.append(escapeCSV(event.getDescription() != null ? event.getDescription() : ""))
             .append(",");
 
-        // Location
         line.append(escapeCSV(event.getLocation() != null ? event.getLocation() : "")).append(",");
 
-        // Private
         line.append(!event.isPublic() ? "True" : "False").append("\n");
 
         writer.write(line.toString());
@@ -124,7 +108,6 @@ public class CSVExporter {
       } else if (event.getStartDateTime() != null) {
         result.append(" - ");
 
-        // If showing multiple days and the event spans multiple days, show full dates
         if (!singleDay) {
           result.append(event.getStartDateTime().format(DISPLAY_DATE_FORMAT)).append(" ");
         }
@@ -134,7 +117,6 @@ public class CSVExporter {
         if (event.getEndDateTime() != null) {
           result.append(" to ");
 
-          // If event ends on a different day, include the end date
           if (!event.getStartDateTime().toLocalDate()
               .equals(event.getEndDateTime().toLocalDate())) {
             result.append(event.getEndDateTime().format(DISPLAY_DATE_FORMAT)).append(" ");
@@ -165,9 +147,7 @@ public class CSVExporter {
       return "";
     }
 
-    // If the value contains comma, newline, or double quote, enclose in quotes
     if (value.contains(",") || value.contains("\"") || value.contains("\n")) {
-      // Replace double quotes with two double quotes
       String escaped = value.replace("\"", "\"\"");
       return "\"" + escaped + "\"";
     }

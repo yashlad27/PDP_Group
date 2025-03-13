@@ -135,7 +135,6 @@ public class CommandParser {
       return parseExportCommand(commandString);
     }
 
-    // If we reach here, the command was not recognized
     throw new IllegalArgumentException("Unrecognized or unsupported command: " + commandString);
   }
 
@@ -150,16 +149,10 @@ public class CommandParser {
     ICommand createCommand = commandFactory.getCommand("create");
     Matcher matcher;
 
-    // Clean up quoted strings - remove surrounding quotes if present
-    String cleanCommand = commandString.replaceAll("\"([^\"]+)\"", "$1");
-    cleanCommand = cleanCommand.replaceAll("'([^']+)'", "$1");
-
-    // Regular event
     matcher = CREATE_EVENT_PATTERN.matcher(commandString);
     if (matcher.matches()) {
       boolean autoDecline = matcher.group(1) != null;
 
-      // Remove quotes from event name if present
       String eventName = matcher.group(2);
       if (eventName.startsWith("\"") && eventName.endsWith("\"")) {
         eventName = eventName.substring(1, eventName.length() - 1);
@@ -178,7 +171,6 @@ public class CommandParser {
       return new CommandWithArgs(createCommand, args);
     }
 
-    // Recurring event with occurrences
     matcher = CREATE_RECURRING_EVENT_PATTERN.matcher(commandString);
     if (matcher.matches()) {
       boolean autoDecline = matcher.group(1) != null;
@@ -203,12 +195,10 @@ public class CommandParser {
       return new CommandWithArgs(createCommand, args);
     }
 
-    // Recurring event until date
     matcher = CREATE_RECURRING_UNTIL_PATTERN.matcher(commandString);
     if (matcher.matches()) {
       boolean autoDecline = matcher.group(1) != null;
 
-      // Remove quotes from event name if present
       String eventName = matcher.group(2);
       if (eventName.startsWith("\"") && eventName.endsWith("\"")) {
         eventName = eventName.substring(1, eventName.length() - 1);
@@ -229,12 +219,10 @@ public class CommandParser {
       return new CommandWithArgs(createCommand, args);
     }
 
-    // All-day event
     matcher = CREATE_ALL_DAY_EVENT_PATTERN.matcher(commandString);
     if (matcher.matches()) {
       boolean autoDecline = matcher.group(1) != null;
 
-      // Remove quotes from event name if present
       String eventName = matcher.group(2);
       if (eventName.startsWith("\"") && eventName.endsWith("\"")) {
         eventName = eventName.substring(1, eventName.length() - 1);
@@ -252,12 +240,10 @@ public class CommandParser {
       return new CommandWithArgs(createCommand, args);
     }
 
-    // All-day recurring event with occurrences
     matcher = CREATE_ALL_DAY_RECURRING_PATTERN.matcher(commandString);
     if (matcher.matches()) {
       boolean autoDecline = matcher.group(1) != null;
 
-      // Remove quotes from event name if present
       String eventName = matcher.group(2);
       if (eventName.startsWith("\"") && eventName.endsWith("\"")) {
         eventName = eventName.substring(1, eventName.length() - 1);
@@ -277,12 +263,10 @@ public class CommandParser {
       return new CommandWithArgs(createCommand, args);
     }
 
-    // All-day recurring event until date
     matcher = CREATE_ALL_DAY_RECURRING_UNTIL_PATTERN.matcher(commandString);
     if (matcher.matches()) {
       boolean autoDecline = matcher.group(1) != null;
 
-      // Remove quotes from event name if present
       String eventName = matcher.group(2);
       if (eventName.startsWith("\"") && eventName.endsWith("\"")) {
         eventName = eventName.substring(1, eventName.length() - 1);
@@ -339,7 +323,6 @@ public class CommandParser {
     if (matcher.matches()) {
       String property = matcher.group(1);
       String subject = matcher.group(2);
-      // Remove quotes if present
       if (subject.startsWith("\"") && subject.endsWith("\"")) {
         subject = subject.substring(1, subject.length() - 1);
       }
@@ -348,18 +331,16 @@ public class CommandParser {
           "single",
           property,
           subject,
-          matcher.group(3),  // startDateTime
-          matcher.group(5)   // newValue
+          matcher.group(3),
+          matcher.group(5)
       };
       return new CommandWithArgs(editCommand, args);
     }
 
-    // Try to match series from date pattern
     matcher = EDIT_EVENTS_FROM_DATE_PATTERN.matcher(commandString);
     if (matcher.matches()) {
       String property = matcher.group(1);
       String subject = matcher.group(2);
-      // Remove quotes if present
       if (subject.startsWith("\"") && subject.endsWith("\"")) {
         subject = subject.substring(1, subject.length() - 1);
       }
@@ -374,12 +355,10 @@ public class CommandParser {
       return new CommandWithArgs(editCommand, args);
     }
 
-    // Try to match all events pattern
     matcher = EDIT_ALL_EVENTS_PATTERN.matcher(commandString);
     if (matcher.matches()) {
       String property = matcher.group(1);
       String subject = matcher.group(2);
-      // Remove quotes if present
       if (subject.startsWith("\"") && subject.endsWith("\"")) {
         subject = subject.substring(1, subject.length() - 1);
       }
@@ -388,12 +367,11 @@ public class CommandParser {
           "all",
           property,
           subject,
-          matcher.group(3)   // newValue
+          matcher.group(3)
       };
       return new CommandWithArgs(editCommand, args);
     }
 
-    // Try to match all-day event pattern
     matcher = EDIT_ALL_DAY_EVENT_PATTERN.matcher(commandString);
     if (matcher.matches()) {
       String property = matcher.group(1);
@@ -401,7 +379,6 @@ public class CommandParser {
       String dateStr = matcher.group(3);
       String newValue = matcher.group(4);
 
-      // Remove quotes if present
       if (newValue.startsWith("\"") && newValue.endsWith("\"")) {
         newValue = newValue.substring(1, newValue.length() - 1);
       }
@@ -414,7 +391,7 @@ public class CommandParser {
           "single",
           property,
           subject,
-          startDateTime.toString(),  // Format as LocalDateTime
+          startDateTime.toString(),
           newValue
       };
       return new CommandWithArgs(editCommand, args);
@@ -427,7 +404,6 @@ public class CommandParser {
     ICommand printCommand = commandFactory.getCommand("print");
     Matcher matcher;
 
-    // Try to match "print events on" pattern
     matcher = PRINT_EVENTS_PATTERN.matcher(commandString);
     if (matcher.matches()) {
       String[] args = {
@@ -437,13 +413,12 @@ public class CommandParser {
       return new CommandWithArgs(printCommand, args);
     }
 
-    // Try to match "print events from...to" pattern
     matcher = PRINT_EVENTS_RANGE_PATTERN.matcher(commandString);
     if (matcher.matches()) {
       String[] args = {
           "date_range",
-          matcher.group(1),  // startDate
-          matcher.group(2)   // endDate
+          matcher.group(1),
+          matcher.group(2)
       };
       return new CommandWithArgs(printCommand, args);
     }

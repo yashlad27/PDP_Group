@@ -31,7 +31,6 @@ public class ConsoleViewTest {
    */
   @Before
   public void setUpStreams() {
-    // Redirect standard output and error streams
     System.setOut(new PrintStream(outContent));
     System.setErr(new PrintStream(errContent));
   }
@@ -45,7 +44,6 @@ public class ConsoleViewTest {
     System.setErr(originalErr);
     System.setIn(originalIn);
 
-    // Clean up the ConsoleView if it was created
     if (consoleView != null) {
       consoleView.close();
     }
@@ -118,7 +116,7 @@ public class ConsoleViewTest {
     System.setIn(inputStream);
 
     consoleView = new ConsoleView();
-    consoleView.readCommand(); // This should throw NoSuchElementException
+    consoleView.readCommand();
   }
 
   /**
